@@ -4,14 +4,23 @@ void JoyConManagerGD::_bind_methods() {
     ClassDB::bind_method(D_METHOD("discover_devices"), &JoyConManagerGD::discover_devices);
     ClassDB::bind_method(D_METHOD("get_device_count"), &JoyConManagerGD::get_device_count);
     ClassDB::bind_method(D_METHOD("get_imu_frames"), &JoyConManagerGD::get_imu_frames);
+    ClassDB::bind_method(D_METHOD("get_is_right"), &JoyConManagerGD::get_is_right);
 }
 
 void JoyConManagerGD::discover_devices() {
     manager.discover_devices();
+    is_right_array.clear();
+    for (size_t i = 0; i < manager.device_count(); ++i) {
+        is_right_array.append(manager.get_device(i).get_product_id() == 0x2007); // 0x2006 = left, 0x2007 = right
+    }
 }
 
 int JoyConManagerGD::get_device_count() const {
     return static_cast<int>(manager.device_count());
+}
+
+Array JoyConManagerGD::get_is_right() {
+    return is_right_array;
 }
 
 

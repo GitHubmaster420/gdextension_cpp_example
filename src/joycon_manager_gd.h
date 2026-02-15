@@ -14,6 +14,7 @@ class JoyConManagerGD : public RefCounted {
 
 private:
     JoyConManager manager;
+    Array is_right_array;
 
 protected:
     static void _bind_methods();
@@ -31,4 +32,6 @@ public:
 
     // Poll IMU frames and return as an Array of Dictionaries
     Array get_imu_frames();
+
+    Array get_is_right();
 };
