@@ -1,0 +1,243 @@
+[gd_scene format=3 uid="uid://biwp50ph5cfrh"]
+
+[ext_resource type="Script" uid="uid://lq8ywl5gr66p" path="res://scripts/kinect.gd" id="1_veekh"]
+[ext_resource type="Script" uid="uid://metaca102c1n" path="res://scripts/kinect_joint.gd" id="2_2tvwk"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_veekh"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_2tvwk"]
+sky_material = SubResource("ProceduralSkyMaterial_veekh")
+
+[sub_resource type="Environment" id="Environment_5q5sj"]
+background_mode = 2
+sky = SubResource("Sky_2tvwk")
+tonemap_mode = 2
+
+[sub_resource type="TextMesh" id="TextMesh_veekh"]
+text = "P"
+
+[sub_resource type="SphereMesh" id="SphereMesh_5q5sj"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_mwo5o"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_7yk1j"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_lji40"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_62htk"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_6yjp3"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_8brum"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_v382x"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_x3lpc"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_o3oqn"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_70s7v"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_o432r"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_erix7"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_r43cg"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_ifte3"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_dxlg1"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_7ooor"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_dhf8m"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_gs7df"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_dj6xl"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_d1ter"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_fdoln"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_nwjoy"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_j83nx"]
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_i8b1y"]
+radius = 0.05
+height = 0.1
+
+[node name="Kinect" type="Node3D" unique_id=50083216 node_paths=PackedStringArray("armature")]
+script = ExtResource("1_veekh")
+armature = NodePath("Armature")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=235688630]
+environment = SubResource("Environment_5q5sj")
+
+[node name="HandRight" type="MeshInstance3D" parent="." unique_id=1679266836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.67671484, 0, 0, 0)
+mesh = SubResource("TextMesh_veekh")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1793865782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.9587383)
+
+[node name="Armature" type="Node3D" parent="." unique_id=1854128977]
+
+[node name="spine_base" type="MeshInstance3D" parent="Armature" unique_id=1020870895]
+mesh = SubResource("SphereMesh_5q5sj")
+script = ExtResource("2_2tvwk")
+
+[node name="spine_mid" type="MeshInstance3D" parent="Armature" unique_id=1669950400]
+mesh = SubResource("SphereMesh_mwo5o")
+script = ExtResource("2_2tvwk")
+
+[node name="neck" type="MeshInstance3D" parent="Armature" unique_id=85874511]
+mesh = SubResource("SphereMesh_7yk1j")
+script = ExtResource("2_2tvwk")
+
+[node name="head" type="MeshInstance3D" parent="Armature" unique_id=629110251]
+mesh = SubResource("SphereMesh_lji40")
+script = ExtResource("2_2tvwk")
+
+[node name="shoulder_left" type="MeshInstance3D" parent="Armature" unique_id=1436262185]
+mesh = SubResource("SphereMesh_62htk")
+script = ExtResource("2_2tvwk")
+forward_dir = Vector3(0, 0, 0)
+
+[node name="elbow_left" type="MeshInstance3D" parent="Armature" unique_id=286044529]
+mesh = SubResource("SphereMesh_6yjp3")
+script = ExtResource("2_2tvwk")
+forward_dir = Vector3(0, 0, 0)
+
+[node name="wrist_left" type="MeshInstance3D" parent="Armature" unique_id=1311170062]
+mesh = SubResource("SphereMesh_8brum")
+script = ExtResource("2_2tvwk")
+
+[node name="hand_left" type="MeshInstance3D" parent="Armature" unique_id=1526668731]
+mesh = SubResource("SphereMesh_v382x")
+script = ExtResource("2_2tvwk")
+
+[node name="shoulder_right" type="MeshInstance3D" parent="Armature" unique_id=1373994887]
+mesh = SubResource("SphereMesh_x3lpc")
+script = ExtResource("2_2tvwk")
+forward_dir = Vector3(0, 0, 0)
+
+[node name="elbow_right" type="MeshInstance3D" parent="Armature" unique_id=1909349790]
+mesh = SubResource("SphereMesh_o3oqn")
+script = ExtResource("2_2tvwk")
+forward_dir = Vector3(0, 0, 0)
+
+[node name="wrist_right" type="MeshInstance3D" parent="Armature" unique_id=1610936023]
+mesh = SubResource("SphereMesh_70s7v")
+script = ExtResource("2_2tvwk")
+
+[node name="hand_right" type="MeshInstance3D" parent="Armature" unique_id=53896671]
+mesh = SubResource("SphereMesh_o432r")
+script = ExtResource("2_2tvwk")
+
+[node name="hip_left" type="MeshInstance3D" parent="Armature" unique_id=119671173]
+mesh = SubResource("SphereMesh_erix7")
+script = ExtResource("2_2tvwk")
+forward_dir = Vector3(0, 0, 0)
+
+[node name="knee_left" type="MeshInstance3D" parent="Armature" unique_id=1935005170]
+mesh = SubResource("SphereMesh_r43cg")
+script = ExtResource("2_2tvwk")
+forward_dir = Vector3(0, 0, 0)
+
+[node name="ankle_left" type="MeshInstance3D" parent="Armature" unique_id=424930800]
+mesh = SubResource("SphereMesh_ifte3")
+script = ExtResource("2_2tvwk")
+
+[node name="foot_left" type="MeshInstance3D" parent="Armature" unique_id=881107955]
+mesh = SubResource("SphereMesh_dxlg1")
+script = ExtResource("2_2tvwk")
+
+[node name="hip_right" type="MeshInstance3D" parent="Armature" unique_id=269632640]
+mesh = SubResource("SphereMesh_7ooor")
+script = ExtResource("2_2tvwk")
+forward_dir = Vector3(0, 0, 0)
+
+[node name="knee_right" type="MeshInstance3D" parent="Armature" unique_id=1926759835]
+mesh = SubResource("SphereMesh_dhf8m")
+script = ExtResource("2_2tvwk")
+forward_dir = Vector3(0, 0, 0)
+
+[node name="ankle_right" type="MeshInstance3D" parent="Armature" unique_id=298666066]
+mesh = SubResource("SphereMesh_gs7df")
+script = ExtResource("2_2tvwk")
+
+[node name="foot_right" type="MeshInstance3D" parent="Armature" unique_id=1203514331]
+mesh = SubResource("SphereMesh_dj6xl")
+script = ExtResource("2_2tvwk")
+
+[node name="spine_shoulder" type="MeshInstance3D" parent="Armature" unique_id=37161794]
+mesh = SubResource("SphereMesh_d1ter")
+script = ExtResource("2_2tvwk")
+
+[node name="hand_tip_left" type="MeshInstance3D" parent="Armature" unique_id=55339357]
+mesh = SubResource("SphereMesh_fdoln")
+script = ExtResource("2_2tvwk")
+
+[node name="thumb_left" type="MeshInstance3D" parent="Armature" unique_id=2074131]
+mesh = SubResource("SphereMesh_nwjoy")
+script = ExtResource("2_2tvwk")
+
+[node name="hand_tip_right" type="MeshInstance3D" parent="Armature" unique_id=263845041]
+mesh = SubResource("SphereMesh_j83nx")
+script = ExtResource("2_2tvwk")
+
+[node name="thumb_right" type="MeshInstance3D" parent="Armature" unique_id=1576389949]
+mesh = SubResource("SphereMesh_i8b1y")
+script = ExtResource("2_2tvwk")

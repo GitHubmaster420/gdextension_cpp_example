@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://jjnacs273m46"]
+
+[ext_resource type="Texture2D" uid="uid://ch0aljsxfwrd6" path="res://icon.svg" id="1_wtcfe"]
+[ext_resource type="Script" uid="uid://mkbjeyoknpn4" path="res://gd_example.gd" id="2_epypp"]
+
+[node name="Node2D" type="Node2D" unique_id=2113738350]
+
+[node name="GDExample" type="GDExample" parent="." unique_id=180109362]
+texture = ExtResource("1_wtcfe")
+script = ExtResource("2_epypp")
