@@ -16,6 +16,12 @@ public:
     // Discover and initialize all connected Joy-Cons
     void discover_devices();
 
+    void calibrate_device_stationary(size_t index, float seconds) {
+        if (index < devices.size()) {
+            devices[index]->auto_calibrate_stationary(seconds);
+        }
+    }
+
     // Access devices
     size_t device_count() const;
     JoyConDevice& get_device(size_t index);

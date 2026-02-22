@@ -19,26 +19,27 @@ var gravity := Vector3.DOWN * 9.81
 
 var joycon_manager : JoyConManagerGD
 
+var is_right_array : Array[bool]
+
+
 func _ready() -> void:
-	var first = true
-	var created := false
+	var creat_mesh_indices := [1]
 	peer.bind(port)
 	joycon_manager = JoyConManagerGD.new()
 	joycon_manager.discover_devices()
+	is_right_array.assign(joycon_manager.get_is_right())
 	for i in range(joycon_manager.get_device_count()):
 		var joy_con := JoyCon.new()
+		joy_con.is_right_joycon = is_right_array[i]
 		joy_con.name = "joy_con_" + str(i)
 		joy_cons.add_child(joy_con)
-		if first:
-			first = false
+		if i not in creat_mesh_indices:
 			continue
-		if created:
-			continue
-		created = true
 		var mesh := BoxMesh.new()
 		var m_i := MeshInstance3D.new()
 		m_i.mesh = mesh
 		joy_con.add_child(m_i)
+	
 
 var basis_at_start : Basis
 
@@ -111,7 +112,8 @@ var left_joycons : Array[JoyCon]
 func _physics_process(delta: float) -> void:
 	var frames := joycon_manager.get_imu_frames()
 	for i in range(joycon_manager.get_device_count()):
-		(joy_cons.get_child(i) as JoyCon).update_joycon(frames[i], delta)
+		pass
+		#(joy_cons.get_child(i) as JoyCon).update_joycon(frames[i], delta)
 	#if peer.get_available_packet_count() == 0:
 		#return
 	#var arr : Array = JSON.parse_string(peer.get_packet().get_string_from_ascii())

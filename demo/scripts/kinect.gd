@@ -11,7 +11,7 @@ enum TrackingState{
 
 const JOINT_COUNT := 25
 
-const JOINT_DICTIONARY := {
+enum JOINT_DICTIONARY {
 	JointType_SpineBase	= 0,
 	JointType_SpineMid	= 1,
 	JointType_Neck	= 2,

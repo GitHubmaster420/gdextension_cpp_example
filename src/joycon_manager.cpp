@@ -1,6 +1,7 @@
 #include "joycon_manager.h"
 #include <hidapi/hidapi.h>
 #include <iostream>
+#include <algorithm>
 
 JoyConManager::JoyConManager() {
     hid_init();
@@ -94,4 +95,3 @@ bool JoyConManager::poll_joycon_inputs(std::vector<std::tuple<JoyConButtons, IMU
 
     return success;
 }
-

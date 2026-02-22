@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://dmluo1hshbi2f"]
+
+[ext_resource type="PackedScene" uid="uid://bbfc4q7eb3303" path="res://scenes/FootballCityCharacter3.glb" id="1_mky0i"]
+
+[node name="FootballCityCharacter3" unique_id=1024578858 instance=ExtResource("1_mky0i")]

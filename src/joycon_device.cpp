@@ -17,6 +17,15 @@ JoyConDevice::~JoyConDevice() {
     }
 }
 
+void JoyConDevice::stop_polling() {
+    if (polling) {
+        polling = false;
+        if (poll_thread.joinable()) {
+            poll_thread.join();
+        }
+    }
+}
+
 // -----------------------------
 // Polling (thread-safe, double-buffer-like)
 // -----------------------------
@@ -47,11 +56,15 @@ void JoyConDevice::start_polling(bool is_left) {
                         int16_t accel_raw = read_le16(buf, base + axis*2);
                         int16_t gyro_raw  = read_le16(buf, base + 6 + axis*2);
 
-                        frame.samples[sample].accel[axis] =
-                            (accel_raw - calibration.accel_offset[axis]) *
-                            ACCEL_SCALE *
-                            (calibration.accel_scale[axis] / 16384.0f);
-
+                        if (calibration.accel_scale[axis] == 16384) {  // detect default
+                            frame.samples[sample].accel[axis] =
+                                static_cast<float>(accel_raw) * 0.000244f;  // ≈ 1/4096 × 4 → ±2 g
+                        } else {
+                            // use factory
+                            frame.samples[sample].accel[axis] =
+                                static_cast<float>(accel_raw - calibration.accel_offset[axis]) /
+                                static_cast<float>(calibration.accel_scale[axis]);
+                        }
                         frame.samples[sample].gyro[axis] =
                             (gyro_raw - calibration.gyro_offset[axis]) *
                             GYRO_SCALE *
@@ -72,16 +85,58 @@ void JoyConDevice::start_polling(bool is_left) {
         }
     });
 }
+using namespace godot;
+void JoyConDevice::auto_calibrate_stationary(float seconds)
+{
+    const int target_samples = seconds * 200; // JoyCon IMU ~200Hz
 
-void JoyConDevice::stop_polling() {
-    polling = false;
-    if (poll_thread.joinable())
-        poll_thread.join();
+    Vector3 accel_sum = Vector3();
+    Vector3 gyro_sum  = Vector3();
+    int count = 0;
+
+    while (count < target_samples)
+    {
+        IMUFrame f;
+        if (!read_imu_frame(f)) continue;
+
+        for (int s = 0; s < 3; s++)
+        {
+            accel_sum += Vector3(
+                f.samples[s].accel[0],
+                f.samples[s].accel[1],
+                f.samples[s].accel[2]
+            );
+
+            gyro_sum += Vector3(
+                f.samples[s].gyro[0],
+                f.samples[s].gyro[1],
+                f.samples[s].gyro[2]
+            );
+
+            count++;
+        }
+    }
+
+    Vector3 accel_mean = accel_sum / count;
+    Vector3 gyro_mean  = gyro_sum  / count;
+
+    // gyro bias
+    for (int i = 0; i < 3; i++)
+        calibration.gyro_offset[i] = gyro_mean[i];
+
+    // accel bias (preserve gravity direction)
+    Vector3 expected = accel_mean.normalized();
+    Vector3 bias = accel_mean - expected;
+
+    for (int i = 0; i < 3; i++)
+        calibration.accel_offset[i] = bias[i];
+    godot::UtilityFunctions::print("Calibration complete", "offset: " + Vector3(calibration.accel_offset[0], calibration.accel_offset[1], calibration.accel_offset[2])  + ", " + Vector3(calibration.gyro_offset[0], calibration.gyro_offset[1], calibration.gyro_offset[2]));
 }
-
+// stop using godot namespace
+using namespace std;
 void JoyConDevice::test_calibration_read() {
     uint8_t test_buf[24];
-    if (read_spi_block(0x6020, 24, test_buf)) {
+    if (read_spi_block(0x6020, 12, test_buf)) {
         // First byte should be 0xB2 for valid factory calibration
         godot::UtilityFunctions::print(
             "First byte: 0x" + godot::String::num_int64(test_buf[0], 16)
@@ -150,6 +205,9 @@ void JoyConDevice::use_default_calibration() {
     has_calibration = false;
 }
 
+
+
+
 // -------------------------------------------------------------
 // Initialization
 // -------------------------------------------------------------
@@ -205,131 +263,158 @@ void JoyConDevice::test_communication() {
 
 bool JoyConDevice::load_calibration() {
     use_default_calibration();
-    return true; // TODO: figure out how to read real calibration data from the device
+    return true;  // Can't figure out how to get correct vaues, default works pretty well
+    bool has_accel = false, has_gyro = false;
+
+    const uint32_t accel_addresses[] = {0x6020, 0x60F0};
+    const uint32_t gyro_addresses[] = {0x6030, 0x6100};
+
     uint8_t cal_data[24];
-    bool has_accel = false;
-    bool has_gyro = false;
-    
-    // Try 1: User calibration (combined accel+gyro at 0x603D for left, 0x603E for right)
-    uint16_t user_cal_addr = (product_id == 0x2006) ? 0x603D : 0x603E; // Left: 0x2006, Right: 0x2007
-    
-    if (read_spi_block(user_cal_addr, 24, cal_data)) {
-        godot::UtilityFunctions::print("Trying user calibration at 0x" + 
-                                       godot::String::num_int64(user_cal_addr, 16));
-        
-        // Check if data is valid (not all 0xFF)
-        bool valid = false;
-        for (int i = 0; i < 24; i++) {
-            if (cal_data[i] != 0xFF) {
-                valid = true;
+
+    for (uint32_t addr : accel_addresses) {
+        if (read_spi_block(addr, 12, cal_data)) {
+            if (parse_factory_accel(cal_data, calibration)) {
+                has_accel = true;
+                godot::UtilityFunctions::print("Loaded accel calibration from 0x" + 
+                    godot::String::num_int64(addr, 16));
                 break;
             }
         }
-        
-        if (valid) {
-            godot::UtilityFunctions::print("Using user calibration");
-            
-            // Parse accel part (first 12 bytes)
-            for (int i = 0; i < 3; i++) {
-                calibration.accel_offset[i] = read_le16(cal_data, i*2);
-                calibration.accel_scale[i] = read_le16(cal_data, 6 + i*2);
+    }
+
+    // Only try to load gyro if we have accel (to avoid using garbage data)
+    if (has_accel) {
+        for (uint32_t addr : gyro_addresses) {
+            if (read_spi_block(addr, 12, cal_data)) {
+                if (parse_factory_gyro(cal_data, calibration)) {
+                    has_gyro = true;
+                    godot::UtilityFunctions::print("Loaded gyro calibration from 0x" + 
+                        godot::String::num_int64(addr, 16));
+                    break;
+                }
             }
-            
-            // Parse gyro part (next 12 bytes)
-            for (int i = 0; i < 3; i++) {
-                calibration.gyro_offset[i] = read_le16(cal_data, 12 + i*2);
-                calibration.gyro_scale[i] = read_le16(cal_data, 18 + i*2);
-            }
-            
-            has_accel = true;
-            has_gyro = true;
         }
     }
-    
-    // Try 2: Factory accel calibration (if we don't have accel yet)
-    if (!has_accel && read_spi_block(0x6020, 24, cal_data)) {
-        godot::UtilityFunctions::print("Using factory accel calibration");
-        
-        // Check if valid (first byte often 0xB2 for factory)
-        if (cal_data[0] != 0xFF) {
-            for (int i = 0; i < 3; i++) {
-                calibration.accel_offset[i] = read_le16(cal_data, i*2);
-                calibration.accel_scale[i] = read_le16(cal_data, 6 + i*2);
-            }
-            has_accel = true;
-        }
+
+    // If we got accel, that's good enough. Fill in missing gyro with defaults.
+    if (has_accel && !has_gyro) {
+        godot::UtilityFunctions::print("Accel calibration found, gyro not available - using default gyro");
+        calibration.gyro_offset[0] = 0.0f;
+        calibration.gyro_offset[1] = 0.0f;
+        calibration.gyro_offset[2] = 0.0f;
+        calibration.gyro_scale[0] = 13371.0f;
+        calibration.gyro_scale[1] = 13371.0f;
+        calibration.gyro_scale[2] = 13371.0f;
     }
-    
-    // Try 3: Factory gyro calibration (if we don't have gyro yet)
-    if (!has_gyro && read_spi_block(0x6030, 24, cal_data)) {
-        godot::UtilityFunctions::print("Using factory gyro calibration");
-        
-        // Check if valid
-        if (cal_data[0] != 0xFF) {
-            for (int i = 0; i < 3; i++) {
-                calibration.gyro_offset[i] = read_le16(cal_data, i*2);
-                calibration.gyro_scale[i] = read_le16(cal_data, 6 + i*2);
-            }
-            has_gyro = true;
-        }
+    else if (!has_accel) {
+        godot::UtilityFunctions::print("No accel calibration found, using all defaults");
+        use_default_calibration();
     }
-    
-    // If still missing calibration, use defaults
-    if (!has_accel) {
-        godot::UtilityFunctions::print("WARNING: Using default accel calibration");
-        for (int i = 0; i < 3; i++) {
-            calibration.accel_offset[i] = 0;
-            calibration.accel_scale[i] = 16384; // Standard sensitivity
-        }
-    }
-    
-    if (!has_gyro) {
-        godot::UtilityFunctions::print("WARNING: Using default gyro calibration");
-        for (int i = 0; i < 3; i++) {
-            calibration.gyro_offset[i] = 0;
-            calibration.gyro_scale[i] = 13371; // Standard sensitivity
-        }
-    }
-    
+
     has_calibration = true;
+
+    godot::UtilityFunctions::print("Final Accel offsets: " + godot::String::num(calibration.accel_offset[0]) + 
+        ", " + godot::String::num(calibration.accel_offset[1]) + 
+        ", " + godot::String::num(calibration.accel_offset[2]));
+    godot::UtilityFunctions::print("Final Accel scales: " + godot::String::num(calibration.accel_scale[0]) + 
+        ", " + godot::String::num(calibration.accel_scale[1]) + 
+        ", " + godot::String::num(calibration.accel_scale[2]));
+    godot::UtilityFunctions::print("Final Gyro offsets: " + godot::String::num(calibration.gyro_offset[0]) + 
+        ", " + godot::String::num(calibration.gyro_offset[1]) + 
+        ", " + godot::String::num(calibration.gyro_offset[2]));
+    godot::UtilityFunctions::print("Final Gyro scales: " + godot::String::num(calibration.gyro_scale[0]) + 
+        ", " + godot::String::num(calibration.gyro_scale[1]) + 
+        ", " + godot::String::num(calibration.gyro_scale[2]));
+
+    return has_accel;
+}
+
+// helpers added near the bottom of the file:
+
+bool JoyConDevice::parse_user_cal_block(const uint8_t *data, JoyConCalibration &out)
+{
+    out.accel_scale[0]  = static_cast<float>(read_le16(data, 0));
+    out.accel_scale[1]  = static_cast<float>(read_le16(data, 2));
+    out.accel_scale[2]  = static_cast<float>(read_le16(data, 4));
+    out.accel_offset[0] = static_cast<float>(read_le16(data, 6));
+    out.accel_offset[1] = static_cast<float>(read_le16(data, 8));
+    out.accel_offset[2] = static_cast<float>(read_le16(data,10));
+    out.gyro_scale[0]   = static_cast<float>(read_le16(data,12));
+    out.gyro_scale[1]   = static_cast<float>(read_le16(data,14));
+    out.gyro_scale[2]   = static_cast<float>(read_le16(data,16));
+    out.gyro_offset[0]  = static_cast<float>(read_le16(data,18));
+    out.gyro_offset[1]  = static_cast<float>(read_le16(data,20));
+    out.gyro_offset[2]  = static_cast<float>(read_le16(data,22));
+
+    // simple sanity check
+    return out.accel_scale[0] > 0 && out.gyro_scale[0] > 0;
+}
+
+bool JoyConDevice::parse_factory_accel(const uint8_t *data, JoyConCalibration &out)
+{
+    godot::UtilityFunctions::print("=== parse_factory_accel debug ===");
+    for (int i = 0; i < 12; i++) {
+        godot::UtilityFunctions::print("  byte[" + godot::String::num_int64(i) + "] = 0x" + 
+            godot::String::num_int64(data[i], 16));
+    }
     
-    // Print final calibration values
-    godot::UtilityFunctions::print(
-        "Final Accel offsets: " + 
-        godot::String::num_int64(calibration.accel_offset[0]) + ", " +
-        godot::String::num_int64(calibration.accel_offset[1]) + ", " +
-        godot::String::num_int64(calibration.accel_offset[2])
-    );
+    uint16_t sx = read_le16(data, 0);
+    uint16_t sy = read_le16(data, 2);
+    uint16_t sz = read_le16(data, 4);
     
-    godot::UtilityFunctions::print(
-        "Final Accel scales: " + 
-        godot::String::num_int64(calibration.accel_scale[0]) + ", " +
-        godot::String::num_int64(calibration.accel_scale[1]) + ", " +
-        godot::String::num_int64(calibration.accel_scale[2])
-    );
+    godot::UtilityFunctions::print("Parsed scales: sx=0x" + godot::String::num_int64(sx, 16) +
+        " sy=0x" + godot::String::num_int64(sy, 16) + " sz=0x" + godot::String::num_int64(sz, 16));
     
-    godot::UtilityFunctions::print(
-        "Final Gyro offsets: " + 
-        godot::String::num_int64(calibration.gyro_offset[0]) + ", " +
-        godot::String::num_int64(calibration.gyro_offset[1]) + ", " +
-        godot::String::num_int64(calibration.gyro_offset[2])
-    );
+    if (sx == 0 || sy == 0 || sz == 0 || sx > 0x8000) {
+        godot::UtilityFunctions::print("Factory accel validation failed");
+        return false;
+    }
+
+    out.accel_scale[0]  = (float)sx;
+    out.accel_scale[1]  = (float)sy;
+    out.accel_scale[2]  = (float)sz;
+    out.accel_offset[0] = (float)read_le16(data, 6);
+    out.accel_offset[1] = (float)read_le16(data, 8);
+    out.accel_offset[2] = (float)read_le16(data, 10);
     
-    godot::UtilityFunctions::print(
-        "Final Gyro scales: " + 
-        godot::String::num_int64(calibration.gyro_scale[0]) + ", " +
-        godot::String::num_int64(calibration.gyro_scale[1]) + ", " +
-        godot::String::num_int64(calibration.gyro_scale[2])
-    );
-    
+    godot::UtilityFunctions::print("Factory accel accepted!");
     return true;
 }
+
+bool JoyConDevice::parse_factory_gyro(const uint8_t *data, JoyConCalibration &out)
+{
+    int16_t sx = (int16_t)read_le16(data, 0);
+    int16_t sy = (int16_t)read_le16(data, 2);
+    int16_t sz = (int16_t)read_le16(data, 4);
+
+    godot::UtilityFunctions::print("Gyro scales: sx=" + godot::String::num_int64(sx) +
+        " sy=" + godot::String::num_int64(sy) + " sz=" + godot::String::num_int64(sz));
+
+    // Gyro scales should be reasonably large positive values (typically 8000–20000)
+    // Reject if any scale is too small, zero, or negative
+    if (sx < 1000 || sx > 30000 || sy < 1000 || sy > 30000 || sz < 1000 || sz > 30000) {
+        godot::UtilityFunctions::print("Gyro scales out of valid range, rejecting");
+        return false;
+    }
+
+    out.gyro_scale[0]   = (float)sx;
+    out.gyro_scale[1]   = (float)sy;
+    out.gyro_scale[2]   = (float)sz;
+    out.gyro_offset[0]  = (float)read_le16(data, 6);
+    out.gyro_offset[1]  = (float)read_le16(data, 8);
+    out.gyro_offset[2]  = (float)read_le16(data, 10);
+
+    godot::UtilityFunctions::print("Gyro calibration accepted");
+    return true;
+}
+
 // -------------------------------------------------------------
 // Reading IMU data
 // -------------------------------------------------------------
 bool JoyConDevice::read_imu_frame(IMUFrame& frame) {
     unsigned char buf[64];
     int res = hid_read(handle, buf, sizeof(buf));
+    
     if (res <= 0) return false;
     if (buf[0] != 0x30) return false;
 
@@ -392,53 +477,72 @@ bool JoyConDevice::send_subcommand(uint8_t subcmd, const uint8_t* data, uint8_t 
 }
 
 bool JoyConDevice::read_spi_block(uint32_t address, uint8_t length, uint8_t* out_data) {
-    // Prepare SPI read command data
-    uint8_t cmd_data[5];
-    cmd_data[0] = 0x10;  // SPI read subcommand
-    cmd_data[1] = address & 0xFF;           // Low byte
-    cmd_data[2] = (address >> 8) & 0xFF;    // High byte
-    cmd_data[3] = (address >> 16) & 0xFF;   // Extra high byte (always 0 for Joy-Con)
-    cmd_data[4] = length;                    // Read length
-    
-    // Send the subcommand
+    uint8_t cmd_data[5] = {0x10,
+                           (uint8_t)(address & 0xFF),
+                           (uint8_t)((address >> 8) & 0xFF),
+                           (uint8_t)((address >> 16) & 0xFF),
+                           length};
+
+    godot::UtilityFunctions::print("Sending SPI read: addr 0x" + godot::String::num_int64(address,16) +
+    " bytes: " + godot::String::num_int64(cmd_data[1],16) + " " +
+    godot::String::num_int64(cmd_data[2],16) + " " +
+    godot::String::num_int64(cmd_data[3],16) + " len " + godot::String::num_int64(length));
+
     if (!send_subcommand(0x10, cmd_data, 5)) {
-        godot::UtilityFunctions::print("Failed to send SPI read command");
+        godot::UtilityFunctions::print("Failed to send SPI read");
         return false;
     }
-    
-    // Wait for and read the response
-    unsigned char buf[64];
-    int attempts = 0;
-    
-    while (attempts < 50) {  // Try up to 50 times
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        
-        int res = hid_read(handle, buf, sizeof(buf));
-        if (res < 0) continue;
-        if (res == 0) {
-            attempts++;
-            continue;
-        }
-        
-        // Check if this is a response to our subcommand
-        // Input report 0x21 contains subcommand replies
-        if (buf[0] == 0x21) {
-            // Verify it's the SPI read response
-            if (buf[14] == 0x10) {  // Subcommand ID in the reply
-                // Copy the data (starts at offset 20)
+
+    unsigned char dummy[64];
+    while (hid_read_timeout(handle, dummy, sizeof(dummy), 0) > 0) {}
+
+    int timeout_ms = 500;
+    auto start = std::chrono::steady_clock::now();
+
+    while (true) {
+        unsigned char buf[64];
+        int res = hid_read_timeout(handle, buf, sizeof(buf), 20);
+
+        if (res > 0) {
+            if (buf[0] == 0x21 && buf[14] == 0x10 && (buf[13] == 0x90 || buf[13] == 0x80)) {
+                // SPI data starts at offset 20 in the response
                 memcpy(out_data, &buf[20], length);
+                godot::UtilityFunctions::print("Raw SPI data:");
+                for (int i = 0; i < length; i++) {
+                    godot::UtilityFunctions::print("  [" + godot::String::num_int64(i) + "]: 0x" + 
+                        godot::String::num_int64(out_data[i], 16));
+                }
                 return true;
             }
         }
-        attempts++;
+
+        if (res < 0) {
+            godot::UtilityFunctions::print("Read error");
+            return false;
+        }
+
+        auto now = std::chrono::steady_clock::now();
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count() > timeout_ms) {
+            godot::UtilityFunctions::print("SPI read timeout");
+            return false;
+        }
     }
-    
-    godot::UtilityFunctions::print("SPI read timeout for address 0x" + 
-                                   godot::String::num_int64(address, 16));
-    return false;
 }
 
+bool JoyConDevice::is_valid_cal_block(const uint8_t* data, int len) {
+    int non_ff_count = 0;
+    for (int i = 0; i < len; i++) {
+        if (data[i] != 0xFF) non_ff_count++;
+    }
+    // Require at least e.g. 12 non-FF bytes (half block meaningful)
+    if (non_ff_count < 12) return false;
 
+    // Optional: check scales positive/large (for accel/gyro sens)
+    int16_t scale_x = read_le16(data, 6);   // accel scale X
+    if (scale_x <= 0 || scale_x > 32767) return false;  // rough filter
+
+    return true;
+}
 
 int16_t JoyConDevice::read_le16(const uint8_t* data, int index) const {
     return (int16_t)(data[index] | (data[index + 1] << 8));

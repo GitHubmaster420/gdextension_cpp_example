@@ -14,6 +14,31 @@ class_name KinectJoint
 
 @export var forward_dir := Vector3.FORWARD
 
+var previous_rotations : Array[Quaternion]
+
+const STORE_SIZE = 6
+
+var stored := false
+
+@export var tracked_state := Kinect.TrackingState.NOT_TRACKED:
+	set(v):
+		if tracked_state == v:
+			return
+		if tracked_state == Kinect.TrackingState.TRACKED:
+			# means that tracking lost
+			if current_track:
+				var w := current_track.angular_velocity(previous_rotations, 1.0 / float(Engine.physics_ticks_per_second))
+				current_track.angular_w_velocities[current_track.current_frame] = w
+		tracked_state = v
+		if tracked_state == Kinect.TrackingState.TRACKED:
+			#Just started tracking, queue
+			previous_rotations.clear()
+			stored = false
+
+@export var current_track : AnimTrack #Current track is always either null or recorded sequence, never fully applied animationn
+
+var recording := false
+
 func _validate_property(property: Dictionary) -> void:
 	if property.name == "bone":
 		if not _skeleton:
@@ -45,3 +70,16 @@ func _y_look_at(from: Transform3D, target: Vector3) -> Transform3D:
 func _physics_process(delta: float) -> void:
 	if next_node:
 		look_at_next()
+	if Engine.is_editor_hint():
+		return
+	if tracked_state != Kinect.TrackingState.TRACKED:
+		return
+	var current_rot := Quaternion(global_basis)
+	if previous_rotations.size() >= STORE_SIZE:
+		if not stored:
+			if current_track:
+				var w := current_track.angular_velocity(previous_rotations, delta)
+				current_track.angular_w_velocities[current_track.current_frame] = w
+				stored = true
+		previous_rotations.pop_front()
+	previous_rotations.append(current_rot)

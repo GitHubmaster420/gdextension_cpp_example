@@ -3,18 +3,6 @@
 [ext_resource type="Script" uid="uid://lq8ywl5gr66p" path="res://scripts/kinect.gd" id="1_veekh"]
 [ext_resource type="Script" uid="uid://metaca102c1n" path="res://scripts/kinect_joint.gd" id="2_2tvwk"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_veekh"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-
-[sub_resource type="Sky" id="Sky_2tvwk"]
-sky_material = SubResource("ProceduralSkyMaterial_veekh")
-
-[sub_resource type="Environment" id="Environment_5q5sj"]
-background_mode = 2
-sky = SubResource("Sky_2tvwk")
-tonemap_mode = 2
-
 [sub_resource type="TextMesh" id="TextMesh_veekh"]
 text = "P"
 
@@ -122,15 +110,9 @@ height = 0.1
 script = ExtResource("1_veekh")
 armature = NodePath("Armature")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=235688630]
-environment = SubResource("Environment_5q5sj")
-
 [node name="HandRight" type="MeshInstance3D" parent="." unique_id=1679266836]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.67671484, 0, 0, 0)
 mesh = SubResource("TextMesh_veekh")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1793865782]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.9587383)
 
 [node name="Armature" type="Node3D" parent="." unique_id=1854128977]
 

@@ -61,9 +61,13 @@ public:
     bool initialize();              // enable IMU + report mode
     void test_communication();
     bool load_calibration();
+    bool parse_user_cal_block(const uint8_t *data, JoyConCalibration &out);
+    bool parse_factory_accel(const uint8_t *data, JoyConCalibration &out);
+    bool parse_factory_gyro(const uint8_t *data, JoyConCalibration &out);
     void use_default_calibration();
 
     void start_polling(bool is_left);
+    void auto_calibrate_stationary(float seconds);
     void stop_polling();
 
     bool get_latest_input(JoyConButtons& out_buttons, IMUFrame& out_frame, StickState& out_stick);
@@ -81,11 +85,13 @@ public:
     bool is_calibrated() const;
 
     JoyConButtons parse_buttons(const unsigned char* buf, bool is_left);
-private:
+
+    JoyConCalibration calibration;
+    private:
     hid_device* handle;
     uint16_t product_id;
 
-    JoyConCalibration calibration;
+    
     bool has_calibration;
 
     uint8_t packet_id;
@@ -103,6 +109,9 @@ private:
     // Low-level helpers
     bool send_subcommand(uint8_t subcmd, const uint8_t* data, uint8_t data_len);
     bool read_spi_block(uint32_t address, uint8_t length, uint8_t *out_data);
-    int16_t read_le16(const uint8_t* data, int index) const;
+    bool is_valid_cal_block(const uint8_t *data, int len);
+    int16_t read_le16(const uint8_t *data, int index) const;
     int16_t read_be16(const uint8_t* data, int offset);
+
+
 };

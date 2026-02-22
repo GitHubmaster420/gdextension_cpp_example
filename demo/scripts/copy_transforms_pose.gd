@@ -2,8 +2,6 @@
 extends SkeletonModifier3D
 class_name CopyModifierPose
 
-#goal is to
-
 @export_enum("string") var bone : String
 
 @export var target : Node3D

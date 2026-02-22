@@ -5,6 +5,7 @@ void JoyConManagerGD::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_device_count"), &JoyConManagerGD::get_device_count);
     ClassDB::bind_method(D_METHOD("get_imu_frames"), &JoyConManagerGD::get_imu_frames);
     ClassDB::bind_method(D_METHOD("get_is_right"), &JoyConManagerGD::get_is_right);
+    ClassDB::bind_method(D_METHOD("calibrate_device_stationary", "index", "seconds"), &JoyConManagerGD::calibrate_device_stationary);
 }
 
 void JoyConManagerGD::discover_devices() {

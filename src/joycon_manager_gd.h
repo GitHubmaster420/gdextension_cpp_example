@@ -34,4 +34,8 @@ public:
     Array get_imu_frames();
 
     Array get_is_right();
+
+    void calibrate_device_stationary(int index, float seconds) {
+        manager.calibrate_device_stationary(index, seconds);
+    }
 };
