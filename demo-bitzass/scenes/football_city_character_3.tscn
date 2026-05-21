@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://djo1elfg0b1pg"]
+
+[ext_resource type="PackedScene" uid="uid://bbfc4q7eb3303" path="res://scenes/FootballCityCharacter3.glb" id="1_5xr5y"]
+
+[node name="FootballCityCharacter3" unique_id=2110815334 instance=ExtResource("1_5xr5y")]
+
+[node name="metarig" parent="." index="0" unique_id=2111070838]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)

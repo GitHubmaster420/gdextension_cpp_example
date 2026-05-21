@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://ycve54tipss2"]
+
+[ext_resource type="PackedScene" uid="uid://cgwnew2a2dmj" path="res://gizmo.tscn" id="2_nyjau"]
+[ext_resource type="PackedScene" uid="uid://b4cfddea3ardy" path="res://anim_tack_holder.tscn" id="3_vs30j"]
+[ext_resource type="Script" uid="uid://ci64carqx66cu" path="res://empyty_canvas.gd" id="4_3rrt7"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3rrt7"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_uwl8j"]
+sky_material = SubResource("ProceduralSkyMaterial_3rrt7")
+
+[sub_resource type="Environment" id="Environment_ku8l6"]
+background_mode = 1
+background_color = Color(0.88170075, 0.8629312, 0.91572994, 1)
+sky = SubResource("Sky_uwl8j")
+tonemap_mode = 2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_vs30j"]
+size = Vector2(10, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3rrt7"]
+shading_mode = 0
+albedo_color = Color(1, 0.73, 0.73, 1)
+
+[node name="AnimTestScene" type="Node3D" unique_id=485081361]
+
+[node name="EmptyCanvas" type="ColorRect" parent="." unique_id=816640949]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)
+script = ExtResource("4_3rrt7")
+metadata/_custom_type_script = "uid://ci64carqx66cu"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=49616604]
+environment = SubResource("Environment_ku8l6")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=538457332]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Gizmo" parent="." unique_id=1587937112 node_paths=PackedStringArray("axis_meshes") instance=ExtResource("2_nyjau")]
+axis_meshes = {
+0: NodePath("XRotMesh"),
+1: NodePath("Scaler/YRotMesh"),
+2: NodePath("Scaler/ZRotMesh"),
+3: NodePath("Scaler/XPlane/XPlaneCube"),
+4: NodePath("Scaler/YPlane/YPlaneCube"),
+5: NodePath("Scaler/ZPlane/ZPlaneCube"),
+6: NodePath("Scaler/SuperMesh")
+}
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1173270715]
+mesh = SubResource("PlaneMesh_vs30j")
+surface_material_override/0 = SubResource("StandardMaterial3D_3rrt7")
+
+[node name="AnimTackHolder" parent="." unique_id=2019306060 instance=ExtResource("3_vs30j")]

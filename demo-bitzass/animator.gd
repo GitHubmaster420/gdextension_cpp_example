@@ -1,0 +1,31 @@
+@abstract class_name Animator extends Node3D
+
+const PREV_POSE_COLOR := Color(0.965, 0.899, 0.0, 1.0)
+const PREV_TANGENT_COLOR := Color(0.96, 0.56, 0.0, 1.0)
+
+const NEXT_POSE_COLOR := Color(0.51, 0.615, 1.0, 1.0)
+const NEXT_TANGENT_COLOR := Color(0.0, 0.755, 0.557, 1.0)
+
+@abstract func select()
+@abstract func deselect()
+
+@export var gizmo: Gizmo:
+	set(v):
+		gizmo = v
+		var all_children := find_children("GizmoControllable")
+		for c in all_children:
+			c.gizmo = gizmo
+		gizmo_set.emit(gizmo)
+
+signal gizmo_set(gizmo : Gizmo)
+
+func select_pose():
+	pass
+
+func select_tangent():
+	pass
+
+@abstract func right_clicked_empty(pressed : bool)
+
+func to_resource():
+	pass

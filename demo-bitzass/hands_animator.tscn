@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://btx61h3olllvr"]
+
+[ext_resource type="Script" uid="uid://g2c77qac1psa" path="res://hands_animator.gd" id="1_k435q"]
+[ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="3_0fnop"]
+[ext_resource type="Script" uid="uid://dotx4kxu4bpob" path="res://stretcher.gd" id="3_awd5n"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0fnop"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_owsej"]
+sky_material = SubResource("ProceduralSkyMaterial_0fnop")
+
+[sub_resource type="Environment" id="Environment_qodlf"]
+background_mode = 2
+sky = SubResource("Sky_owsej")
+tonemap_mode = 2
+
+[sub_resource type="TorusMesh" id="TorusMesh_0fnop"]
+inner_radius = 0.07
+outer_radius = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_awd5n"]
+resource_local_to_scene = true
+render_priority = 2
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0, 0.2784314, 1, 0.30588236)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_qodlf"]
+radius = 0.02
+height = 0.1
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_awd5n"]
+radius = 0.05
+height = 0.93934774
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_0fnop"]
+radius = 0.05
+height = 1.0
+
+[node name="HandsAnimator" type="Node3D" unique_id=863480283 node_paths=PackedStringArray("pose_fk_gizmoables", "pose_mesh_instance", "up_arm_pose", "low_arm_pose", "hand_pose", "chest", "shoulder_pose")]
+script = ExtResource("1_k435q")
+pose_fk_gizmoables = [NodePath("Chest/ShoulderPose/UpArmPose/GizmoControllable"), NodePath("Chest/ShoulderPose/UpArmPose/LowArmPose/GizmoControllable"), NodePath("Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose/GizmoControllable")]
+pose_mesh_instance = NodePath("Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose/MeshInstance3D")
+up_arm_pose = NodePath("Chest/ShoulderPose/UpArmPose")
+low_arm_pose = NodePath("Chest/ShoulderPose/UpArmPose/LowArmPose")
+hand_pose = NodePath("Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose")
+chest = NodePath("Chest")
+shoulder_pose = NodePath("Chest/ShoulderPose")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=681344872]
+environment = SubResource("Environment_qodlf")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1967726552]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Chest" type="Marker3D" parent="." unique_id=205943381]
+
+[node name="ShoulderPose" type="Marker3D" parent="Chest" unique_id=2073563960]
+
+[node name="UpArmPose" type="Marker3D" parent="Chest/ShoulderPose" unique_id=1562713463]
+
+[node name="GizmoControllable" type="Node" parent="Chest/ShoulderPose/UpArmPose" unique_id=1570750812]
+script = ExtResource("3_0fnop")
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="LowArmPose" type="Marker3D" parent="Chest/ShoulderPose/UpArmPose" unique_id=1575587332]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+
+[node name="GizmoControllable" type="Node" parent="Chest/ShoulderPose/UpArmPose/LowArmPose" unique_id=1017093210]
+script = ExtResource("3_0fnop")
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="HandPose" type="Marker3D" parent="Chest/ShoulderPose/UpArmPose/LowArmPose" unique_id=1116649783]
+transform = Transform3D(-0.012129769, -0.99992645, 0, 0.99992645, -0.012129769, 0, 0, 0, 1, -0.93934774, 0, 0)
+
+[node name="GizmoControllable" type="Node" parent="Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose" unique_id=1264947819]
+script = ExtResource("3_0fnop")
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose" unique_id=13545574]
+transform = Transform3D(-4.377216e-08, 1, 0, -1, -4.377216e-08, 0, 0, 0, 1, -0.0019946676, 0.0912596, 0)
+mesh = SubResource("TorusMesh_0fnop")
+surface_material_override/0 = SubResource("StandardMaterial3D_awd5n")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose/MeshInstance3D" unique_id=1567363416]
+transform = Transform3D(1, -2.220446e-16, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.1203534)
+mesh = SubResource("CapsuleMesh_qodlf")
+surface_material_override/0 = SubResource("StandardMaterial3D_awd5n")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose/MeshInstance3D" unique_id=437751842]
+transform = Transform3D(-0.047768943, -0.9988584, 4.377216e-08, 0, -4.377216e-08, -1, 0.9988584, -0.047768928, 2.0880462e-09, -0.11274195, -0.004143292, -0.012828469)
+mesh = SubResource("CapsuleMesh_qodlf")
+surface_material_override/0 = SubResource("StandardMaterial3D_awd5n")
+
+[node name="Stretcher" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose/LowArmPose" unique_id=1438125130 node_paths=PackedStringArray("start_stretch", "end_stretch")]
+transform = Transform3D(0, -1, 0, -1, 0, 0, 0, 0, -1, -1.4696739, 0, 0)
+top_level = true
+mesh = SubResource("CapsuleMesh_awd5n")
+surface_material_override/0 = SubResource("StandardMaterial3D_awd5n")
+script = ExtResource("3_awd5n")
+start_stretch = NodePath("..")
+end_stretch = NodePath("../HandPose")
+metadata/_custom_type_script = "uid://dotx4kxu4bpob"
+
+[node name="Stretcher" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose" unique_id=532342106 node_paths=PackedStringArray("start_stretch", "end_stretch")]
+transform = Transform3D(0, -1, 0, -1, 0, 0, 0, 0, -1, -0.5, 0, 0)
+top_level = true
+mesh = SubResource("CapsuleMesh_0fnop")
+surface_material_override/0 = SubResource("StandardMaterial3D_awd5n")
+script = ExtResource("3_awd5n")
+start_stretch = NodePath("..")
+end_stretch = NodePath("../LowArmPose")
+metadata/_custom_type_script = "uid://dotx4kxu4bpob"

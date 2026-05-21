@@ -1,0 +1,85 @@
+[gd_scene format=3 uid="uid://bdycqd26e0wa5"]
+
+[ext_resource type="Script" uid="uid://b53587p7i5d8h" path="res://ik_interp_static.gd" id="1_b550i"]
+[ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="3_jni65"]
+[ext_resource type="PackedScene" uid="uid://cgwnew2a2dmj" path="res://gizmo.tscn" id="4_svtro"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jni65"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_svtro"]
+sky_material = SubResource("ProceduralSkyMaterial_jni65")
+
+[sub_resource type="Environment" id="Environment_ooew2"]
+background_mode = 2
+sky = SubResource("Sky_svtro")
+tonemap_mode = 2
+
+[node name="IkInterpScene" type="Node3D" unique_id=11063401]
+script = ExtResource("1_b550i")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=877974020]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1112409654]
+environment = SubResource("Environment_ooew2")
+
+[node name="StartFoot" type="Node3D" parent="." unique_id=914179709]
+
+[node name="GizmoControllable" type="Node" parent="StartFoot" unique_id=1246252690]
+script = ExtResource("3_jni65")
+grabbable = true
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="StartHip" type="Node3D" parent="." unique_id=334914731]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+
+[node name="GizmoControllable" type="Node" parent="StartHip" unique_id=1262467802]
+script = ExtResource("3_jni65")
+grabbable = true
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="EndFoot" type="Node3D" parent="." unique_id=1024897333]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+
+[node name="GizmoControllable" type="Node" parent="EndFoot" unique_id=2107333685]
+script = ExtResource("3_jni65")
+grabbable = true
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="EndHip" type="Node3D" parent="." unique_id=2133740845]
+transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0.4, 0)
+
+[node name="GizmoControllable" type="Node" parent="EndHip" unique_id=1024840830]
+script = ExtResource("3_jni65")
+grabbable = true
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="Gizmo" parent="." unique_id=1587937112 node_paths=PackedStringArray("axis_meshes") instance=ExtResource("4_svtro")]
+unique_name_in_owner = true
+visible = false
+axis_meshes = {
+0: NodePath("XRotMesh"),
+1: NodePath("Scaler/YRotMesh"),
+2: NodePath("Scaler/ZRotMesh"),
+3: NodePath("Scaler/XPlane/XPlaneCube"),
+4: NodePath("Scaler/YPlane/YPlaneCube"),
+5: NodePath("Scaler/ZPlane/ZPlaneCube"),
+6: NodePath("Scaler/SuperMesh")
+}
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1599343276]
+
+[node name="HScrollBar" type="HScrollBar" parent="CanvasLayer" unique_id=1348431899]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -262.0
+offset_top = 9.0
+offset_right = -12.0
+offset_bottom = 42.0
+grow_horizontal = 0
+max_value = 1.0
+step = 0.01

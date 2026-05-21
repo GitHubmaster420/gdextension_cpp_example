@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://b4cfddea3ardy"]
+
+[ext_resource type="Script" uid="uid://bdmo23e6ivrh4" path="res://anim_track_holder.gd" id="1_odhtm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3rrt7"]
+
+[node name="AnimTackHolder" type="ColorRect" unique_id=2019306060 node_paths=PackedStringArray("current_time_label")]
+z_index = 100
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.01
+anchor_right = 0.5
+anchor_bottom = 0.01
+offset_left = -350.0
+offset_top = -6.48
+offset_right = 350.0
+offset_bottom = 13.52
+grow_horizontal = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+size_flags_horizontal = 3
+color = Color(0.54, 0.54, 0.54, 0.88235295)
+script = ExtResource("1_odhtm")
+current_time_label = NodePath("CurrentTime")
+metadata/_custom_type_script = "uid://bdmo23e6ivrh4"
+
+[node name="CurrentTime" type="ColorRect" parent="." unique_id=616845878]
+material = SubResource("ShaderMaterial_3rrt7")
+layout_mode = 0
+offset_right = 6.0
+offset_bottom = 20.0
+color = Color(0.25, 0, 1, 1)
