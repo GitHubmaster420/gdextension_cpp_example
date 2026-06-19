@@ -9,6 +9,20 @@ const NEXT_TANGENT_COLOR := Color(0.0, 0.755, 0.557, 1.0)
 @abstract func select()
 @abstract func deselect()
 
+signal interp_mode_changed(interp_mode, animator : Animator)
+
+signal set_next_keyframe
+signal set_prev_keyframe
+
+@export var is_prev_keyframe := false:
+	set(v):
+		is_prev_keyframe = v
+		set_prev_keyframe.emit()
+@export var is_next_keyframe := false:
+	set(v):
+		is_next_keyframe = v
+		set_next_keyframe.emit()
+
 @export var gizmo: Gizmo:
 	set(v):
 		gizmo = v
@@ -16,6 +30,8 @@ const NEXT_TANGENT_COLOR := Color(0.0, 0.755, 0.557, 1.0)
 		for c in all_children:
 			c.gizmo = gizmo
 		gizmo_set.emit(gizmo)
+
+@export var interp_mode_pie_menu : MousePieMenu
 
 signal gizmo_set(gizmo : Gizmo)
 

@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dsg806rn3xxr6"]
+
+[ext_resource type="Shader" uid="uid://dq0jydjucyrgq" path="res://half_circle.gdshader" id="1_mas3m"]
+[ext_resource type="Script" uid="uid://tdo6mw1i3j86" path="res://angle_menu.gd" id="2_flrib"]
+[ext_resource type="Material" uid="uid://u33r8y3smd66" path="res://materials/circle_shader.tres" id="3_bc1jg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flrib"]
+shader = ExtResource("1_mas3m")
+
+[node name="AngleMenu" type="ColorRect" unique_id=251652951 node_paths=PackedStringArray("circle")]
+material = SubResource("ShaderMaterial_flrib")
+offset_right = 200.0
+offset_bottom = 400.0
+color = Color(1, 1, 1, 0.38039216)
+script = ExtResource("2_flrib")
+radius = 200.0
+circle = NodePath("Circle")
+angle = 108.414
+
+[node name="Circle" type="ColorRect" parent="." unique_id=852328050]
+material = ExtResource("3_bc1jg")
+layout_mode = 0
+offset_left = 169.7597
+offset_top = 243.17627
+offset_right = 209.75983
+offset_bottom = 283.1761

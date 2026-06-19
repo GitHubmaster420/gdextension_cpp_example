@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cqyg1phak56o2"]
+
+[ext_resource type="Script" uid="uid://burp1regbq6js" path="res://cubic_curve_drawer.gd" id="1_ior24"]
+
+[node name="CubicCurveDrawer" type="ColorRect" unique_id=34381549]
+offset_right = 100.0
+offset_bottom = 100.0
+color = Color(0, 0.20645604, 0.032257278, 1)
+script = ExtResource("1_ior24")

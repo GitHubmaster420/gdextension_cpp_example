@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://tid2he4qj3pp"]
+
+[ext_resource type="Script" uid="uid://cxlerm2q4l3gl" path="res://clamped_bezier_editor.gd" id="1_tv6wr"]
+[ext_resource type="Script" uid="uid://bv77hkt6w8s8q" path="res://resources/clamped_cubic_bezier.gd" id="2_to8jx"]
+[ext_resource type="Material" uid="uid://u33r8y3smd66" path="res://materials/circle_shader.tres" id="3_cj44q"]
+[ext_resource type="Script" uid="uid://bd11jlebd404k" path="res://bezier_tangent.gd" id="4_8bv1d"]
+
+[sub_resource type="Resource" id="Resource_cj44q"]
+resource_local_to_scene = true
+script = ExtResource("2_to8jx")
+metadata/_custom_type_script = "uid://bv77hkt6w8s8q"
+
+[node name="ClampedBezierEditor" type="ColorRect" unique_id=137465780 node_paths=PackedStringArray("line_2d", "bezier_tangent", "bezier_tangent_2")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.36, 0.36, 0.36, 0.19607843)
+script = ExtResource("1_tv6wr")
+clamped_bezier = SubResource("Resource_cj44q")
+line_2d = NodePath("Line2D")
+bezier_tangent = NodePath("BezierTangent")
+bezier_tangent_2 = NodePath("BezierTangent2")
+
+[node name="Line2D" type="Line2D" parent="." unique_id=896499239]
+
+[node name="BezierTangent" type="ColorRect" parent="." unique_id=1539818893]
+material = ExtResource("3_cj44q")
+layout_mode = 0
+offset_left = 12.0
+offset_top = 64.0
+offset_right = 27.0
+offset_bottom = 79.0
+color = Color(1, 0, 0.016666412, 1)
+script = ExtResource("4_8bv1d")
+
+[node name="BezierTangent2" type="ColorRect" parent="." unique_id=1522644613]
+material = ExtResource("3_cj44q")
+layout_mode = 0
+offset_left = 61.0
+offset_top = 15.0
+offset_right = 76.0
+offset_bottom = 30.0
+color = Color(0.2, 1, 0, 1)
+script = ExtResource("4_8bv1d")
+metadata/_custom_type_script = "uid://bd11jlebd404k"

@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://c6xt015di6mt3"]
+
+[ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="1_1burt"]
+[ext_resource type="Script" uid="uid://360fc2rs4rsx" path="res://grounded_foot.gd" id="1_vupnm"]
+[ext_resource type="PackedScene" uid="uid://bwh06h8tepliy" path="res://scenes/RightFoot.glb" id="2_p533l"]
+
+[node name="FootControllerScene" type="Node3D" unique_id=562095217]
+
+[node name="ToePivot" type="Marker3D" parent="." unique_id=2034396129]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1272509)
+
+[node name="GizmoControllable" type="Node" parent="ToePivot" unique_id=659593134 node_paths=PackedStringArray("gizmo")]
+script = ExtResource("1_1burt")
+grabbable = true
+gizmo = NodePath("")
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="HeelPivot" type="Marker3D" parent="." unique_id=1036972501]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.03261812)
+
+[node name="GizmoControllable" type="Node" parent="HeelPivot" unique_id=860137999]
+script = ExtResource("1_1burt")
+grabbable = true
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="GroundedFoot" type="Marker3D" parent="." unique_id=12561949 node_paths=PackedStringArray("ankle", "toe_pivot", "heel_pivot")]
+visible = false
+script = ExtResource("1_vupnm")
+ankle = NodePath("Ankle")
+toe_pivot = NodePath("../ToePivot")
+heel_pivot = NodePath("../HeelPivot")
+
+[node name="RightFoot" parent="GroundedFoot" unique_id=1865453928 instance=ExtResource("2_p533l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.089848645, 0)
+
+[node name="Ankle" type="Marker3D" parent="GroundedFoot" unique_id=1853277445]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.089848645, 0)

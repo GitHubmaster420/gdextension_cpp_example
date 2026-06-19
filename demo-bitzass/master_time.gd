@@ -20,7 +20,7 @@ var time := 0.0:
 				continue
 			holder.time = time
 
-@export var max_time := 10.0:
+@export var max_time := 2.0:
 	set(v):
 		max_time = snappedf(v, 1.0/30.0)
 		if not is_node_ready():
@@ -32,28 +32,33 @@ var time := 0.0:
 @export var anim_track_holders : Array[AnimTrackHolder]
 var current_anim_track_holder : AnimTrackHolder:
 	set(v):
+		for h in anim_track_holders:
+			h.playing = false
+			h.visible = true
+			h.visible = false
 		if current_anim_track_holder == v:
 			return
 		if current_anim_track_holder:
-			current_anim_track_holder.playing = false
-			current_anim_track_holder.visible = false
 			current_anim_track_holder.time_changed.disconnect(on_main_time_changed)
+		
 		current_anim_track_holder = v
 		if not current_anim_track_holder:
 			visible = true
 			return
+		current_anim_track_holder.mouse_filter = Control.MOUSE_FILTER_STOP
 		playing = false
 		current_anim_track_holder.time_changed.connect(on_main_time_changed)
 		current_anim_track_holder.visible = true
 		visible = false
 
 func _ready() -> void:
-	max_time_input.placeholder_text = str(max_time)
+	max_time_input.text = str(max_time)
 	max_time_input.text_submitted.connect(func(new : String):
 		if not new.is_valid_float():
 			return
 		max_time = float(new)
 		)
+	max_time = max_time
 
 func on_main_time_changed(_time : float):
 	time = _time
@@ -65,6 +70,13 @@ func _gui_input(event: InputEvent) -> void:
 				timeline_selected = true
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.keycode == KEY_SHIFT and event.pressed:
+			visible = true
+			current_anim_track_holder = null
+			for h in anim_track_holders:
+				h.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				h.visible = true
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 			timeline_selected = false

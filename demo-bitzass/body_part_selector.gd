@@ -14,6 +14,7 @@ extends ColorRect
 		if not is_node_ready():
 			return
 		if not selected_child:
+
 			master_time.current_anim_track_holder = null
 			gizmo.controllable = null
 			return

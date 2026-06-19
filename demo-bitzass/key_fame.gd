@@ -11,6 +11,7 @@ var hovered := false
 func _ready() -> void:
 	rotation = deg_to_rad(45)
 	size = Vector2.ONE * 10
+	z_index = 300
 
 signal clicked(was_clicked : bool)
 

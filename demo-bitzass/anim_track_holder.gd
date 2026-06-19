@@ -2,6 +2,11 @@
 extends ColorRect
 class_name AnimTrackHolder
 
+var visible_before_shift : bool
+
+var lasso_selected := false
+@export var lasso : Lasso
+
 @export var is_right := true
 
 var playing := false
@@ -21,6 +26,8 @@ signal time_changed(t : float)
 @export var current_time_label: ColorRect
 
 @export var keyframes : Array[Keyframe]
+
+var lasso_selected_keyframes : Array[Keyframe]
 
 var hovered_key : Keyframe
 var selected_key : Keyframe
@@ -43,9 +50,11 @@ var prev_key : Keyframe:
 		if prev_key:
 			if prev_key != next_key:
 				prev_key.animator.visible = false
+			prev_key.animator.is_prev_keyframe = false
 		prev_key = v
 		if not prev_key: return
 		prev_key.animator.visible = true
+		prev_key.animator.is_prev_keyframe = true
 		if prev_key.animator is not FootAnimator:
 			return
 		var stored := (prev_key.animator as FootAnimator).pose_material.albedo_color.a
@@ -61,8 +70,11 @@ var next_key : Keyframe:
 		if next_key:
 			if next_key != prev_key:
 				next_key.animator.visible = false
+			prev_key.animator.is_next_keyframe = false
 		next_key = v
 		if not next_key: return
+		next_key.animator.visible = true
+		next_key.animator.is_next_keyframe = true
 		if next_key.animator is not FootAnimator:
 			return
 		var stored := (next_key.animator as FootAnimator).pose_material.albedo_color.a
@@ -71,7 +83,7 @@ var next_key : Keyframe:
 		(next_key.animator as FootAnimator).pose_material.albedo_color.a = stored
 		(next_key.animator as FootAnimator).tangent_material.albedo_color.a = stored
 	
-		next_key.animator.visible = true
+		
 
 @export_range(0.0, 10.0) var max_time : float = 10:
 	set(v):
@@ -89,6 +101,7 @@ var mouse_pressed := false
 
 var timeline_selected := false
 
+
 var hovered := false:
 	set(v):
 		hovered = v
@@ -105,7 +118,36 @@ var next_toggle := false:
 		else:
 			edited_key = prev_key
 
+func get_next_and_prev_keyframes_indices(t : float) -> Array[int]:
+	if keyframes.size() == 0:
+		return[-1, -1]
+	if keyframes.size() == 1:
+		return[0, 0]
+	if t > keyframes[-1].time:
+		var s := keyframes.size()
+		return [s - 1, s - 1]
+	if t < keyframes[0].time:
+		return [0, 0]
+	var idx_2 := 1
+	
+	while t > keyframes[idx_2].time:
+		idx_2 += 1
+		if idx_2 >= keyframes.size() - 1:
+			break
+	return [idx_2 - 1, idx_2]
+
+func on_lassoed():
+	lasso_selected_keyframes = []
+	var left := lasso.left_pos
+	var right := lasso.right_pos
+	
+	for k in keyframes:
+		if k.global_position.x > left and k.global_position.x < right:
+			k.color = Color.GREEN
+			lasso_selected_keyframes.append(k)
+
 func _ready() -> void:
+	lasso.lassoed.connect(on_lassoed)
 	max_time = max_time
 	z_index = 100
 	mouse_entered.connect(func(): hovered = true)
@@ -126,9 +168,24 @@ func _ready() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed:
+			
 			if event.button_index == MOUSE_BUTTON_RIGHT:
+				if event.shift_pressed:
+					lasso_selected = true
+					return
 				var mouse_pos : Vector2 = event.position
-				add_keyframe(mouse_pos)
+				
+				var mouse_x := mouse_pos.x
+				
+				var clicked_time := remap(mouse_x, 0, size.x, 0, max_time)
+				
+				var prev_keyframe_idx := get_next_and_prev_keyframes_indices(clicked_time)[0]
+				if prev_keyframe_idx == -1:
+					return
+				keyframes[prev_keyframe_idx].animator.interp_mode_pie_menu.visible = true
+				
+				#add_keyframe(mouse_pos)
+				pass
 			elif event.button_index == MOUSE_BUTTON_LEFT:
 				mouse_pressed = true
 				if hovered and not hovered_key:
@@ -138,6 +195,33 @@ func _gui_input(event: InputEvent) -> void:
 			mouse_pressed = false
 			selected_key = null
 				
+
+func paste_keyframe(kf : Keyframe):
+	add_child(kf)
+	var new_key := kf
+	keyframes.append(new_key)
+	if empty_canvas:
+		empty_canvas.right_clicked.connect(new_key.animator.right_clicked_empty)
+	var mouse_pos := remap(snapped(kf.time, 1.0/30.0), 0, max_time, 0, size.x)
+	kf.position.x = mouse_pos
+	new_key.mouse_entered.connect((func(key : Keyframe):
+		hovered_key = key
+		key.color = Color.YELLOW
+		key.hovered = true
+		).bind(new_key))
+	new_key.mouse_exited.connect((func(key : Keyframe):
+		if key == hovered_key:
+			hovered_key = null
+			key.color = Color.WHITE
+			key.hovered = false
+			).bind(new_key))
+	new_key.clicked.connect((func(was_clicked : bool, key : Keyframe):
+		if was_clicked:
+			selected_key = key
+		elif selected_key == key:
+			selected_key = null
+		).bind(new_key))
+	keyframe_added.emit(new_key)
 
 func add_keyframe(mouse_pos : Vector2):
 	var new_key := Keyframe.new()
@@ -171,23 +255,39 @@ func add_keyframe(mouse_pos : Vector2):
 	if not selected_key:
 		selected_key = new_key
 	on_selected_key_moved()
-	if not edited_key:
-		edited_key = next_key
+	selected_key = null
+	edited_key = new_key
 	keyframe_added.emit(new_key)
-	
 
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if event.keycode == KEY_K and event.pressed:
+			add_keyframe(current_time_label.position)
+		if event.keycode == KEY_SHIFT:
+			
+			if event.pressed:
+				visible_before_shift = visible
+				visible = true
+				#else:
+					#visible = visible_before_shift
+
+			
 	if not visible:
 		return
+	if event is InputEventKey:
+		if event.keycode == KEY_I and event.pressed:
+			add_keyframe(current_time_label.position)
 	if event is InputEventKey:
 		if event.pressed:
 			if event.keycode == KEY_W:
 				next_toggle = not next_toggle
 			if event.keycode == KEY_SPACE:
 				playing = not playing
-
-
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			if not event.pressed:
+				lasso_selected = false
 	
 
 func _process(delta: float) -> void:

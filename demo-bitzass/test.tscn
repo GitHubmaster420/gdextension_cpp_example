@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c4an27spm0lh8"]
+
+[ext_resource type="PackedScene" uid="uid://dsg806rn3xxr6" path="res://angle_menu.tscn" id="1_37kl0"]
+
+[node name="Test" type="Node2D" unique_id=1697738399]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1176370305]
+
+[node name="AngleMenu" parent="." unique_id=251652951 instance=ExtResource("1_37kl0")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -200.0
+offset_right = 100.0
+offset_bottom = 200.0
+default_angle = null

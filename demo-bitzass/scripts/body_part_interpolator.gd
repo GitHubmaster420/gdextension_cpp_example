@@ -44,22 +44,7 @@ func get_t_from_keyframes(time : float, k1 := prev_keyframe, k2 := next_keyframe
 
 
 func get_next_and_prev_keyframes_indices(t : float) -> Array[int]:
-	if anim_track_holder.keyframes.size() == 0:
-		return[-1, -1]
-	if anim_track_holder.keyframes.size() == 1:
-		return[0, 0]
-	if t > anim_track_holder.keyframes[-1].time:
-		var s := anim_track_holder.keyframes.size()
-		return [s - 2, s - 1]
-	if t < anim_track_holder.keyframes[0].time:
-		return [0, 1]
-	var idx_2 := 1
-	
-	while t > anim_track_holder.keyframes[idx_2].time:
-		idx_2 += 1
-		if idx_2 >= anim_track_holder.keyframes.size() - 1:
-			break
-	return [idx_2 - 1, idx_2]
+	return anim_track_holder.get_next_and_prev_keyframes_indices(t)
 
 func on_time_changed(t : float):
 	current_time = t

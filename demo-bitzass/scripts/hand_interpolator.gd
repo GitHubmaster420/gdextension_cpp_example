@@ -117,7 +117,7 @@ func on_keyframe_added(key : Keyframe):
 	var low_arm_tr := get_skeleton().get_bone_global_pose(low_arm_idx)
 	var hand_tr := get_skeleton().get_bone_global_pose(hand_idx)
 	
-	var chest_tr := get_skeleton().get_bone_global_rest(chest_idx)
+	var chest_tr := get_skeleton().get_bone_global_pose(chest_idx)
 	animator.chest.global_transform = chest_tr
 	
 	animator.shoulder_pose.global_transform = shoulder_tr

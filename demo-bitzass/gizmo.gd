@@ -3,6 +3,9 @@ class_name Gizmo
 
 var selected_axis : int = -1
 
+signal pressed
+signal released
+
 var start_grab_axis_pos := -Vector3.INF
 var start_grab_plane_pos := -Vector3.INF
 var start_rot_vector := -Vector3.INF
@@ -83,6 +86,8 @@ var grabbable := true:
 		global_transform = controllable.control_node.global_transform
 		grabbable = controllable.grabbable
 
+signal mode_set(_mode : Mode)
+
 var mode : Mode:
 	set(v):
 		mode = v
@@ -109,6 +114,7 @@ var mode : Mode:
 					mesh.visible = true
 				for coll : CollisionShape3D in rot_collisions:
 					coll.disabled = not true
+		mode_set.emit(mode)
 
 func _ready() -> void:
 	x_body.input_ray_pickable = true
@@ -173,6 +179,8 @@ func gizmo_clicked(camera: Node, event: InputEvent, event_position: Vector3, nor
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				selected_axis = axis
+				if selected_axis != -1:
+					pressed.emit()
 				print("gizmo clicked, axis: ", axis)
 
 func _input(event: InputEvent) -> void:
@@ -180,6 +188,7 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.is_released():
 				if selected_axis != -1:
+					released.emit()
 					var stored := selected_axis
 					selected_axis = -1
 					if not hovered[stored]:

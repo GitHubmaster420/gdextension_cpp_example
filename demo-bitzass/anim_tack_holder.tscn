@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b4cfddea3ardy"]
 
 [ext_resource type="Script" uid="uid://bdmo23e6ivrh4" path="res://anim_track_holder.gd" id="1_odhtm"]
+[ext_resource type="PackedScene" uid="uid://blxr0sbw30u85" path="res://foot_animator.tscn" id="2_w13kg"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3rrt7"]
 
@@ -21,6 +22,7 @@ size_flags_horizontal = 3
 color = Color(0.54, 0.54, 0.54, 0.88235295)
 script = ExtResource("1_odhtm")
 current_time_label = NodePath("CurrentTime")
+animator = ExtResource("2_w13kg")
 metadata/_custom_type_script = "uid://bdmo23e6ivrh4"
 
 [node name="CurrentTime" type="ColorRect" parent="." unique_id=616845878]

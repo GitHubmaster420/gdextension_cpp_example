@@ -4,9 +4,19 @@
 [ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="2_gwl0u"]
 [ext_resource type="Script" uid="uid://dotx4kxu4bpob" path="res://stretcher.gd" id="3_ddgo6"]
 [ext_resource type="Shader" uid="uid://8dnrg5ks4kal" path="res://materials/pie_menu.gdshader" id="4_ddgo6"]
+[ext_resource type="PackedScene" uid="uid://dsg806rn3xxr6" path="res://angle_menu.tscn" id="4_uglq4"]
 [ext_resource type="Script" uid="uid://d1pq500b0t0ae" path="res://mouse_pie_menu.gd" id="5_h0gvp"]
 [ext_resource type="Script" uid="uid://br1yvxc886yox" path="res://pose_fk_ik.gd" id="6_sfyrg"]
 [ext_resource type="Script" uid="uid://b71um354aoacu" path="res://tangent_fk_ik.gd" id="7_t76mn"]
+[ext_resource type="Script" uid="uid://crk1wsfh5lky0" path="res://GroundedModeOnOff.gd" id="8_dbjyx"]
+[ext_resource type="PackedScene" uid="uid://c6xt015di6mt3" path="res://foot_controller_scene.tscn" id="8_t76mn"]
+[ext_resource type="Script" uid="uid://4uw2egdy834n" path="res://curve_editor_label.gd" id="10_16p6a"]
+[ext_resource type="Script" uid="uid://da2404d57emic" path="res://fk_slerp_selector.gd" id="10_y63xt"]
+[ext_resource type="Script" uid="uid://ued8m1fi38r8" path="res://ik_lerp_selector.gd" id="11_x1eba"]
+[ext_resource type="Script" uid="uid://c8nk6l1aa4g6x" path="res://foot_constant_selector.gd" id="12_ai6gc"]
+[ext_resource type="Script" uid="uid://373h65y0mns7" path="res://fk_hermite_selector.gd" id="14_fielv"]
+[ext_resource type="Script" uid="uid://burp1regbq6js" path="res://cubic_curve_drawer.gd" id="15_wwjn6"]
+[ext_resource type="Script" uid="uid://cwptp2cj7lb8y" path="res://curve_setter.gd" id="17_16p6a"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xmolm"]
 resource_name = "Material.002"
@@ -56,11 +66,11 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(0, 0.49, 0.23683335, 0.29411766)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_sfyrg"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_16p6a"]
 radius = 0.05
 height = 0.3548724
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_t76mn"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_hmbkd"]
 radius = 0.05
 height = 0.3280343
 
@@ -73,136 +83,265 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0.48433334, 0.089999974, 0.29411766)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_dbjyx"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_5ufbc"]
 radius = 0.05
-height = 0.3259083
+height = 0.32590827
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_y63xt"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_imthv"]
 radius = 0.05
 height = 0.3227681
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dbjyx"]
 resource_local_to_scene = true
 shader = ExtResource("4_ddgo6")
-shader_parameter/chunks = 2
-shader_parameter/selected_chunk = 1
+shader_parameter/chunks = 4
+shader_parameter/selected_chunk = 3
 shader_parameter/selected_color = Color(0.9794051, 0.979405, 0.979405, 1)
 shader_parameter/unselected_color = Color(0.64113474, 0.00063503714, 0.70692146, 1)
 
-[node name="FootAnimator" type="Node3D" unique_id=1245429443 node_paths=PackedStringArray("foot_meshes", "pie_menu", "pose_mesh", "tangent_mesh", "thigh_pose", "shin_pose", "foot_pose", "thigh_tangent", "shin_tangent", "foot_tangent", "pose_fk_gizmoables", "tangent_fk_gizmoables", "pose_mode_ik_gizmoables", "tangent_mode_ik_gizmoables", "foot_ik_pose", "foot_ik_tangent", "foot_ik_pose_roll", "foot_ik_tangent_roll")]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y63xt"]
+shader = ExtResource("4_ddgo6")
+shader_parameter/chunks = 4
+shader_parameter/selected_chunk = 0
+shader_parameter/selected_color = Color(0.22082016, 0.79212224, 1.1551381e-06, 1)
+shader_parameter/unselected_color = Color(0.8025331, 0, 0.32237247, 1)
+
+[node name="FootAnimator" type="Node3D" unique_id=1245429443 node_paths=PackedStringArray("grounded_foot", "foot_meshes", "pie_menu", "pose_mesh", "tangent_mesh", "pelvis", "thigh_pose", "shin_pose", "foot_pose", "thigh_tangent", "shin_tangent", "foot_tangent", "thigh_tangent_prev_angle_menu", "thigh_tangent_next_angle_menu", "shin_tangent_prev_angle_menu", "shin_tangent_next_angle_menu", "foot_tangent_prev_angle_menu", "foot_tangent_next_angle_menu", "thigh_angular_velocity_setter", "shin_angular_velocity_setter", "foot_angular_velocity_setter", "pose_fk_gizmoables", "tangent_fk_gizmoables", "pose_mode_ik_gizmoables", "tangent_mode_ik_gizmoables", "foot_ik_pose", "foot_ik_tangent", "foot_ik_pose_roll", "foot_ik_tangent_roll", "interp_mode_pie_menu")]
 script = ExtResource("1_8duu2")
-foot_meshes = [NodePath("ThighPose/ShinPose/FootPose/RightFoot/Plane_002"), NodePath("ThighTangent/ShinTangent/FootTangent/RightFoot/Plane_002")]
+grounded_foot = NodePath("FootControllerScene/GroundedFoot")
+foot_meshes = [NodePath("Pelvis/ThighPose/ShinPose/FootPose/RightFoot/Plane_002"), NodePath("Pelvis/ThighTangent/ShinTangent/FootTangent/RightFoot/Plane_002")]
 pie_menu = NodePath("MousePieMenu")
-pose_mesh = NodePath("ThighPose/ShinPose/FootPose/RightFoot/Plane_002")
-tangent_mesh = NodePath("ThighTangent/ShinTangent/FootTangent/RightFoot/Plane_002")
-thigh_pose = NodePath("ThighPose")
-shin_pose = NodePath("ThighPose/ShinPose")
-foot_pose = NodePath("ThighPose/ShinPose/FootPose")
-thigh_tangent = NodePath("ThighTangent")
-shin_tangent = NodePath("ThighTangent/ShinTangent")
-foot_tangent = NodePath("ThighTangent/ShinTangent/FootTangent")
-pose_fk_gizmoables = [NodePath("ThighPose/GizmoControllable"), NodePath("ThighPose/ShinPose/GizmoControllable"), NodePath("ThighPose/ShinPose/FootPose/GizmoControllable")]
-tangent_fk_gizmoables = [NodePath("ThighTangent/GizmoControllable"), NodePath("ThighTangent/ShinTangent/GizmoControllable"), NodePath("ThighTangent/ShinTangent/FootTangent/GizmoControllable")]
+pose_mesh = NodePath("Pelvis/ThighPose/ShinPose/FootPose/RightFoot/Plane_002")
+tangent_mesh = NodePath("Pelvis/ThighTangent/ShinTangent/FootTangent/RightFoot/Plane_002")
+pelvis = NodePath("Pelvis")
+thigh_pose = NodePath("Pelvis/ThighPose")
+shin_pose = NodePath("Pelvis/ThighPose/ShinPose")
+foot_pose = NodePath("Pelvis/ThighPose/ShinPose/FootPose")
+thigh_tangent = NodePath("Pelvis/ThighTangent")
+shin_tangent = NodePath("Pelvis/ThighTangent/ShinTangent")
+foot_tangent = NodePath("Pelvis/ThighTangent/ShinTangent/FootTangent")
+thigh_tangent_prev_angle_menu = NodePath("Pelvis/ThighTangent/ThighTangentPrevAngleMenu")
+thigh_tangent_next_angle_menu = NodePath("Pelvis/ThighTangent/ThighTangentNextAngleMenu")
+shin_tangent_prev_angle_menu = NodePath("Pelvis/ThighTangent/ShinTangent/ShinTangentPrevAngleMenu")
+shin_tangent_next_angle_menu = NodePath("Pelvis/ThighTangent/ShinTangent/ShinTangentNextAngleMenu")
+foot_tangent_prev_angle_menu = NodePath("Pelvis/ThighTangent/ShinTangent/FootTangent/FootTangentPrevAngleMenu")
+foot_tangent_next_angle_menu = NodePath("Pelvis/ThighTangent/ShinTangent/FootTangent/FootTangentNextAngleMenu")
+thigh_angular_velocity_setter = NodePath("Pelvis/ThighTangent/ThighAngularVelocitySetter")
+shin_angular_velocity_setter = NodePath("Pelvis/ThighTangent/ShinTangent/ShinAngularVelocitySetter")
+foot_angular_velocity_setter = NodePath("Pelvis/ThighTangent/ShinTangent/FootTangent/FootAngularVelocitySetter")
+pose_fk_gizmoables = [NodePath("Pelvis/ThighPose/GizmoControllable"), NodePath("Pelvis/ThighPose/ShinPose/GizmoControllable"), NodePath("Pelvis/ThighPose/ShinPose/FootPose/GizmoControllable")]
+tangent_fk_gizmoables = [NodePath("Pelvis/ThighTangent/GizmoControllable"), NodePath("Pelvis/ThighTangent/ShinTangent/GizmoControllable"), NodePath("Pelvis/ThighTangent/ShinTangent/FootTangent/GizmoControllable")]
 pose_mode_ik_gizmoables = [NodePath("FootIkPoseRoll/GizmoControllable"), NodePath("FootIkPose/GizmoControllable")]
 tangent_mode_ik_gizmoables = [NodePath("FootIkTangentRoll/GizmoControllable"), NodePath("FootIkTangent/GizmoControllable")]
 foot_ik_pose = NodePath("FootIkPose")
 foot_ik_tangent = NodePath("FootIkTangent")
 foot_ik_pose_roll = NodePath("FootIkPoseRoll")
 foot_ik_tangent_roll = NodePath("FootIkTangentRoll")
+interp_mode_pie_menu = NodePath("InterpSelectorPieMenu")
 
-[node name="ThighPose" type="Marker3D" parent="." unique_id=178447307]
-transform = Transform3D(1, 0, 0, 0, -0.9998205, 0.018953115, 0, -0.018953115, -0.99982035, 0, 0.8950246, 0)
+[node name="Pelvis" type="Marker3D" parent="." unique_id=1126270699]
 
-[node name="GizmoControllable" type="Node" parent="ThighPose" unique_id=1355778910]
+[node name="ThighPose" type="Marker3D" parent="Pelvis" unique_id=178447307]
+transform = Transform3D(1, 0, 0, 0, -0.9998205, 0.018953115, 0, -0.018953115, -0.99982035, 0, 0.5703786, 0)
+
+[node name="GizmoControllable" type="Node" parent="Pelvis/ThighPose" unique_id=1355778910]
 script = ExtResource("2_gwl0u")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
-[node name="ShinPose" type="Marker3D" parent="ThighPose" unique_id=1539531372]
+[node name="ShinPose" type="Marker3D" parent="Pelvis/ThighPose" unique_id=1539531372]
 transform = Transform3D(1, 0, 0, 0, 0.94762915, -0.31937283, 0, 0.31937283, 0.94762915, -4.5911677e-11, 0.35460815, -0.013691861)
 
-[node name="GizmoControllable" type="Node" parent="ThighPose/ShinPose" unique_id=916345182]
+[node name="GizmoControllable" type="Node" parent="Pelvis/ThighPose/ShinPose" unique_id=916345182]
 script = ExtResource("2_gwl0u")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
-[node name="FootPose" type="Marker3D" parent="ThighPose/ShinPose" unique_id=2058847043]
+[node name="FootPose" type="Marker3D" parent="Pelvis/ThighPose/ShinPose" unique_id=2058847043]
 transform = Transform3D(1, 0, 0, 0, -0.9539633, 0.2999233, 0, -0.2999234, -0.9539632, -6.7576913e-09, 0.3279404, 0.007845581)
 
-[node name="GizmoControllable" type="Node" parent="ThighPose/ShinPose/FootPose" unique_id=1031355947]
+[node name="GizmoControllable" type="Node" parent="Pelvis/ThighPose/ShinPose/FootPose" unique_id=1031355947]
 script = ExtResource("2_gwl0u")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
-[node name="RightFoot" type="Node3D" parent="ThighPose/ShinPose/FootPose" unique_id=53539704]
+[node name="RightFoot" type="Node3D" parent="Pelvis/ThighPose/ShinPose/FootPose" unique_id=53539704]
 
-[node name="Plane_002" type="MeshInstance3D" parent="ThighPose/ShinPose/FootPose/RightFoot" unique_id=1836408392]
+[node name="Plane_002" type="MeshInstance3D" parent="Pelvis/ThighPose/ShinPose/FootPose/RightFoot" unique_id=1836408392]
 mesh = SubResource("ArrayMesh_q8t2s")
 surface_material_override/0 = SubResource("StandardMaterial3D_cuttr")
 
-[node name="Stretcher" type="MeshInstance3D" parent="ThighPose" unique_id=925815456 node_paths=PackedStringArray("start_stretch", "end_stretch")]
-transform = Transform3D(1, -1.2937516e-10, -2.5409729e-12, -1.2940012e-10, -0.9998072, -0.019636558, 0, 0.019636558, -0.9998072, -2.2955839e-11, 0.71762264, 0.0034842363)
+[node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighPose" unique_id=925815456 node_paths=PackedStringArray("start_stretch", "end_stretch")]
+transform = Transform3D(1, -1.2937516e-10, -2.5409729e-12, -1.2940012e-10, -0.9998072, -0.019636558, 0, 0.019636558, -0.9998072, -2.2955839e-11, 0.3929766, 0.0034842363)
 top_level = true
-mesh = SubResource("CapsuleMesh_sfyrg")
+mesh = SubResource("CapsuleMesh_16p6a")
 surface_material_override/0 = SubResource("StandardMaterial3D_cuttr")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("..")
 end_stretch = NodePath("../ShinPose")
 metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 
-[node name="Stretcher2" type="MeshInstance3D" parent="ThighPose" unique_id=881187306 node_paths=PackedStringArray("start_stretch", "end_stretch")]
-transform = Transform3D(1, -2.0600563e-08, 7.941442e-09, -2.2078265e-08, -0.9330699, 0.35969502, 0, -0.359695, -0.93306994, -3.4247574e-09, 0.38718116, -0.052027673)
+[node name="Stretcher2" type="MeshInstance3D" parent="Pelvis/ThighPose" unique_id=881187306 node_paths=PackedStringArray("start_stretch", "end_stretch")]
+transform = Transform3D(1, -2.0600563e-08, 7.941442e-09, -2.2078265e-08, -0.9330699, 0.35969502, 0, -0.359695, -0.93306994, -3.4247574e-09, 0.06253515, -0.052027673)
 top_level = true
-mesh = SubResource("CapsuleMesh_t76mn")
+mesh = SubResource("CapsuleMesh_hmbkd")
 surface_material_override/0 = SubResource("StandardMaterial3D_cuttr")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../ShinPose")
 end_stretch = NodePath("../ShinPose/FootPose")
 metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 
-[node name="RemoteTransform3D" type="RemoteTransform3D" parent="ThighPose" unique_id=1492109111]
-remote_path = NodePath("../../FootIkPoseRoll")
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Pelvis/ThighPose" unique_id=1492109111]
+remote_path = NodePath("../../../FootIkPoseRoll")
 update_rotation = false
 update_scale = false
 
-[node name="ThighTangent" type="Marker3D" parent="." unique_id=512095150]
-transform = Transform3D(1, 0, 0, 0, -0.9998205, 0.018953055, 0, -0.018953057, -0.99982035, 0, 0.8950246, 0)
+[node name="ThighTangent" type="Marker3D" parent="Pelvis" unique_id=512095150]
+transform = Transform3D(1, 0, 0, 0, -0.9998205, 0.018953055, 0, -0.018953057, -0.99982035, 0, 0.56314594, 0)
 
-[node name="GizmoControllable" type="Node" parent="ThighTangent" unique_id=1016650632]
+[node name="GizmoControllable" type="Node" parent="Pelvis/ThighTangent" unique_id=1016650632]
 script = ExtResource("2_gwl0u")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
-[node name="ShinTangent" type="Marker3D" parent="ThighTangent" unique_id=903166234]
+[node name="ThighTangentPrevAngleMenu" parent="Pelvis/ThighTangent" unique_id=1338854330 instance=ExtResource("4_uglq4")]
+visible = false
+offset_left = 235.0
+offset_top = 68.0
+offset_right = 325.0
+offset_bottom = 248.0
+color = Color(0.43980426, 0.556404, 1, 0.38039216)
+radius = 90.0
+angle = 113.017
+
+[node name="ThighTangentNextAngleMenu" parent="Pelvis/ThighTangent" unique_id=484661674 instance=ExtResource("4_uglq4")]
+visible = false
+offset_left = 235.0
+offset_top = 68.0
+offset_right = 325.0
+offset_bottom = 248.0
+color = Color(0.8990394, 0.42407116, 1, 0.38039216)
+radius = 90.0
+angle = 113.017
+
+[node name="ThighAngularVelocitySetter" type="LineEdit" parent="Pelvis/ThighTangent" unique_id=570230351]
+visible = false
+offset_left = 227.0
+offset_top = 25.0
+offset_right = 295.5
+offset_bottom = 56.0
+text = "15"
+virtual_keyboard_type = 3
+
+[node name="Label" type="Label" parent="Pelvis/ThighTangent/ThighAngularVelocitySetter" unique_id=1154723525]
+layout_mode = 0
+offset_left = -47.0
+offset_right = -4.0
+offset_bottom = 23.0
+text = "deg/s"
+
+[node name="ShinTangent" type="Marker3D" parent="Pelvis/ThighTangent" unique_id=903166234]
 transform = Transform3D(1, 0, 0, 0, 0.94762915, -0.3193728, 0, 0.31937283, 0.9476291, -2.267464e-09, 0.32541478, -0.017927721)
 
-[node name="GizmoControllable" type="Node" parent="ThighTangent/ShinTangent" unique_id=166183106]
+[node name="GizmoControllable" type="Node" parent="Pelvis/ThighTangent/ShinTangent" unique_id=166183106]
 script = ExtResource("2_gwl0u")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
-[node name="FootTangent" type="Marker3D" parent="ThighTangent/ShinTangent" unique_id=316198554]
+[node name="ShinTangentPrevAngleMenu" parent="Pelvis/ThighTangent/ShinTangent" unique_id=251652951 instance=ExtResource("4_uglq4")]
+visible = false
+offset_left = 235.0
+offset_top = 68.0
+offset_right = 325.0
+offset_bottom = 248.0
+color = Color(0.99999994, 0.6429469, 0.3652718, 0.38039216)
+radius = 90.0
+angle = 113.017
+
+[node name="ShinTangentNextAngleMenu" parent="Pelvis/ThighTangent/ShinTangent" unique_id=1147873025 instance=ExtResource("4_uglq4")]
+visible = false
+offset_left = 235.0
+offset_top = 68.0
+offset_right = 325.0
+offset_bottom = 248.0
+color = Color(0.43070918, 0.6942915, 0, 0.38039216)
+radius = 90.0
+angle = 113.017
+
+[node name="ShinAngularVelocitySetter" type="LineEdit" parent="Pelvis/ThighTangent/ShinTangent" unique_id=1120463844]
+visible = false
+offset_left = 227.0
+offset_top = 25.0
+offset_right = 295.5
+offset_bottom = 56.0
+text = "15"
+virtual_keyboard_type = 3
+
+[node name="Label" type="Label" parent="Pelvis/ThighTangent/ShinTangent/ShinAngularVelocitySetter" unique_id=1244297482]
+layout_mode = 0
+offset_left = -47.0
+offset_right = -4.0
+offset_bottom = 23.0
+text = "deg/s"
+
+[node name="FootTangent" type="Marker3D" parent="Pelvis/ThighTangent/ShinTangent" unique_id=316198554]
 transform = Transform3D(1, 0, 0, 0, -0.9539633, 0.29992336, 0, -0.29992336, -0.9539633, -1.5088758e-09, 0.3226202, 0.009767683)
 
-[node name="GizmoControllable" type="Node" parent="ThighTangent/ShinTangent/FootTangent" unique_id=1395352187]
+[node name="FootTangentPrevAngleMenu" parent="Pelvis/ThighTangent/ShinTangent/FootTangent" unique_id=849579060 instance=ExtResource("4_uglq4")]
+visible = false
+offset_left = 235.0
+offset_top = 68.0
+offset_right = 325.0
+offset_bottom = 248.0
+color = Color(0, 0.8588579, 0.78281045, 0.38039216)
+radius = 90.0
+angle = 113.017
+
+[node name="FootTangentNextAngleMenu" parent="Pelvis/ThighTangent/ShinTangent/FootTangent" unique_id=1058000976 instance=ExtResource("4_uglq4")]
+visible = false
+offset_left = 235.0
+offset_top = 68.0
+offset_right = 325.0
+offset_bottom = 248.0
+color = Color(0.123393886, 0.609652, 1, 0.38039216)
+radius = 90.0
+angle = 113.017
+
+[node name="FootAngularVelocitySetter" type="LineEdit" parent="Pelvis/ThighTangent/ShinTangent/FootTangent" unique_id=1963364539]
+visible = false
+offset_left = 227.0
+offset_top = 25.0
+offset_right = 295.5
+offset_bottom = 56.0
+text = "15"
+virtual_keyboard_type = 3
+
+[node name="Label" type="Label" parent="Pelvis/ThighTangent/ShinTangent/FootTangent/FootAngularVelocitySetter" unique_id=1848765308]
+layout_mode = 0
+offset_left = -47.0
+offset_right = -4.0
+offset_bottom = 23.0
+text = "deg/s"
+
+[node name="GizmoControllable" type="Node" parent="Pelvis/ThighTangent/ShinTangent/FootTangent" unique_id=1395352187]
 script = ExtResource("2_gwl0u")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
-[node name="RightFoot" type="Node3D" parent="ThighTangent/ShinTangent/FootTangent" unique_id=1865943638]
+[node name="RightFoot" type="Node3D" parent="Pelvis/ThighTangent/ShinTangent/FootTangent" unique_id=1865943638]
 
-[node name="Plane_002" type="MeshInstance3D" parent="ThighTangent/ShinTangent/FootTangent/RightFoot" unique_id=1978114849]
+[node name="Plane_002" type="MeshInstance3D" parent="Pelvis/ThighTangent/ShinTangent/FootTangent/RightFoot" unique_id=1978114849]
 mesh = SubResource("ArrayMesh_q8t2s")
 surface_material_override/0 = SubResource("StandardMaterial3D_h0gvp")
 
-[node name="Stretcher" type="MeshInstance3D" parent="ThighTangent" unique_id=14633395 node_paths=PackedStringArray("start_stretch", "end_stretch")]
-transform = Transform3D(1, -6.957368e-09, -2.5114527e-10, -6.9618995e-09, -0.9993491, -0.036074243, 0, 0.036074243, -0.9993491, -1.133732e-09, 0.73217654, 0.005878448)
+[node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighTangent" unique_id=14633395 node_paths=PackedStringArray("start_stretch", "end_stretch")]
+transform = Transform3D(1, -6.9573685e-09, -2.511453e-10, -6.9619e-09, -0.9993491, -0.036074247, 0, 0.036074247, -0.9993491, -1.133732e-09, 0.40029788, 0.005878448)
 top_level = true
-mesh = SubResource("CapsuleMesh_dbjyx")
+mesh = SubResource("CapsuleMesh_5ufbc")
 surface_material_override/0 = SubResource("StandardMaterial3D_h0gvp")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("..")
 end_stretch = NodePath("../ShinTangent")
 metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 
-[node name="Stretcher2" type="MeshInstance3D" parent="ThighTangent" unique_id=2080217103 node_paths=PackedStringArray("start_stretch", "end_stretch")]
-transform = Transform3D(1, -4.6747983e-09, 1.8362849e-09, -5.0225175e-09, -0.93076795, 0.36561045, 0, -0.36561042, -0.930768, -3.0219018e-09, 0.41911733, -0.04724679)
+[node name="Stretcher2" type="MeshInstance3D" parent="Pelvis/ThighTangent" unique_id=2080217103 node_paths=PackedStringArray("start_stretch", "end_stretch")]
+transform = Transform3D(1, -4.6747983e-09, 1.8362849e-09, -5.0225175e-09, -0.93076795, 0.36561045, 0, -0.36561042, -0.930768, -3.0219018e-09, 0.0872387, -0.04724679)
 top_level = true
-mesh = SubResource("CapsuleMesh_y63xt")
+mesh = SubResource("CapsuleMesh_imthv")
 surface_material_override/0 = SubResource("StandardMaterial3D_h0gvp")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../ShinTangent")
@@ -210,6 +349,7 @@ end_stretch = NodePath("../ShinTangent/FootTangent")
 metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 
 [node name="FootIkPose" type="Marker3D" parent="." unique_id=355319705]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 0)
 
 [node name="GizmoControllable" type="Node" parent="FootIkPose" unique_id=511176032]
 script = ExtResource("2_gwl0u")
@@ -224,14 +364,14 @@ grabbable = true
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="FootIkPoseRoll" type="Marker3D" parent="." unique_id=1322180708]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.8950246, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.5703786, 0)
 
 [node name="GizmoControllable" type="Node" parent="FootIkPoseRoll" unique_id=1547046103]
 script = ExtResource("2_gwl0u")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="FootIkTangentRoll" type="Marker3D" parent="." unique_id=1468599153]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.8950246, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.56754047, 0)
 
 [node name="GizmoControllable" type="Node" parent="FootIkTangentRoll" unique_id=2105109441]
 script = ExtResource("2_gwl0u")
@@ -267,10 +407,198 @@ foot_animator = NodePath("../..")
 [node name="TangentFkIk" type="Label" parent="MousePieMenu" unique_id=772727618 node_paths=PackedStringArray("foot_animator")]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 0
-offset_left = 80.0
-offset_top = 238.0
-offset_right = 171.0
-offset_bottom = 261.0
+offset_left = 216.0
+offset_top = 108.0
+offset_right = 307.0
+offset_bottom = 131.0
 text = "Tangent: FK"
 script = ExtResource("7_t76mn")
 foot_animator = NodePath("../..")
+
+[node name="GroundedOrAerial" type="Label" parent="MousePieMenu" unique_id=1773383019 node_paths=PackedStringArray("foot_animator")]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 0
+offset_left = 78.0
+offset_top = 250.0
+offset_right = 156.0
+offset_bottom = 273.0
+text = "Grounded"
+script = ExtResource("8_dbjyx")
+foot_animator = NodePath("../..")
+
+[node name="CurveEditorLabel" type="Label" parent="MousePieMenu" unique_id=2039042081 node_paths=PackedStringArray("cubic_curve_drawer")]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 0
+offset_left = 214.0
+offset_top = 382.0
+offset_right = 310.0
+offset_bottom = 405.0
+text = "Curve editor"
+script = ExtResource("10_16p6a")
+cubic_curve_drawer = NodePath("../../CubicCurveDrawer")
+
+[node name="FootControllerScene" parent="." unique_id=562095217 instance=ExtResource("8_t76mn")]
+
+[node name="InterpSelectorPieMenu" type="ColorRect" parent="." unique_id=721293807]
+visible = false
+material = SubResource("ShaderMaterial_y63xt")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -250.0
+offset_right = 250.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+script = ExtResource("5_h0gvp")
+metadata/_custom_type_script = "uid://d1pq500b0t0ae"
+
+[node name="FKSlerpSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=179847095 node_paths=PackedStringArray("foot_animator", "pie_menu")]
+modulate = Color(0, 0.043137256, 0.85882354, 1)
+layout_mode = 0
+offset_left = 383.0
+offset_top = 243.0
+offset_right = 446.0
+offset_bottom = 266.0
+text = "FK Slerp"
+script = ExtResource("10_y63xt")
+foot_animator = NodePath("../..")
+pie_menu = NodePath("..")
+
+[node name="IKLerpSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=1348599774 node_paths=PackedStringArray("foot_animator", "pie_menu")]
+modulate = Color(0, 0.043137256, 0.85882354, 1)
+layout_mode = 0
+offset_left = 237.0
+offset_top = 87.0
+offset_right = 292.0
+offset_bottom = 110.0
+text = "IK Lerp"
+script = ExtResource("11_x1eba")
+foot_animator = NodePath("../..")
+pie_menu = NodePath("..")
+
+[node name="FootConstantSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=126633696 node_paths=PackedStringArray("foot_animator")]
+modulate = Color(0, 0.043137256, 0.85882354, 1)
+layout_mode = 0
+offset_left = 72.0
+offset_top = 263.0
+offset_right = 142.0
+offset_bottom = 286.0
+text = "Constant"
+script = ExtResource("12_ai6gc")
+foot_animator = NodePath("../..")
+
+[node name="FKHermiteSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=1865498080 node_paths=PackedStringArray("foot_animator", "pie_menu")]
+modulate = Color(0, 0.043137256, 0.85882354, 1)
+layout_mode = 0
+offset_left = 232.0
+offset_top = 358.0
+offset_right = 319.0
+offset_bottom = 381.0
+text = "FK Hermite"
+script = ExtResource("14_fielv")
+foot_animator = NodePath("../..")
+pie_menu = NodePath("..")
+
+[node name="CubicCurveDrawer" type="ColorRect" parent="." unique_id=615974393 node_paths=PackedStringArray("sliders")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 324.0
+offset_top = -47.0
+offset_right = 507.0
+offset_bottom = 148.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.17469463, 0.5430557, 0, 1)
+script = ExtResource("15_wwjn6")
+sliders = [NodePath("VSlider"), NodePath("VSlider2"), NodePath("VSlider3"), NodePath("VSlider4")]
+metadata/_custom_type_script = "uid://burp1regbq6js"
+
+[node name="CurveSetter" type="Button" parent="CubicCurveDrawer" unique_id=1681461662 node_paths=PackedStringArray("animator")]
+layout_mode = 0
+offset_left = -24.0
+offset_top = -62.0
+offset_right = 33.0
+offset_bottom = -3.0
+text = "Thigh/
+Roll"
+script = ExtResource("17_16p6a")
+animator = NodePath("../..")
+curve_path = &"thigh_rot_curve"
+
+[node name="CurveSetter2" type="Button" parent="CubicCurveDrawer" unique_id=882823757 node_paths=PackedStringArray("animator")]
+layout_mode = 0
+offset_left = 34.0
+offset_top = -61.0
+offset_right = 91.0
+offset_bottom = -2.0
+text = "Shin/
+Ik pos"
+script = ExtResource("17_16p6a")
+animator = NodePath("../..")
+curve_path = &"shin_rot_curve"
+
+[node name="CurveSetter3" type="Button" parent="CubicCurveDrawer" unique_id=2084399243 node_paths=PackedStringArray("animator")]
+layout_mode = 0
+offset_left = 95.0
+offset_top = -61.0
+offset_right = 152.0
+offset_bottom = -2.0
+text = "Foot/
+Ik rot"
+script = ExtResource("17_16p6a")
+animator = NodePath("../..")
+curve_path = &"foot_rot_curve"
+
+[node name="Button4" type="Button" parent="CubicCurveDrawer" unique_id=680914730]
+layout_mode = 0
+offset_left = 158.0
+offset_top = -63.0
+offset_right = 215.0
+offset_bottom = -4.0
+text = "Delete
+current"
+
+[node name="VSlider" type="VSlider" parent="CubicCurveDrawer" unique_id=2032207462]
+layout_mode = 0
+offset_left = -40.0
+offset_right = -3.0
+offset_bottom = 52.0
+min_value = -5.0
+max_value = 5.0
+
+[node name="VSlider2" type="VSlider" parent="CubicCurveDrawer" unique_id=1438050756]
+layout_mode = 0
+offset_left = -41.0
+offset_top = 52.0
+offset_right = -4.0
+offset_bottom = 104.0
+min_value = -5.0
+max_value = 5.0
+
+[node name="VSlider3" type="VSlider" parent="CubicCurveDrawer" unique_id=291692109]
+layout_mode = 0
+offset_left = -41.0
+offset_top = 102.0
+offset_right = -4.0
+offset_bottom = 154.0
+min_value = -5.0
+max_value = 5.0
+
+[node name="VSlider4" type="VSlider" parent="CubicCurveDrawer" unique_id=608745808]
+layout_mode = 0
+offset_left = -42.0
+offset_top = 156.0
+offset_right = -5.0
+offset_bottom = 208.0
+min_value = -5.0
+max_value = 5.0
+
+[editable path="FootControllerScene"]

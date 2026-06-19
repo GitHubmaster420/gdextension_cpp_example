@@ -70,9 +70,10 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92836714, -0.05519998)
 script = ExtResource("2_4by0n")
 
-[node name="GizmoControllable" type="Node" parent="PelvisRoot" unique_id=1269689715]
+[node name="GizmoControllable" type="Node" parent="PelvisRoot" unique_id=1269689715 node_paths=PackedStringArray("gizmo")]
 script = ExtResource("2_7a6cg")
 grabbable = true
+gizmo = NodePath("../../Gizmo")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="HipPose" type="Marker3D" parent="PelvisRoot" unique_id=595876309]
@@ -89,15 +90,17 @@ transform = Transform3D(1.000096, -3.0696392e-06, 9.947598e-14, 1.7282957e-06, 1
 mesh = SubResource("TorusMesh_7a6cg")
 surface_material_override/0 = SubResource("StandardMaterial3D_0by38")
 
-[node name="GizmoControllable" type="Node" parent="PelvisRoot/HipPose" unique_id=970852842]
+[node name="GizmoControllable" type="Node" parent="PelvisRoot/HipPose" unique_id=970852842 node_paths=PackedStringArray("gizmo")]
 script = ExtResource("2_7a6cg")
+gizmo = NodePath("../../../Gizmo")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="ChestPose" type="Marker3D" parent="PelvisRoot" unique_id=233697258]
 transform = Transform3D(1.0001522, 0, 0, 0, 1.0001522, 0, 0, 0, 1, 1.3359898e-14, 0.5695982, 0.04930002)
 
-[node name="GizmoControllable" type="Node" parent="PelvisRoot/ChestPose" unique_id=1123682629]
+[node name="GizmoControllable" type="Node" parent="PelvisRoot/ChestPose" unique_id=1123682629 node_paths=PackedStringArray("gizmo")]
 script = ExtResource("2_7a6cg")
+gizmo = NodePath("../../../Gizmo")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PelvisRoot/ChestPose" unique_id=498854434]
