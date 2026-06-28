@@ -15,12 +15,12 @@ color = Color(1, 1, 1, 0.38039216)
 script = ExtResource("2_flrib")
 radius = 200.0
 circle = NodePath("Circle")
-angle = 108.414
+angle = 179.0
 
 [node name="Circle" type="ColorRect" parent="." unique_id=852328050]
 material = ExtResource("3_bc1jg")
 layout_mode = 0
-offset_left = 169.7597
-offset_top = 243.17627
-offset_right = 209.75983
-offset_bottom = 283.1761
+offset_left = -16.509577
+offset_top = 379.96964
+offset_right = 23.490538
+offset_bottom = 419.96945

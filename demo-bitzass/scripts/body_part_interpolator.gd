@@ -38,7 +38,7 @@ func _ready() -> void:
 	anim_track_holder.keyframe_added.connect(on_keyframe_added)
 
 func get_t_from_keyframes(time : float, k1 := prev_keyframe, k2 := next_keyframe) -> float:
-	if k1 == k2:
+	if k1.time == k2.time:
 		return 0
 	return clampf(remap(time, k1.time, k2.time, 0, 1), 0, 1)
 
@@ -53,7 +53,6 @@ func on_time_changed(t : float):
 	var indices := get_next_and_prev_keyframes_indices(t)
 	prev_keyframe_idx = indices[0]
 	next_keyframe_idx = indices[1]
-	print("prev: ", prev_keyframe_idx, " next: ", next_keyframe_idx)
 
 @abstract func interpolate_keyframes()
 @abstract func on_keyframe_added(key : Keyframe)

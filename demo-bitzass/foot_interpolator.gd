@@ -63,13 +63,16 @@ func _validate_property(property: Dictionary) -> void:
 			property.hint = PROPERTY_HINT_ENUM
 			property.hint_string = skeleton.get_concatenated_bone_names()
 
-func _process_modification() -> void:
+func _process_modification_with_delta(_delta: float) -> void:
+	on_time_changed(current_time)
 	interpolate_keyframes()
 
 func on_keyframe_added(key : Keyframe):
 	await get_skeleton().skeleton_updated
 	var animator := key.animator as FootAnimator
-	
+	animator.foot_rot_curve = MyEaseInOut.new()
+	animator.shin_rot_curve = MyEaseInOut.new()
+	animator.foot_rot_curve = MyEaseInOut.new()
 	var pelvis_id := get_skeleton().get_bone_parent(thigh_id)
 	
 	var pd := get_skeleton().get_bone_global_pose(pelvis_id)
@@ -91,6 +94,7 @@ func on_keyframe_added(key : Keyframe):
 	shin_pose.global_transform = st
 	var shin_tangent := animator.shin_tangent
 	shin_tangent.global_transform = st
+	animator.thigh_tangent_end.global_position = st.origin
 	
 	var foot_pose := animator.foot_pose
 	foot_pose.global_transform = ft
@@ -100,6 +104,7 @@ func on_keyframe_added(key : Keyframe):
 	var foot_ik_tangent := animator.foot_ik_tangent
 	foot_ik_tangent.global_transform = ft
 	foot_ik_pose.global_transform = ft
+	animator.shin_tangent_end.global_position = ft.origin
 	
 
 
@@ -130,40 +135,7 @@ func interpolate_keyframes():
 	animator_2.thigh_tangent.position = thigh_pos_2
 	
 	match animator_1.interp_mode:
-		FootAnimator.InterpMode.FK_SLERP:
-
-			var r00 := Quaternion.from_euler(animator_1.thigh_pose.rotation)
-			var r01 := Quaternion.from_euler(animator_2.thigh_pose.rotation)
-			
-			var thigh_t := t
-			var thigh_curve := animator_1.thigh_rot_curve
-			if thigh_curve:
-				thigh_t = thigh_curve.interpolate(t)
-			
-			thigh_rot_setter.rot = r00.slerp(r01, thigh_t)
-
-			var r10 := Quaternion.from_euler(animator_1.shin_pose.rotation)
-			var r11 := Quaternion.from_euler(animator_2.shin_pose.rotation)
-			
-			var shin_t := t
-			var shin_curve := animator_1.shin_rot_curve
-			if shin_curve:
-				shin_t = shin_curve.interpolate(t)
-			
-			
-			shin_rot_setter.rot = r10.slerp(r11, shin_t)
-			
-			
-			var r20 := Quaternion.from_euler(animator_1.foot_pose.rotation) * foot_offset
-			var r21 := Quaternion.from_euler(animator_2.foot_pose.rotation) * foot_offset
-			
-			var foot_t := t
-			var foot_curve := animator_1.foot_rot_curve
-			if foot_curve:
-				foot_t = foot_curve.interpolate(t)
-			
-			foot_rot_setter.rot = r20.slerp(r21, foot_t)
-		FootAnimator.InterpMode.IK_LERP:
+		FootAnimator.InterpMode.IK_HERMITE:
 			#TODO: curve interp
 			var tr1 := animator_1.foot_ik_pose.global_transform
 			var tr2 := animator_2.foot_ik_pose.global_transform
@@ -209,7 +181,7 @@ func interpolate_keyframes():
 			#var qt01 := r01 * Quaternion(axis_01, angle_01)
 			#
 			var dur := next_keyframe.time - prev_keyframe.time
-			var r0 := QuaternionExtender.my_quat_interpolate(r00, axis_00, influence_00, v00, r01, axis_01, influence_01, v01, t, dur)
+			var r0 := QuaternionExtender.my_quat_interpolate(r00, axis_00, influence_00, v00, r01, axis_01, influence_01, v01, t, dur, animator_2.thigh_rot_curve.baked_points)
 			
 			
 			thigh_rot_setter.rot = r0
@@ -228,7 +200,7 @@ func interpolate_keyframes():
 			var v11 := animator_2.shin_angular_velocity
 			var influence_11 := animator_2.shin_tangent_prev_influence
 			
-			var r1 := QuaternionExtender.my_quat_interpolate(r10, axis_10, influence_10, v10, r11, axis_11, influence_11, v11, t, dur)
+			var r1 := QuaternionExtender.my_quat_interpolate(r10, axis_10, influence_10, v10, r11, axis_11, influence_11, v11, t, dur, animator_2.shin_rot_curve.baked_points)
 			
 			shin_rot_setter.rot = r1
 			
@@ -245,5 +217,5 @@ func interpolate_keyframes():
 			var v21 := animator_2.foot_angular_velocity
 			var influence_21 := animator_2.shin_tangent_prev_influence
 			
-			var r2 := QuaternionExtender.my_quat_interpolate(r20, axis_20, influence_20, v20, r21, axis_21, influence_21, v21, t, dur)
+			var r2 := QuaternionExtender.my_quat_interpolate(r20, axis_20, influence_20, v20, r21, axis_21, influence_21, v21, t, dur, animator_2.foot_rot_curve.baked_points)
 			foot_rot_setter.rot = r2

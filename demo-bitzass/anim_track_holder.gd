@@ -2,7 +2,7 @@
 extends ColorRect
 class_name AnimTrackHolder
 
-var visible_before_shift : bool
+signal keyframe_deleted(kf : Keyframe)
 
 var lasso_selected := false
 @export var lasso : Lasso
@@ -147,7 +147,8 @@ func on_lassoed():
 			lasso_selected_keyframes.append(k)
 
 func _ready() -> void:
-	lasso.lassoed.connect(on_lassoed)
+	if lasso:
+		lasso.lassoed.connect(on_lassoed)
 	max_time = max_time
 	z_index = 100
 	mouse_entered.connect(func(): hovered = true)
@@ -196,9 +197,21 @@ func _gui_input(event: InputEvent) -> void:
 			selected_key = null
 				
 
+func paste_flipped(kf : Keyframe):
+	var all := kf.animator.find_children("*", "Node3D")
+	print("all size: ", all.size())
+	for c in all:
+		if c is Node3D:
+			c.position.x = -c.position.x
+			c.rotation = QuaternionExtender.mirror(Quaternion.from_euler(c.rotation)).get_euler()
+	
+	paste_keyframe(kf)
+	
+
 func paste_keyframe(kf : Keyframe):
 	add_child(kf)
 	var new_key := kf
+	DuckTyper.set_variable_duck_typed(new_key.animator, "is_right", is_right)
 	keyframes.append(new_key)
 	if empty_canvas:
 		empty_canvas.right_clicked.connect(new_key.animator.right_clicked_empty)
@@ -221,7 +234,7 @@ func paste_keyframe(kf : Keyframe):
 		elif selected_key == key:
 			selected_key = null
 		).bind(new_key))
-	keyframe_added.emit(new_key)
+	#keyframe_added.emit(new_key)
 
 func add_keyframe(mouse_pos : Vector2):
 	var new_key := Keyframe.new()
@@ -259,18 +272,26 @@ func add_keyframe(mouse_pos : Vector2):
 	edited_key = new_key
 	keyframe_added.emit(new_key)
 
+func delete_keyframe(kf : Keyframe):
+	keyframes.erase(kf)
+	for k in [prev_key, next_key, hovered_key, edited_key, selected_key]:
+		if k == kf:
+			k = null
+	kf.visible = false
+	kf.animator.visible = false
+
+func un_delete_keyframe(kf : Keyframe):
+	print("un deleting")
+	keyframes.append(kf)
+	kf.visible = true
+	kf.animator.visible = true
+	sort_keyframes()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.keycode == KEY_K and event.pressed:
 			add_keyframe(current_time_label.position)
-		if event.keycode == KEY_SHIFT:
-			
-			if event.pressed:
-				visible_before_shift = visible
-				visible = true
-				#else:
-					#visible = visible_before_shift
+
 
 			
 	if not visible:
@@ -280,6 +301,10 @@ func _input(event: InputEvent) -> void:
 			add_keyframe(current_time_label.position)
 	if event is InputEventKey:
 		if event.pressed:
+			if event.keycode == KEY_DELETE or event.keycode == KEY_X:
+				if edited_key:
+					delete_keyframe(edited_key)
+					keyframe_deleted.emit(edited_key)
 			if event.keycode == KEY_W:
 				next_toggle = not next_toggle
 			if event.keycode == KEY_SPACE:

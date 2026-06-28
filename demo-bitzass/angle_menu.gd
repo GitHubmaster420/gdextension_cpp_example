@@ -59,6 +59,8 @@ func _input(event: InputEvent) -> void:
 			angle = default_angle
 
 func _draw() -> void:
+	#var quat:= Quaternion.from_euler(Vector3(randf_range(-PI,PI), randf_range(-PI,PI), randf_range(-PI,PI)))
+	#print("quat: ", quat,", x flipped quat: ", QuaternionExtender.mirror(quat))
 	draw_line(Vector2(0, size.y / 2.0), Vector2.ZERO, Color.MAGENTA, 5)
 	draw_line(Vector2(0, size.y / 2.0), circle.position + circle.size / 2.0, Color.AQUA, 5)
 

@@ -1,11 +1,10 @@
 [gd_scene format=3 uid="uid://b4cfddea3ardy"]
 
 [ext_resource type="Script" uid="uid://bdmo23e6ivrh4" path="res://anim_track_holder.gd" id="1_odhtm"]
-[ext_resource type="PackedScene" uid="uid://blxr0sbw30u85" path="res://foot_animator.tscn" id="2_w13kg"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3rrt7"]
 
-[node name="AnimTackHolder" type="ColorRect" unique_id=2019306060 node_paths=PackedStringArray("current_time_label")]
+[node name="AnimTackHolder" type="ColorRect" unique_id=2019306060 node_paths=PackedStringArray("current_time_label", "gizmo")]
 z_index = 100
 anchors_preset = -1
 anchor_left = 0.5
@@ -22,7 +21,7 @@ size_flags_horizontal = 3
 color = Color(0.54, 0.54, 0.54, 0.88235295)
 script = ExtResource("1_odhtm")
 current_time_label = NodePath("CurrentTime")
-animator = ExtResource("2_w13kg")
+gizmo = NodePath("")
 metadata/_custom_type_script = "uid://bdmo23e6ivrh4"
 
 [node name="CurrentTime" type="ColorRect" parent="." unique_id=616845878]

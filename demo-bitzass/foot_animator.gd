@@ -1,17 +1,24 @@
 class_name FootAnimator
 extends Animator
 
-@export var thigh_rot_curve : NestedCubicCurve ## works as thigh rot or roll if ik, does nothing if hermite
-@export var shin_rot_curve : NestedCubicCurve ## works as shin rot or ik lok if ik, does nothing if hermite
-@export var foot_rot_curve : NestedCubicCurve ## works as foot rot fk or ik, does nothing if hermite
+@export var thigh_rot_curve : MyEaseInOut: ## works as thigh rot or roll if ik, does nothing if hermite
+	set(v):
+		thigh_rot_curve = v
+		thigh_rot_curve.bake_fast()
+@export var shin_rot_curve : MyEaseInOut: ## works as shin rot or ik lok if ik, does nothing if hermite
+	set(v):
+		shin_rot_curve = v
+		shin_rot_curve.bake_fast()
+@export var foot_rot_curve : MyEaseInOut: ## works as foot rot fk or ik, does nothing if hermite
+	set(v):
+		foot_rot_curve = v
+		foot_rot_curve.bake_fast()
 
 signal on_ground_set
 
 enum InterpMode{
-	FK_SLERP,
-	IK_LERP,
 	FK_HERMITE,
-	#IK_HERMITE,
+	IK_HERMITE,
 	CONSTANT
 }
 
@@ -115,6 +122,9 @@ var selected := false
 @export var thigh_tangent: Marker3D
 @export var shin_tangent: Marker3D
 @export var foot_tangent: Marker3D
+
+@export var thigh_tangent_end: Marker3D
+@export var shin_tangent_end: Marker3D
 
 
 @export var thigh_tangent_prev_angle_menu: AngleMenu

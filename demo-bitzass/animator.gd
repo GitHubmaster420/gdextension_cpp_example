@@ -25,11 +25,15 @@ signal set_prev_keyframe
 
 @export var gizmo: Gizmo:
 	set(v):
+		if gizmo:
+			gizmo.controllable = null
 		gizmo = v
 		var all_children := find_children("GizmoControllable")
 		for c in all_children:
 			c.gizmo = gizmo
 		gizmo_set.emit(gizmo)
+		visibility_changed.emit()
+			
 
 @export var interp_mode_pie_menu : MousePieMenu
 
