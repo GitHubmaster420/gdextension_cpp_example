@@ -91,19 +91,19 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0.48433334, 0.089999974, 0.29411766)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_j5lu3"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_uglq4"]
 radius = 0.05
 height = 0.32803428
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_5ufbc"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wwjn6"]
 radius = 0.05
 height = 0.3548724
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_imthv"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_16p6a"]
 radius = 0.05
 height = 0.3280343
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_q77p2"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_hmbkd"]
 radius = 0.05
 height = 0.3548724
 
@@ -287,7 +287,7 @@ text = "deg/s"
 [node name="Stretcher2" type="MeshInstance3D" parent="Pelvis/ThighPose/ShinPose" unique_id=2080217103 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, -2.0600565e-08, 7.9414395e-09, -2.2078263e-08, -0.93307, 0.35969496, 0, -0.35969496, -0.93307, -3.4247574e-09, 0.06253515, -0.05202766)
 top_level = true
-mesh = SubResource("CapsuleMesh_j5lu3")
+mesh = SubResource("CapsuleMesh_uglq4")
 surface_material_override/0 = SubResource("StandardMaterial3D_h0gvp")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../ShinTangent")
@@ -297,7 +297,7 @@ metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 [node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighPose" unique_id=925815456 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, -1.2937516e-10, -2.5409729e-12, -1.2940012e-10, -0.9998072, -0.019636558, 0, 0.019636558, -0.9998072, -2.2955839e-11, 0.3929766, 0.0034842363)
 top_level = true
-mesh = SubResource("CapsuleMesh_5ufbc")
+mesh = SubResource("CapsuleMesh_wwjn6")
 surface_material_override/0 = SubResource("StandardMaterial3D_cuttr")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("..")
@@ -307,7 +307,7 @@ metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 [node name="Stretcher2" type="MeshInstance3D" parent="Pelvis/ThighPose" unique_id=881187306 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, -2.0600563e-08, 7.941442e-09, -2.2078265e-08, -0.9330699, 0.35969502, 0, -0.359695, -0.93306994, -3.4247574e-09, 0.06253515, -0.052027673)
 top_level = true
-mesh = SubResource("CapsuleMesh_imthv")
+mesh = SubResource("CapsuleMesh_16p6a")
 surface_material_override/0 = SubResource("StandardMaterial3D_cuttr")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../ShinPose")
@@ -367,7 +367,7 @@ text = "deg/s"
 [node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighPose/ThighTangent" unique_id=14633395 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, -1.2937516e-10, -2.5409729e-12, -1.2940012e-10, -0.9998072, -0.019636558, 0, 0.019636558, -0.9998072, -2.2955839e-11, 0.3929766, 0.0034842363)
 top_level = true
-mesh = SubResource("CapsuleMesh_q77p2")
+mesh = SubResource("CapsuleMesh_hmbkd")
 surface_material_override/0 = SubResource("StandardMaterial3D_h0gvp")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("..")

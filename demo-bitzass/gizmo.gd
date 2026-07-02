@@ -72,6 +72,9 @@ var grabbable := true:
 
 @export var controllable : GizmoControllable:
 	set(v):
+		if controllable:
+			if controllable != v:
+				controllable.gizmo = null
 		controllable = v
 		if not is_node_ready():
 			return
@@ -80,6 +83,7 @@ var grabbable := true:
 		if not controllable:
 			visible = false
 			return
+		controllable.gizmo = self
 		controllable.ignore = true
 		visible = true
 		

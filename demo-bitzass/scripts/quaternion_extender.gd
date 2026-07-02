@@ -26,7 +26,8 @@ static func squad_in_time_with_vel(a : Quaternion, post_a_vel_relative : Vector3
 	return a.spherical_cubic_interpolate_in_time(b, pre_a, post_b, t, b_t, pre_a_t, post_b_t)
 
 static func my_quat_interpolate(q1 : Quaternion, ax1 : Vector3, infl1 : float, v1 : float, q2 : Quaternion, ax2 : Vector3, infl2 : float, v2 : float, t : float, dur : float, ease_points : PackedFloat32Array) -> Quaternion:
-	
+	ax1 = ax1.normalized()
+	ax2 = ax2.normalized()
 	var angle_1 := v1 * dur * infl1 * ease(t, infl1)
 	
 	angle_1 = clampf(angle_1, 0, PI - 0.0001)

@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://c281yywf54kmp"]
+
+[ext_resource type="Script" uid="uid://cj1sdp7j03vq3" path="res://head_animator.gd" id="1_gycnj"]
+[ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="2_h7t20"]
+[ext_resource type="Script" uid="uid://dotx4kxu4bpob" path="res://stretcher.gd" id="3_0enev"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_h7t20"]
+radius = 0.025
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0enev"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.4117647, 0.59607846, 1, 0.4509804)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_t8bxo"]
+radius = 0.025
+height = 0.16521108
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h7t20"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.4117647, 0.59607846, 1, 0.4509804)
+
+[node name="HeadAnimator" type="Node3D" unique_id=1795978670 node_paths=PackedStringArray("chest", "neck", "head", "gizmo_controllables")]
+script = ExtResource("1_gycnj")
+chest = NodePath("Chest")
+neck = NodePath("Chest/Neck")
+head = NodePath("Chest/Neck/Head")
+gizmo_controllables = [NodePath("Chest/Neck/GizmoControllable"), NodePath("Chest/Neck/Head/GizmoControllable")]
+
+[node name="Chest" type="Marker3D" parent="." unique_id=1753790835]
+
+[node name="Neck" type="Marker3D" parent="Chest" unique_id=1266274832]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22371972, 0)
+
+[node name="GizmoControllable" type="Node" parent="Chest/Neck" unique_id=1934268153]
+script = ExtResource("2_h7t20")
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="Head" type="Marker3D" parent="Chest/Neck" unique_id=1428056380]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16521108, 0)
+
+[node name="GizmoControllable" type="Node" parent="Chest/Neck/Head" unique_id=1821268603]
+script = ExtResource("2_h7t20")
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Chest/Neck/Head" unique_id=1338592619]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09164852, 0)
+mesh = SubResource("CapsuleMesh_h7t20")
+surface_material_override/0 = SubResource("StandardMaterial3D_0enev")
+
+[node name="Stretcher" type="MeshInstance3D" parent="Chest/Neck" unique_id=1802881656 node_paths=PackedStringArray("start_stretch", "end_stretch")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0.30632526, 0)
+top_level = true
+mesh = SubResource("CapsuleMesh_t8bxo")
+surface_material_override/0 = SubResource("StandardMaterial3D_h7t20")
+script = ExtResource("3_0enev")
+start_stretch = NodePath("..")
+end_stretch = NodePath("../Head")
+metadata/_custom_type_script = "uid://dotx4kxu4bpob"

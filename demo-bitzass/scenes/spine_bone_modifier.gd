@@ -151,7 +151,7 @@ func interpolate_keyframes_in_time(time : float) -> Array[Transform3D]:
 	
 	var pelvis_t := super_t * hip_b * (animator_1.pelvis_final.basis.get_rotation_quaternion())
 	
-	var super_t_location := super_t_1.origin#MyCurve3D.interpolate(super_t_1.origin, velocity_vector_1, super_t_2.origin, velocity_vector_2, t, k2.time - k1.time)
+	var super_t_location := MyCurve3D.interpolate(super_t_1.origin, velocity_vector_1, super_t_2.origin, velocity_vector_2, t, k2.time - k1.time)
 	
 	var super_t_transform := Transform3D(super_t, super_t_location)
 	
@@ -188,13 +188,13 @@ func interpolate_pelvis_in_time(time : float) -> Transform3D:
 	if anim_track_holder.keyframes.size() == 0:
 		return get_skeleton().get_bone_global_rest(spine_based_idx)
 	var transforms := interpolate_keyframes_in_time(time)
-	var pelvis_tr := transforms[0]
+	var pelvis_tr := (root_modifier.interpolate_keyframes_in_time(time) * get_skeleton().get_bone_rest(0).inverse()) * transforms[0]
 	return pelvis_tr
 
 func interpolate_chest_in_time(time : float) -> Transform3D:
 	if anim_track_holder.keyframes.size() == 0:
 		return get_skeleton().get_bone_global_rest(chain_end_idx)
 	var transforms := interpolate_keyframes_in_time(time)
-	var chest_tr := transforms[-1]
+	var chest_tr := (root_modifier.interpolate_keyframes_in_time(time) * get_skeleton().get_bone_rest(0).inverse()) * transforms[-1]
 	return chest_tr
 	

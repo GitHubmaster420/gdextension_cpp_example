@@ -23,8 +23,13 @@ func stretch_to_target():
 	if mesh is not CapsuleMesh:
 		mesh = CapsuleMesh.new()
 		mesh.radius = 0.05
+	if not is_visible_in_tree():
+		return
 	(mesh as CapsuleMesh).height = start_pos.distance_to(end_pos)
 	global_basis.y = start_pos.direction_to(end_pos)
-	var temp_z := Vector3.FORWARD
+	if not global_basis.y:
+		global_basis = Basis.IDENTITY
+		return
+	var temp_z := Vector3.FORWARD if absf(global_basis.y.dot(Vector3.FORWARD)) < 0.9 else Vector3.RIGHT
 	global_basis.x = global_basis.y.cross(temp_z).normalized()
 	global_basis.z = global_basis.x.cross(global_basis.y).normalized()

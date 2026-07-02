@@ -15,7 +15,9 @@
 [ext_resource type="PackedScene" uid="uid://b4cfddea3ardy" path="res://anim_tack_holder.tscn" id="10_lletu"]
 [ext_resource type="PackedScene" uid="uid://bl0a5blvvrul0" path="res://root_animator.tscn" id="11_uall8"]
 [ext_resource type="Script" uid="uid://du6x453vhrlgk" path="res://history.gd" id="12_lletu"]
+[ext_resource type="Script" uid="uid://cddyhwojh7wm3" path="res://scripts/head_bone_modifier.gd" id="14_43flw"]
 [ext_resource type="Script" uid="uid://cbu2qccptjvme" path="res://scripts/hand_interpolator.gd" id="15_mxi6m"]
+[ext_resource type="PackedScene" uid="uid://c281yywf54kmp" path="res://head_animator.tscn" id="15_x6m4r"]
 [ext_resource type="Script" uid="uid://mseyy8gjtk3a" path="res://lasso.gd" id="16_eckwp"]
 [ext_resource type="PackedScene" uid="uid://btx61h3olllvr" path="res://hands_animator.tscn" id="16_pqhu1"]
 [ext_resource type="PackedScene" uid="uid://blxr0sbw30u85" path="res://foot_animator.tscn" id="16_uall8"]
@@ -1013,7 +1015,8 @@ NodePath("RightFootSelector"): NodePath("../FootballCityCharacter/metarig/Skelet
 NodePath("LeftFootSelector"): NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftFootInterpolator/AnimTackHolder"),
 NodePath("LeftHandSelector"): NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftHandInterpolator/AnimTackHolder"),
 NodePath("RightHandSelector"): NodePath("../FootballCityCharacter/metarig/Skeleton3D/RightHandInterpolator/AnimTackHolder"),
-NodePath("RootSelector"): NodePath("../FootballCityCharacter/metarig/Skeleton3D/RootModifier/AnimTackHolder")
+NodePath("RootSelector"): NodePath("../FootballCityCharacter/metarig/Skeleton3D/RootModifier/AnimTackHolder"),
+NodePath("HeadSelector"): NodePath("../FootballCityCharacter/metarig/Skeleton3D/HeadInterpolator/AnimTackHolder")
 }
 master_time = NodePath("../MasterTime")
 gizmo = NodePath("../Gizmo")
@@ -1033,6 +1036,23 @@ offset_left = -16.49997
 offset_top = -30.49984
 offset_right = 14.5000305
 offset_bottom = 31.50016
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+color = Color(0.2901961, 0.4392157, 1, 1)
+script = ExtResource("3_eckwp")
+
+[node name="HeadSelector" type="ColorRect" parent="BodyPartSelector" unique_id=1576110582]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.499939
+offset_top = -54.499763
+offset_right = 8.500061
+offset_bottom = -33.499763
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
@@ -2464,29 +2484,6 @@ mesh = SubResource("ArrayMesh_0qyqh")
 skin = SubResource("Skin_05hv3")
 skeleton = NodePath("..")
 
-[node name="LookAtModifier3D" type="LookAtModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=771660774]
-influence = 0.5
-target_node = NodePath("../../../../Ball")
-bone_name = "spine.005"
-bone = 6
-use_angle_limitation = true
-symmetry_limitation = true
-primary_limit_angle = 1.5707964
-primary_damp_threshold = 1.0
-secondary_limit_angle = 0.7853982
-secondary_damp_threshold = 1.0
-
-[node name="LookAtModifier3D2" type="LookAtModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=1087895348]
-target_node = NodePath("../../../../Ball")
-bone_name = "spine.006"
-bone = 7
-use_angle_limitation = true
-symmetry_limitation = true
-primary_limit_angle = 1.5707964
-primary_damp_threshold = 1.0
-secondary_limit_angle = 0.7853982
-secondary_damp_threshold = 1.0
-
 [node name="RootModifier" type="SkeletonModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=1086278503 node_paths=PackedStringArray("anim_track_holder")]
 unique_name_in_owner = false
 process_mode = 0
@@ -2547,6 +2544,38 @@ empty_canvas = NodePath("../../../../../EmptyCanvas")
 gizmo = NodePath("../../../../../Gizmo")
 animator = ExtResource("10_3gsoi")
 
+[node name="HeadInterpolator" type="SkeletonModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=1935184217 node_paths=PackedStringArray("anim_track_holder")]
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+physics_interpolation_mode = 0
+auto_translate_mode = 0
+editor_description = ""
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+rotation_edit_mode = 0
+rotation_order = 2
+top_level = false
+visible = true
+visibility_parent = NodePath("")
+active = true
+influence = 1.0
+script = ExtResource("14_43flw")
+head_name = "spine.006"
+neck_name = "spine.004"
+head_idx = 7
+neck_idx = 5
+anim_track_holder = NodePath("AnimTackHolder")
+metadata/_custom_type_script = "uid://cddyhwojh7wm3"
+
+[node name="AnimTackHolder" parent="FootballCityCharacter/metarig/Skeleton3D/HeadInterpolator" unique_id=1217765381 node_paths=PackedStringArray("lasso", "empty_canvas", "gizmo") instance=ExtResource("10_lletu")]
+visible = false
+lasso = NodePath("../../../../../MasterTime/Lasso")
+empty_canvas = NodePath("../../../../../EmptyCanvas")
+gizmo = NodePath("../../../../../Gizmo")
+animator = ExtResource("15_x6m4r")
+
 [node name="RightThighRotSetter" type="SkeletonModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=2014180499]
 unique_name_in_owner = false
 process_mode = 0
@@ -2566,7 +2595,7 @@ active = true
 influence = 1.0
 script = ExtResource("9_lletu")
 bone = "thigh.R"
-rot = Quaternion(0.99542624, 6.846469e-08, 2.2355911e-07, -0.095530406)
+rot = Quaternion(0.98529255, 6.963278e-09, 2.3370409e-07, 0.17087416)
 metadata/_custom_type_script = "uid://cucp8c44vpoml"
 
 [node name="RightShinRotSetter" type="SkeletonModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=80970159]
@@ -2588,7 +2617,7 @@ active = true
 influence = 1.0
 script = ExtResource("9_lletu")
 bone = "shin.R"
-rot = Quaternion(0.7683367, 2.1348889e-08, 2.0573921e-08, 0.6400459)
+rot = Quaternion(0.09481655, 6.7008155e-10, 2.9641395e-08, 0.9954948)
 metadata/_custom_type_script = "uid://cucp8c44vpoml"
 
 [node name="RightFootRotSetter" type="SkeletonModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=2123416158]
@@ -2610,6 +2639,7 @@ active = true
 influence = 1.0
 script = ExtResource("9_lletu")
 bone = "foot.R"
+rot = Quaternion(-0.5273642, 1.0128515e-07, -1.8859996e-07, 0.84963936)
 metadata/_custom_type_script = "uid://cucp8c44vpoml"
 
 [node name="RightFootInterpolator" type="SkeletonModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=2005503656 node_paths=PackedStringArray("thigh_rot_setter", "shin_rot_setter", "foot_rot_setter", "spine_bone_modifier", "anim_track_holder")]
