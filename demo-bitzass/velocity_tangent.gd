@@ -2,7 +2,7 @@
 class_name VelocityTangent
 extends Marker3D
 
-const VEL_MULTIPLIER = 10.0
+const VEL_MULTIPLIER = TAU
 
 signal velocity_set(v : float)
 
@@ -36,7 +36,7 @@ func _process(delta: float) -> void:
 	if not super_visible:
 		visible = false
 		return
-	basis.y = (tangent.basis as Quaternion).get_axis()
+	basis.y = tangent.basis.get_rotation_quaternion().get_axis()
 	if not global_basis.y:
 		visible = false
 		global_basis = Basis.IDENTITY
@@ -53,7 +53,7 @@ func _process(delta: float) -> void:
 	if not velocity_gizmo_controllable.gizmo:
 		goal_object.position.x = 0
 		goal_object.position.z = 0
-		goal_object.position.y = velocity
+		goal_object.position.y = velocity / VEL_MULTIPLIER
 	else:
 		velocity = goal_object.position.y * VEL_MULTIPLIER
 	if not stretcher:

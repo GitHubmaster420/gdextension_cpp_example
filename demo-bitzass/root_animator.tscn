@@ -7,6 +7,12 @@
 inner_radius = 0.45
 outer_radius = 0.5
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8r01s"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.5686275, 0.72156864, 1, 0.654902)
+
 [sub_resource type="PrismMesh" id="PrismMesh_16iyi"]
 size = Vector3(0.1, 0.1, 0.03)
 
@@ -17,19 +23,16 @@ root = NodePath("Root")
 
 [node name="Root" type="Marker3D" parent="." unique_id=721969205]
 
-[node name="GizmoControllable" type="Node" parent="Root" unique_id=342289310 node_paths=PackedStringArray("gizmo")]
+[node name="GizmoControllable" type="Node" parent="Root" unique_id=342289310]
 script = ExtResource("2_o81b5")
 grabbable = true
-gizmo = NodePath("")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Root" unique_id=919340513]
 mesh = SubResource("TorusMesh_13nmh")
+surface_material_override/0 = SubResource("StandardMaterial3D_8r01s")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Root" unique_id=884269832]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.5159199)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.5465901)
 mesh = SubResource("PrismMesh_16iyi")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="Root" unique_id=358180246]
-transform = Transform3D(-5.9604645e-08, -1, -4.371139e-08, 0, -4.371139e-08, 1, -1, 5.9604645e-08, 2.6645353e-15, -0.53180003, 0, 0.008666873)
-mesh = SubResource("PrismMesh_16iyi")
+surface_material_override/0 = SubResource("StandardMaterial3D_8r01s")

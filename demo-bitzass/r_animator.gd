@@ -219,11 +219,10 @@ func update_transforms():
 	hip_pose.global_position = hip_start_origin
 	pelvis_final.global_position = (root.global_transform * skeleton.get_bone_global_rest(0).inverse()) * current_transforms[0].origin
 	chest_pose.global_position = (root.global_transform * skeleton.get_bone_global_rest(0).inverse()) * current_transforms[-1].origin
-	#print("current transforms: ", current_transforms, " root transform: ", root.global_transform)
 	for i in range(current_transforms.size()):
 		multi_mesh_instance_3d.multimesh.set_instance_transform(i, current_transforms[i])
 
-func get_transforms_from_drivers(super_t : Transform3D, pelvis_t : Transform3D, hip_b : Basis, chest_b : Basis) -> Array[Transform3D]:
+func get_transforms_from_drivers(super_t : Transform3D, pelvis_t : Transform3D, hip_b : Basis, chest_b : Basis) -> Array[Transform3D]:# TODO: pass root t
 	
 	var rests : Array[Transform3D] = rest_transforms
 	
@@ -232,7 +231,7 @@ func get_transforms_from_drivers(super_t : Transform3D, pelvis_t : Transform3D, 
 		#return t * Transform3D(skeleton.get_bone_global_rest(0).basis * root.global_basis.inverse())
 		#)
 	#)
-	var delta_position :=  root.global_basis * pelvis_root.position - rests[0].origin
+	var delta_position :=  super_t.origin - rests[0].origin
 	
 	var transforms : Array[Transform3D]
 	
@@ -249,7 +248,7 @@ func get_transforms_from_drivers(super_t : Transform3D, pelvis_t : Transform3D, 
 	var hip_start_basis := pelvis_t.basis
 	var hip_start_origin := rests[hip_start_idx].origin + delta_position + offset
 	var hip_start_t := Transform3D(hip_start_basis, hip_start_origin)
-	var prev_rest :=  rests[hip_start_idx]
+	var prev_rest := rests[hip_start_idx]
 	transforms[hip_start_idx].basis = super_t.basis
 	transforms[hip_start_idx].origin = hip_start_t.origin
 	#hip_start_basis = hip_start_basis.orthonormalized()
@@ -262,8 +261,9 @@ func get_transforms_from_drivers(super_t : Transform3D, pelvis_t : Transform3D, 
 		var this_rest_pos := rests[i].origin
 		var delta := this_rest_pos - prev_rest.origin
 		var new := rests[i]
-		new.basis = (new.basis * b).orthonormalized()
-		new.origin = prev_pos + rests[i].basis.inverse() * new.basis * delta
+		new.basis = b * rests[i].basis
+		#new.origin = prev_pos + rests[i].basis.inverse() * new.basis * delta
+		new.origin = prev_pos + b * delta
 		prev_pos = new.origin
 		prev_rest = rests[i]
 		transforms[i] = new

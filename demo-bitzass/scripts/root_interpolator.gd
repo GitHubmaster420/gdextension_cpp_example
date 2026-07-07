@@ -7,7 +7,7 @@ extends BodyPartInterpolator
 func _process_modification_with_delta(delta: float) -> void:
 	if not anim_track_holder:
 		return
-	on_time_changed(current_time)
+	on_time_changed(anim_track_holder.time)
 	interpolate_keyframes()
 
 func interpolate_keyframes_in_time(time : float) -> Transform3D:
@@ -29,7 +29,7 @@ func interpolate_keyframes_in_time(time : float) -> Transform3D:
 func interpolate_keyframes():
 	if anim_track_holder.keyframes.size() == 0:
 		return
-	var trns := interpolate_keyframes_in_time(current_time)
+	var trns := interpolate_keyframes_in_time(anim_track_holder.time)
 	get_skeleton().set_bone_pose(0, trns)
 
 func on_keyframe_added(key : Keyframe):

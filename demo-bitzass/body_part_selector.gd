@@ -72,11 +72,14 @@ func _ready() -> void:
 	hovered = false
 	mouse_entered.connect(func(): hovered = true)
 	mouse_exited.connect(func(): hovered = false)
+	animation_player.play("selected", -1, 1.0 if false else -1.0, false)
 	
 	
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
+		if event.button_index != MOUSE_BUTTON_LEFT:
+			return
 		if event.pressed:
 			if event.shift_pressed:
 				return

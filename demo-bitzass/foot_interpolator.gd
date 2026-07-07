@@ -64,10 +64,13 @@ func _validate_property(property: Dictionary) -> void:
 			property.hint_string = skeleton.get_concatenated_bone_names()
 
 func _process_modification_with_delta(_delta: float) -> void:
-	on_time_changed(current_time)
+	on_time_changed(anim_track_holder.time)
 	interpolate_keyframes()
 
 func on_keyframe_added(key : Keyframe):
+	var pasted : bool = key.get_meta("was_pasted", false)
+	if pasted:
+		return
 	await get_skeleton().skeleton_updated
 	var animator := key.animator as FootAnimator
 	animator.foot_rot_curve = MyEaseInOut.new()
@@ -88,25 +91,13 @@ func on_keyframe_added(key : Keyframe):
 	animator.shin_length = st.origin.distance_to(ft.origin)
 	var thigh_pose := animator.thigh_pose
 	thigh_pose.global_transform = tt
-	var thigh_tangent := animator.thigh_tangent
-	thigh_tangent.global_transform = tt
+	animator.thigh_tangent.position = Vector3.ZERO
 	var shin_pose := animator.shin_pose
 	shin_pose.global_transform = st
-	var shin_tangent := animator.shin_tangent
-	shin_tangent.global_transform = st
-	animator.thigh_tangent_end.global_position = st.origin
-	
 	var foot_pose := animator.foot_pose
 	foot_pose.global_transform = ft
-	var foot_tangent := animator.foot_tangent
-	foot_tangent.global_transform = ft
 	var foot_ik_pose := animator.foot_ik_pose
-	var foot_ik_tangent := animator.foot_ik_tangent
-	foot_ik_tangent.global_transform = ft
 	foot_ik_pose.global_transform = ft
-	animator.shin_tangent_end.global_position = ft.origin
-	
-
 
 
 func interpolate_keyframes():
@@ -130,9 +121,9 @@ func interpolate_keyframes():
 	var thigh_pos_2 := thigh_offset_to_pelvis
 	
 	animator_1.thigh_pose.position = thigh_pos_1
-	animator_1.thigh_tangent.position = thigh_pos_1
+	animator_1.thigh_tangent.position = Vector3.ZERO
 	animator_2.thigh_pose.position = thigh_pos_2
-	animator_2.thigh_tangent.position = thigh_pos_2
+	animator_2.thigh_tangent.position = Vector3.ZERO
 	
 	match animator_1.interp_mode:
 		FootAnimator.InterpMode.IK_HERMITE:
@@ -141,7 +132,7 @@ func interpolate_keyframes():
 			var tr2 := animator_2.foot_ik_pose.global_transform
 			#var _tr := tr1.interpolate_with(tr2, t)
 			var pos := animator_1.foot_ik_pose.global_position.lerp(animator_2.foot_ik_pose.global_position, t)
-			var spine_pos := spine_bone_modifier.interpolate_pelvis_in_time(current_time)
+			var spine_pos := spine_bone_modifier.interpolate_pelvis_in_time(anim_track_holder.time)
 			await spine_bone_modifier.modification_processed
 			var thigh_pos := get_skeleton().get_bone_global_pose(thigh_id).origin
 			var roll := lerp_angle(animator_1.foot_ik_pose_roll.rotation.y, animator_2.foot_ik_pose_roll.rotation.y, t)

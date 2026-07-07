@@ -16,11 +16,3 @@ func _validate_property(property: Dictionary) -> void:
 				continue
 			names.append(c.name)
 		property.hint_string = ",".join(names)
-
-func _ready() -> void:
-	pressed.connect(func():
-		if not animator.get(curve_path):
-			var curve := NestedCubicCurve.create_preset(NestedCubicCurve.CurvePresets.SINGLE_S)
-			animator.set(curve_path, curve)
-		(get_parent() as CubicCurveDrawer).nested_cubic = animator.get(curve_path)
-		)

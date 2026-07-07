@@ -9,12 +9,12 @@ var pos_at_start : Vector3
 	set(v):
 		if gizmo == v:
 			return
-		if gizmo:
-			gizmo.released.disconnect(on_gizmo_released)
+		#if gizmo:
+			#gizmo.released.disconnect(on_gizmo_released)
 		gizmo = v
 		if not gizmo:
 			return
-		gizmo.released.connect(on_gizmo_released)
+		#gizmo.released.connect(on_gizmo_released)
 		if not is_node_ready():
 			return
 		on_gizmo_released()
@@ -49,16 +49,25 @@ func on_gizmo_released():
 		PivotMode.ON_TOE:
 			toe_pivot.rotation = controllable.rotation
 			controllable = toe_pivot
-			gizmo.controllable = controllable.get_child(0)
+			if gizmo:
+				gizmo.controllable = controllable.get_child(0)
 			(controllable.get_child(0) as GizmoControllable).gizmo = gizmo
 			heel_pivot.position = position + basis * heel_to_ankle
 		PivotMode.ON_HEEL:
 			heel_pivot.rotation = controllable.rotation
 			controllable = heel_pivot
-			gizmo.controllable = controllable.get_child(0)
+			if gizmo:
+				gizmo.controllable = controllable.get_child(0)
 			(controllable.get_child(0) as GizmoControllable).gizmo = gizmo
 			toe_pivot.position = position + basis * toe_to_ankle
-			
+
+func follow_foot(desired_t : Transform3D):
+	var t := ankle.transform
+	
+	transform = t.inverse() * desired_t
+	heel_pivot.position = position + basis * heel_to_ankle
+	toe_pivot.position = position + basis * toe_to_ankle
+
 func _process(delta: float) -> void:
 	if not gizmo:
 		return

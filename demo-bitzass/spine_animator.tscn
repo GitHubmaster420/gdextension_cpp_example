@@ -47,16 +47,16 @@ albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nmv5h"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_nmv5h"]
+[sub_resource type="SphereMesh" id="SphereMesh_0by38"]
 radius = 0.05
-height = 0.05
+height = 0.1
 is_hemisphere = true
 
-[sub_resource type="MultiMesh" id="MultiMesh_4by0n"]
+[sub_resource type="MultiMesh" id="MultiMesh_nmv5h"]
 transform_format = 1
 instance_count = 4
-mesh = SubResource("SphereMesh_nmv5h")
-buffer = PackedFloat32Array(1, 7.3421815e-15, 2.3841855e-07, -2.0679236e-15, 5.951867e-08, 0.9683389, -0.24963947, 0.92836714, -2.3086994e-07, 0.24963947, 0.9683389, -0.05519997, 1, 1.08947826e-14, 2.3841855e-07, 1.1760502e-15, 2.0247098e-08, 0.99638754, -0.084922545, 1.0757672, -2.3755727e-07, 0.084922545, 0.99638754, -0.017199963, 1, 2.1997007e-14, 2.3841855e-07, 6.2180765e-15, -5.8240825e-09, 0.9997016, 0.024427883, 1.2728796, -2.3834741e-07, -0.024427883, 0.9997016, -0.00039997697, 1, 3.964902e-14, -8.420006e-14, 1.3359898e-14, -3.7303494e-14, 0.999617, 0.027676169, 1.4979653, 8.526513e-14, -0.027676167, 0.99961704, -0.005899988)
+mesh = SubResource("SphereMesh_0by38")
+buffer = PackedFloat32Array(1, 5.7049397e-07, 1.4965647e-06, -1.7791379e-07, -1.7882803e-07, 0.9683386, -0.24964064, 0.9283672, -1.5915994e-06, 0.24964061, 0.9683387, -0.055200264, 1, 1.7652195e-07, 9.06205e-07, -4.6013447e-08, -9.8926435e-08, 0.9963877, -0.08492324, 1.0757672, -9.17922e-07, 0.08492321, 0.9963877, -0.01720008, 1, 1.19172334e-07, -1.9521546e-07, 6.2180765e-15, -1.14368106e-07, 0.9997016, 0.024427708, 1.2728796, 1.980683e-07, -0.024427708, 0.9997016, -0.00039996207, 1, 2.3834458e-07, -8.672682e-07, 2.9208994e-08, -2.1425085e-07, 0.999617, 0.027675904, 1.4979653, 8.735323e-07, -0.027675902, 0.99961704, -0.0058999336)
 
 [node name="SpineAnimator" type="Node3D" unique_id=96204510 node_paths=PackedStringArray("auto_tangent_influence_spin_box", "angular_velocity_spin_box", "gizmo_controllables", "root", "pelvis_root", "pelvis_final", "hip_pose", "chest_pose", "skeleton", "multi_mesh_instance_3d", "gizmo")]
 script = ExtResource("1_3iju0")
@@ -66,7 +66,7 @@ chest_rot_ease_curve = SubResource("Resource_ko0va")
 auto_tangent_influence_spin_box = NodePath("AutoTangentInfluenceSpinBox")
 angular_velocity_spin_box = NodePath("AngularVelocitySpinBox")
 rest_transforms = Array[Transform3D]([Transform3D(1, 1.7763568e-14, 2.3841858e-07, 5.951867e-08, 0.9683389, -0.24963954, -2.3086994e-07, 0.24963951, 0.968339, 0, 0.92836714, -0.05519998), Transform3D(1, 1.7763568e-14, 2.3841858e-07, 2.0247098e-08, 0.9963878, -0.08492264, -2.3755727e-07, 0.08492261, 0.9963878, 2.703961e-15, 1.0757672, -0.017199963), Transform3D(1, 1.7763568e-14, 2.3841858e-07, -5.8240825e-09, 0.99970186, 0.024427816, -2.3834741e-07, -0.024427846, 0.99970186, 6.2180765e-15, 1.2728796, -0.00039996207), Transform3D(1, 1.7763568e-14, 0, -3.7303494e-14, 0.99961734, 0.027676096, 8.526513e-14, -0.027676133, 0.99961716, 1.0217597e-14, 1.4979655, -0.005899965)])
-current_transforms = Array[Transform3D]([Transform3D(1, 7.3421815e-15, 2.3841855e-07, 5.951867e-08, 0.9683389, -0.24963947, -2.3086994e-07, 0.24963947, 0.9683389, -2.0679236e-15, 0.92836714, -0.05519997), Transform3D(1, 1.08947826e-14, 2.3841855e-07, 2.0247098e-08, 0.99638754, -0.084922545, -2.3755727e-07, 0.084922545, 0.99638754, 1.1760502e-15, 1.0757672, -0.017199963), Transform3D(1, 2.1997007e-14, 2.3841855e-07, -5.8240825e-09, 0.9997016, 0.024427883, -2.3834741e-07, -0.024427883, 0.9997016, 6.2180765e-15, 1.2728796, -0.00039997697), Transform3D(1, 3.964902e-14, -8.420006e-14, -3.7303494e-14, 0.999617, 0.027676169, 8.526513e-14, -0.027676167, 0.99961704, 1.3359898e-14, 1.4979653, -0.005899988)])
+current_transforms = Array[Transform3D]([Transform3D(1, 5.7049397e-07, 1.4965647e-06, -1.7882803e-07, 0.9683386, -0.24964064, -1.5915994e-06, 0.24964061, 0.9683387, -1.7791379e-07, 0.9283672, -0.055200264), Transform3D(1, 1.7652195e-07, 9.06205e-07, -9.8926435e-08, 0.9963877, -0.08492324, -9.17922e-07, 0.08492321, 0.9963877, -4.6013447e-08, 1.0757672, -0.01720008), Transform3D(1, 1.19172334e-07, -1.9521546e-07, -1.14368106e-07, 0.9997016, 0.024427708, 1.980683e-07, -0.024427708, 0.9997016, 6.2180765e-15, 1.2728796, -0.00039996207), Transform3D(1, 2.3834458e-07, -8.672682e-07, -2.1425085e-07, 0.999617, 0.027675904, 8.735323e-07, -0.027675902, 0.99961704, 2.9208994e-08, 1.4979653, -0.0058999336)])
 gizmo_controllables = [NodePath("Root/PelvisRoot/GizmoControllable"), NodePath("Root/PelvisRoot/HipPose/GizmoControllable"), NodePath("Root/PelvisRoot/ChestPose/GizmoControllable")]
 root = NodePath("Root")
 pelvis_root = NodePath("Root/PelvisRoot")
@@ -89,7 +89,7 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0
 rotation_edit_mode = 1
 
 [node name="PelvisRoot" type="Marker3D" parent="Root" unique_id=314184583]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0.05519994, 0.92836714)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.05519994, 0.92836714)
 script = ExtResource("2_4by0n")
 
 [node name="GizmoControllable" type="Node" parent="Root/PelvisRoot" unique_id=1269689715 node_paths=PackedStringArray("gizmo")]
@@ -99,14 +99,14 @@ gizmo = NodePath("../../../Gizmo")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="HipPose" type="Marker3D" parent="Root/PelvisRoot" unique_id=595876309]
-transform = Transform3D(1.0001382, 0, 0, 0, 1.0001382, -5.8975047e-13, 0, 9.237056e-13, 0.9999992, 6.2180765e-15, 0.34451246, 0.05480002)
+transform = Transform3D(1.000293, -1.9819701e-12, -4.3013133e-06, -2.3841687e-07, 1.0001473, -6.854577e-07, -1.3611279e-06, 1.1027621e-06, 1.0001504, 6.2180765e-15, 0.34451246, 0.05480002)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Root/PelvisRoot/HipPose" unique_id=1550418672]
 mesh = SubResource("TorusMesh_7a6cg")
 surface_material_override/0 = SubResource("StandardMaterial3D_4by0n")
 
 [node name="PelvisFinal" type="Marker3D" parent="Root/PelvisRoot/HipPose" unique_id=553703623]
-transform = Transform3D(1.000095, -3.0696008e-06, 9.94745e-14, 1.7281416e-06, 1.0001132, -5.960339e-07, 4.0092373e-13, -2.1766516e-07, 1.000003, -8.284855e-15, -0.3444649, -0.054800052)
+transform = Transform3D(0.99992085, -2.3245643e-06, 5.524639e-07, 1.9673726e-06, 0.99964786, -2.3834832e-07, -5.024106e-06, -8.3426664e-07, 0.9998102, -4.1346968e-07, -0.34446174, -0.05479172)
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Root/PelvisRoot/HipPose/PelvisFinal" unique_id=1532392105]
 mesh = SubResource("TorusMesh_7a6cg")
@@ -118,7 +118,7 @@ gizmo = NodePath("../../../../Gizmo")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="ChestPose" type="Marker3D" parent="Root/PelvisRoot" unique_id=233697258]
-transform = Transform3D(1.0001526, 0, 0, 0, 1.0001526, -5.8975047e-13, 0, 8.881784e-13, 0.9999992, 1.3359898e-14, 0.5695982, 0.04930002)
+transform = Transform3D(1.0002987, -2.3843464e-07, -4.3013133e-06, -2.3841575e-07, 1.0001599, -6.854577e-07, 8.67527e-07, 1.788245e-07, 1.0001504, 2.9208994e-08, 0.5695982, 0.04929998)
 
 [node name="GizmoControllable" type="Node" parent="Root/PelvisRoot/ChestPose" unique_id=1123682629 node_paths=PackedStringArray("gizmo")]
 script = ExtResource("2_7a6cg")
@@ -130,7 +130,7 @@ mesh = SubResource("TorusMesh_7a6cg")
 surface_material_override/0 = SubResource("StandardMaterial3D_nmv5h")
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="." unique_id=1531379649]
-multimesh = SubResource("MultiMesh_4by0n")
+multimesh = SubResource("MultiMesh_nmv5h")
 
 [node name="Skeleton3D" type="Skeleton3D" parent="." unique_id=1955628591]
 bones/0/name = "root"

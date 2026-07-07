@@ -55,20 +55,24 @@ enum InterpMode{
 
 @export var pie_menu : ColorRect
 
-@export var pose_mesh : MeshInstance3D
-@export var tangent_mesh : MeshInstance3D
+@export var thigh_stretcher: Stretcher
+@export var shin_stetcher: Stretcher
+@export var foot_pose_mesh: MeshInstance3D
+
+
+@export var thigh_tangent_mesh: MeshInstance3D
+@export var shin_tangent_mesh: MeshInstance3D
+@export var foot_tangent_mesh: MeshInstance3D
+
 
 var thigh_length : float
 
 var shin_length : float
 
-var pose_material : StandardMaterial3D:
-	get:
-		return pose_mesh.get_active_material(0)
+#var pose_material : StandardMaterial3D:
+	#get:
+		#return pose_mesh.get_active_material(0)
 
-var tangent_material : StandardMaterial3D:
-	get:
-		return tangent_mesh.get_active_material(0)
 
 enum Edited{
 	POSE, TANGENT
@@ -122,17 +126,28 @@ var selected := false
 @export var thigh_tangent: Marker3D
 @export var shin_tangent: Marker3D
 @export var foot_tangent: Marker3D
+#
+#
+#@export var thigh_tangent_prev_angle_menu: AngleMenu
+#@export var thigh_tangent_next_angle_menu: AngleMenu
+#@export var shin_tangent_prev_angle_menu: AngleMenu
+#@export var shin_tangent_next_angle_menu: AngleMenu
+#@export var foot_tangent_prev_angle_menu: AngleMenu
+#@export var foot_tangent_next_angle_menu: AngleMenu
 
-@export var thigh_tangent_end: Marker3D
-@export var shin_tangent_end: Marker3D
+@export var shin_ease_curve_drawer: EaseCurveDrawer
+@export var shin_h_slider: HSlider
+@export var shin_v_slider: VSlider
+@export var shin_v_slider_2: VSlider
+@export var foot_ease_curve_drawer: EaseCurveDrawer
+@export var foot_h_slider: HSlider
+@export var foot_v_slider: VSlider
+@export var foot_v_slider_2: VSlider
+@export var thigh_ease_curve_drawer: EaseCurveDrawer
+@export var thigh_h_slider: HSlider
+@export var thigh_v_slider: VSlider
+@export var thigh_v_slider_2: VSlider
 
-
-@export var thigh_tangent_prev_angle_menu: AngleMenu
-@export var thigh_tangent_next_angle_menu: AngleMenu
-@export var shin_tangent_prev_angle_menu: AngleMenu
-@export var shin_tangent_next_angle_menu: AngleMenu
-@export var foot_tangent_prev_angle_menu: AngleMenu
-@export var foot_tangent_next_angle_menu: AngleMenu
 
 @export var thigh_tangent_prev_influence : float
 @export var thigh_tangent_next_influence : float
@@ -141,13 +156,26 @@ var selected := false
 @export var foot_tangent_prev_influence : float
 @export var foot_tangent_next_influence : float
 
-@export var thigh_angular_velocity_setter: LineEdit
-@export var shin_angular_velocity_setter: LineEdit
-@export var foot_angular_velocity_setter: LineEdit
+#@export var thigh_angular_velocity_setter: LineEdit
+#@export var shin_angular_velocity_setter: LineEdit
+#@export var foot_angular_velocity_setter: LineEdit
 
-@export var thigh_angular_velocity : float ##rad/s
-@export var shin_angular_velocity : float ##rad/s
-@export var foot_angular_velocity : float ##rad/s
+@export var thigh_velocity_tangent: VelocityTangent
+@export var shin_velocity_tangent: VelocityTangent
+@export var foot_velocity_tangent: VelocityTangent
+
+
+@export var thigh_angular_velocity : float: ##rad/s
+	set(v):
+		thigh_angular_velocity = v
+		if not is_node_ready():
+			return
+@export var shin_angular_velocity : float: ##rad/s
+	set(v):
+		shin_angular_velocity = v
+@export var foot_angular_velocity : float: ##rad/s
+	set(v):
+		foot_angular_velocity = v
 
 @export var pose_fk_gizmoables : Array[GizmoControllable]
 @export var tangent_fk_gizmoables : Array[GizmoControllable]
@@ -195,7 +223,7 @@ var current := 0:
 		current = v
 		if not is_node_ready():
 			return
-		hide_stuff()
+		#hide_stuff()
 		
 		if current > max_current:
 			current = 0
@@ -203,7 +231,33 @@ var current := 0:
 			current = max_current
 		if not gizmo:
 			return
-		
+		var meshes : Array[MeshInstance3D ]= [
+		thigh_stretcher, shin_stetcher, foot_pose_mesh,
+		thigh_tangent_mesh, shin_tangent_mesh, foot_tangent_mesh
+		]
+		for m in meshes:
+			(m.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+		match edited:
+			Edited.POSE:
+				if pose_mode == Mode.FK:
+					(meshes[current].get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+				else:
+					if current == 1:
+						(foot_pose_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+					else:
+						(thigh_stretcher.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+						(shin_stetcher.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+			Edited.TANGENT:
+				if tangent_mode == Mode.FK:
+					(meshes[current + 3].get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+				#else:
+					#if current == 1:
+						#if gizmo.mode == Gizmo.Mode.GRAB:
+							#(shin_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+						#else:
+							#(foot_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+					#else:
+						#(thigh_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
 		if is_on_ground:
 			if current == 0:
 				gizmo.controllable = pose_mode_ik_gizmoables[0]
@@ -213,7 +267,7 @@ var current := 0:
 		else:
 			grounded_foot.gizmo = null
 			gizmo.controllable = current_gizmoables[current]
-		show_rotations()
+		#show_rotations()
 
 func on_gizmo_set(_gizmo : Gizmo):
 	if _gizmo:
@@ -234,74 +288,23 @@ func on_gizmo_released(_gizmo : Gizmo):
 	print("gizmo released")
 	if not _gizmo or not gizmo:
 		return
+	if is_on_ground:
+		grounded_foot.on_gizmo_released()
 	print("!!!")
-	thigh_tangent_next_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(thigh_tangent.global_rotation).angle_to(Quaternion.from_euler(thigh_pose.global_rotation)))
-	thigh_tangent_prev_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(thigh_tangent.global_rotation).angle_to(Quaternion.from_euler(thigh_pose.global_rotation)))
-	shin_tangent_next_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(shin_tangent.global_rotation).angle_to(Quaternion.from_euler(shin_pose.global_rotation)))
-	shin_tangent_prev_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(shin_tangent.global_rotation).angle_to(Quaternion.from_euler(shin_pose.global_rotation)))
-	foot_tangent_next_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(foot_tangent.global_rotation).angle_to(Quaternion.from_euler(foot_pose.global_rotation)))
-	foot_tangent_prev_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(foot_tangent.global_rotation).angle_to(Quaternion.from_euler(foot_pose.global_rotation)))
+	#thigh_tangent_next_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(thigh_tangent.global_rotation).angle_to(Quaternion.from_euler(thigh_pose.global_rotation)))
+	#thigh_tangent_prev_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(thigh_tangent.global_rotation).angle_to(Quaternion.from_euler(thigh_pose.global_rotation)))
+	#shin_tangent_next_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(shin_tangent.global_rotation).angle_to(Quaternion.from_euler(shin_pose.global_rotation)))
+	#shin_tangent_prev_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(shin_tangent.global_rotation).angle_to(Quaternion.from_euler(shin_pose.global_rotation)))
+	#foot_tangent_next_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(foot_tangent.global_rotation).angle_to(Quaternion.from_euler(foot_pose.global_rotation)))
+	#foot_tangent_prev_angle_menu.default_angle = rad_to_deg(Quaternion.from_euler(foot_tangent.global_rotation).angle_to(Quaternion.from_euler(foot_pose.global_rotation)))
 	
 
 func on_gizmo_mode_set(mode : Gizmo.Mode):
-	hide_stuff()
-	show_rotations()
+	return
+	#hide_stuff()
+#
 
 
-func show_rotations():
-	if not selected:
-		return
-	if edited == Edited.TANGENT:
-		
-		if tangent_mode == Mode.FK:
-			match current:
-				0:
-					
-					if is_prev_keyframe:
-						thigh_angular_velocity_setter.visible = true
-						thigh_tangent_next_angle_menu.visible = true
-					elif is_next_keyframe:
-						thigh_angular_velocity_setter.visible = true
-						thigh_tangent_prev_angle_menu.visible = true
-				1:
-					
-					if is_prev_keyframe:
-						shin_tangent_next_angle_menu.visible = true
-						shin_angular_velocity_setter.visible = true
-					elif is_next_keyframe:
-						shin_tangent_prev_angle_menu.visible = true
-						shin_angular_velocity_setter.visible = true
-				2:
-					
-					if is_prev_keyframe:
-						foot_tangent_next_angle_menu.visible = true
-						foot_angular_velocity_setter.visible = true
-					elif is_next_keyframe:
-						foot_tangent_prev_angle_menu.visible = true
-						foot_angular_velocity_setter.visible = true
-		else:
-			if current == 0:
-				if is_prev_keyframe:
-					thigh_angular_velocity_setter.visible = true
-					thigh_tangent_next_angle_menu.visible = true
-				elif is_next_keyframe:
-					thigh_angular_velocity_setter.visible = true
-					thigh_tangent_prev_angle_menu.visible = true
-			else:
-				if gizmo.mode == Gizmo.Mode.GRAB:
-					if is_prev_keyframe:
-						foot_tangent_next_angle_menu.visible = true
-						foot_angular_velocity_setter.visible = true
-					elif is_next_keyframe:
-						foot_tangent_prev_angle_menu.visible = true
-						foot_angular_velocity_setter.visible = true
-				else:
-					if is_prev_keyframe:
-						shin_tangent_next_angle_menu.visible = true
-						shin_angular_velocity_setter.visible = true
-					elif is_next_keyframe:
-						shin_tangent_prev_angle_menu.visible = true
-						shin_angular_velocity_setter.visible = true
 
 func _ready() -> void:
 	is_right = is_right
@@ -312,68 +315,88 @@ func _ready() -> void:
 	is_on_ground = is_on_ground
 	gizmo_set.connect(on_gizmo_set)
 	gizmo = gizmo
-	thigh_tangent_next_angle_menu.angle_set.connect(func():
-		thigh_tangent_next_influence = (thigh_tangent_next_angle_menu.angle)/180.0)
-	thigh_tangent_prev_angle_menu.angle_set.connect(func():
-		thigh_tangent_prev_influence = (thigh_tangent_prev_angle_menu.angle)/180.0)
-	shin_tangent_next_angle_menu.angle_set.connect(func():
-		shin_tangent_next_influence = (shin_tangent_next_angle_menu.angle)/180.0)
-	shin_tangent_prev_angle_menu.angle_set.connect(func():
-		shin_tangent_prev_influence = (shin_tangent_prev_angle_menu.angle)/180.0)
-	foot_tangent_next_angle_menu.angle_set.connect(func():
-		foot_tangent_next_influence = (foot_tangent_next_angle_menu.angle)/180.0)
-	foot_tangent_prev_angle_menu.angle_set.connect(func():
-		foot_tangent_prev_influence = (foot_tangent_prev_angle_menu.angle) / 180.0)
+	#thigh_tangent_next_angle_menu.angle_set.connect(func():
+		#thigh_tangent_next_influence = (thigh_tangent_next_angle_menu.angle)/180.0)
+	#thigh_tangent_prev_angle_menu.angle_set.connect(func():
+		#thigh_tangent_prev_influence = (thigh_tangent_prev_angle_menu.angle)/180.0)
+	#shin_tangent_next_angle_menu.angle_set.connect(func():
+		#shin_tangent_next_influence = (shin_tangent_next_angle_menu.angle)/180.0)
+	#shin_tangent_prev_angle_menu.angle_set.connect(func():
+		#shin_tangent_prev_influence = (shin_tangent_prev_angle_menu.angle)/180.0)
+	#foot_tangent_next_angle_menu.angle_set.connect(func():
+		#foot_tangent_next_influence = (foot_tangent_next_angle_menu.angle)/180.0)
+	#foot_tangent_prev_angle_menu.angle_set.connect(func():
+		#foot_tangent_prev_influence = (foot_tangent_prev_angle_menu.angle) / 180.0)
+	#
+	#thigh_angular_velocity = deg_to_rad(float(thigh_angular_velocity_setter.text))
+	#shin_angular_velocity = deg_to_rad(float(shin_angular_velocity_setter.text))
+	#foot_angular_velocity = deg_to_rad(float(foot_angular_velocity_setter.text))
 	
-	thigh_angular_velocity = deg_to_rad(float(thigh_angular_velocity_setter.text))
-	shin_angular_velocity = deg_to_rad(float(shin_angular_velocity_setter.text))
-	foot_angular_velocity = deg_to_rad(float(foot_angular_velocity_setter.text))
-	
-	thigh_tangent_next_angle_menu.angle_set.emit()
-	thigh_tangent_prev_angle_menu.angle_set.emit()
-	shin_tangent_next_angle_menu.angle_set.emit()
-	shin_tangent_prev_angle_menu.angle_set.emit()
-	foot_tangent_next_angle_menu.angle_set.emit()
-	foot_tangent_prev_angle_menu.angle_set.emit()
-	
-	
-	
-	thigh_angular_velocity_setter.text_submitted.connect(func(text : String):
-		thigh_angular_velocity = deg_to_rad(float(text))
+	thigh_velocity_tangent.velocity = thigh_angular_velocity
+	thigh_velocity_tangent.set_goal_object_p_with_vel(thigh_angular_velocity)
+	thigh_velocity_tangent.velocity_set.connect(func(v : float):
+		thigh_angular_velocity = v
 		)
-	shin_angular_velocity_setter.text_submitted.connect(func(text : String):
-		shin_angular_velocity = deg_to_rad(float(text))
+	
+	shin_velocity_tangent.velocity = shin_angular_velocity
+	shin_velocity_tangent.set_goal_object_p_with_vel(shin_angular_velocity)
+	shin_velocity_tangent.velocity_set.connect(func(v : float):
+		shin_angular_velocity = v
 		)
-	foot_angular_velocity_setter.text_submitted.connect(func(text : String):
-		foot_angular_velocity = deg_to_rad(float(text))
+	
+	foot_velocity_tangent.velocity = foot_angular_velocity
+	foot_velocity_tangent.set_goal_object_p_with_vel(foot_angular_velocity)
+	foot_velocity_tangent.velocity_set.connect(func(v : float):
+		foot_angular_velocity = v
 		)
+	
+	
+	
+	#thigh_tangent_next_angle_menu.angle_set.emit()
+	#thigh_tangent_prev_angle_menu.angle_set.emit()
+	#shin_tangent_next_angle_menu.angle_set.emit()
+	#shin_tangent_prev_angle_menu.angle_set.emit()
+	#foot_tangent_next_angle_menu.angle_set.emit()
+	#foot_tangent_prev_angle_menu.angle_set.emit()
+	#
+	#
+	#
+	#thigh_angular_velocity_setter.text_submitted.connect(func(text : String):
+		#thigh_angular_velocity = deg_to_rad(float(text))
+		#)
+	#shin_angular_velocity_setter.text_submitted.connect(func(text : String):
+		#shin_angular_velocity = deg_to_rad(float(text))
+		#)
+	#foot_angular_velocity_setter.text_submitted.connect(func(text : String):
+		#foot_angular_velocity = deg_to_rad(float(text))
+		#)
 	visibility_changed.connect(func():
 		if not visible:
-			hide_stuff()
+			#hide_stuff()
 			return
 		if not gizmo:
 			return
 		gizmo.mode = gizmo.mode
 		)
-	set_prev_keyframe.connect(func():
-		hide_stuff()
-		show_rotations())
-	set_next_keyframe.connect(func():
-		hide_stuff()
-		show_rotations())
-
-func hide_stuff():
-	for ci : CanvasItem in [thigh_angular_velocity_setter, 
-		thigh_tangent_next_angle_menu, 
-		thigh_tangent_prev_angle_menu,
-		shin_angular_velocity_setter,
-		shin_tangent_next_angle_menu,
-		shin_tangent_prev_angle_menu,
-		foot_angular_velocity_setter, 
-		foot_tangent_next_angle_menu, 
-		foot_tangent_prev_angle_menu
-		]:
-		ci.visible = false
+	#set_prev_keyframe.connect(func():
+		#hide_stuff()
+		#show_rotations())
+	#set_next_keyframe.connect(func():
+		#hide_stuff()
+		#show_rotations())
+#
+#func hide_stuff():
+	#for ci : CanvasItem in [thigh_angular_velocity_setter, 
+		#thigh_tangent_next_angle_menu, 
+		#thigh_tangent_prev_angle_menu,
+		#shin_angular_velocity_setter,
+		#shin_tangent_next_angle_menu,
+		#shin_tangent_prev_angle_menu,
+		#foot_angular_velocity_setter, 
+		#foot_tangent_next_angle_menu, 
+		#foot_tangent_prev_angle_menu
+		#]:
+		#ci.visible = false
 
 func select():
 	selected = true
@@ -382,27 +405,37 @@ func select():
 			select_pose()
 		Edited.TANGENT:
 			select_tangent()
-	hide_stuff()
-	show_rotations()
+	#hide_stuff()
+	#show_rotations()
 
 func deselect():
 	selected = false
-	hide_stuff()
-	pose_material.albedo_color.a = 0.1
-	tangent_material.albedo_color.a = 0.1
+	#hide_stuff()
+	var meshes : Array[MeshInstance3D ]= [
+		thigh_stretcher, shin_stetcher, foot_pose_mesh,
+		thigh_tangent_mesh, shin_tangent_mesh, foot_tangent_mesh
+	]
+	for m in meshes:
+		(m.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+	#pose_material.albedo_color.a = 0.1
+	#tangent_material.albedo_color.a = 0.1
 
 func select_pose():
-	pose_material.albedo_color.a = 0.5
-	tangent_material.albedo_color.a = 0.25
+	pass
+	#pose_material.albedo_color.a = 0.5
+	#tangent_material.albedo_color.a = 0.25
 
 func select_tangent():
-	tangent_material.albedo_color.a = 0.5
-	pose_material.albedo_color.a = 0.25
+	pass
+	#tangent_material.albedo_color.a = 0.5
+	#pose_material.albedo_color.a = 0.25
 
 
 func _process(delta: float) -> void:
 	if is_on_ground:
 		foot_ik_pose.global_transform = grounded_foot.ankle.global_transform
+	else:
+		grounded_foot.follow_foot(foot_ik_pose.global_transform)
 	if pose_mode == Mode.IK:
 		var rots := IkInterpstatic.get_ik_interpolation(thigh_pose.global_position, foot_ik_pose.global_position, thigh_length, shin_length, foot_ik_pose_roll.rotation.y)
 		thigh_pose.global_rotation = rots[0].get_euler()

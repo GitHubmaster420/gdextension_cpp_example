@@ -14,7 +14,18 @@ var time_when_copied : float
 
 func paste():
 	for kf in copied_keyframe_holders:
-		var new := kf.duplicate(15 & ~DuplicateFlags.DUPLICATE_SIGNALS)
+		var new : Keyframe = kf.duplicate()
+		var all_children := new.animator.find_children("*", "MeshInstance3D")
+		for m : MeshInstance3D in all_children:
+			m.set_surface_override_material(0, m.get_active_material(0).duplicate(true))
+		for c in new.animator.get_property_list():
+			if "curve" not in c.name:
+				continue
+			print("c name: ", c.name)
+			var r = new.animator.get(c.name)
+			if r is not Resource:
+				continue
+			new.animator.set(c.name, r.duplicate(true))
 		var h := copied_keyframe_holders[kf]
 		print("old time: ", new.time)
 		new.time += master_time.time - time_when_copied
@@ -24,7 +35,18 @@ func paste():
 func paste_flipped():
 	print("pasting flipped")
 	for kf in copied_keyframe_holders:
-		var new := kf.duplicate(15 & ~DuplicateFlags.DUPLICATE_SIGNALS)
+		var new : Keyframe = kf.duplicate()
+		var all_children := new.animator.find_children("*", "MeshInstance3D")
+		for m : MeshInstance3D in all_children:
+			m.set_surface_override_material(0, m.get_active_material(0).duplicate(true))
+		for c in new.animator.get_property_list():
+			if "curve" not in c.name:
+				continue
+			print("c name: ", c.name)
+			var r = new.animator.get(c.name)
+			if r is not Resource:
+				continue
+			new.animator.set(c.name, r.duplicate(true))
 		var h := copied_keyframe_holders[kf]
 		var new_h := h
 		if h == right_foot_anim_track_holder:

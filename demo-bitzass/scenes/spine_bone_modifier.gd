@@ -43,7 +43,7 @@ func on_keyframe_added(key : Keyframe):
 func _process_modification_with_delta(delta: float) -> void:
 	if not anim_track_holder:
 		return
-	on_time_changed(current_time)
+	on_time_changed(anim_track_holder.time)
 	
 	if anim_track_holder.keyframes.size() == 0:
 		return
@@ -152,7 +152,9 @@ func interpolate_keyframes_in_time(time : float) -> Array[Transform3D]:
 	var pelvis_t := super_t * hip_b * (animator_1.pelvis_final.basis.get_rotation_quaternion())
 	
 	var super_t_location := MyCurve3D.interpolate(super_t_1.origin, velocity_vector_1, super_t_2.origin, velocity_vector_2, t, k2.time - k1.time)
-	
+	#
+	#print("origin 1: ", super_t_1.origin, " origin 2: ", super_t_2.origin, " super t loc: ", super_t_location)
+	#
 	var super_t_transform := Transform3D(super_t, super_t_location)
 	
 	var transforms := animator_1.get_transforms_from_drivers(super_t_transform, pelvis_t, hip_b, chest_b)
@@ -165,7 +167,9 @@ func interpolate_keyframes():
 	if anim_track_holder.keyframes.size() == 0:
 		return
 	
-	var transforms := interpolate_keyframes_in_time(current_time)
+	var transforms := interpolate_keyframes_in_time(anim_track_holder.time)
+	
+	#print("origin: ", transforms[0].origin)
 	
 	get_skeleton().set_bone_pose_position(spine_based_idx, get_skeleton().get_bone_global_rest(0).inverse() * transforms[0].origin)
 	#

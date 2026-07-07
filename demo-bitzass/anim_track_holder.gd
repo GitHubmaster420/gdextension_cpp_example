@@ -57,11 +57,11 @@ var prev_key : Keyframe:
 		prev_key.animator.is_prev_keyframe = true
 		if prev_key.animator is not FootAnimator:
 			return
-		var stored := (prev_key.animator as FootAnimator).pose_material.albedo_color.a
-		(prev_key.animator as FootAnimator).pose_material.albedo_color = FootAnimator.PREV_POSE_COLOR
-		(prev_key.animator as FootAnimator).tangent_material.albedo_color = FootAnimator.PREV_TANGENT_COLOR
-		(prev_key.animator as FootAnimator).pose_material.albedo_color.a = stored
-		(prev_key.animator as FootAnimator).tangent_material.albedo_color.a = stored
+		#var stored := (prev_key.animator as FootAnimator).pose_material.albedo_color.a
+		#(prev_key.animator as FootAnimator).pose_material.albedo_color = FootAnimator.PREV_POSE_COLOR
+		#(prev_key.animator as FootAnimator).tangent_material.albedo_color = FootAnimator.PREV_TANGENT_COLOR
+		#(prev_key.animator as FootAnimator).pose_material.albedo_color.a = stored
+		#(prev_key.animator as FootAnimator).tangent_material.albedo_color.a = stored
 		
 		
 
@@ -70,18 +70,19 @@ var next_key : Keyframe:
 		if next_key:
 			if next_key != prev_key:
 				next_key.animator.visible = false
-			prev_key.animator.is_next_keyframe = false
+			if next_key:
+				prev_key.animator.is_next_keyframe = false
 		next_key = v
 		if not next_key: return
 		next_key.animator.visible = true
 		next_key.animator.is_next_keyframe = true
 		if next_key.animator is not FootAnimator:
 			return
-		var stored := (next_key.animator as FootAnimator).pose_material.albedo_color.a
-		(next_key.animator as FootAnimator).pose_material.albedo_color = FootAnimator.NEXT_POSE_COLOR
-		(next_key.animator as FootAnimator).tangent_material.albedo_color = FootAnimator.NEXT_TANGENT_COLOR
-		(next_key.animator as FootAnimator).pose_material.albedo_color.a = stored
-		(next_key.animator as FootAnimator).tangent_material.albedo_color.a = stored
+		#var stored := (next_key.animator as FootAnimator).pose_material.albedo_color.a
+		#(next_key.animator as FootAnimator).pose_material.albedo_color = FootAnimator.NEXT_POSE_COLOR
+		#(next_key.animator as FootAnimator).tangent_material.albedo_color = FootAnimator.NEXT_TANGENT_COLOR
+		#(next_key.animator as FootAnimator).pose_material.albedo_color.a = stored
+		#(next_key.animator as FootAnimator).tangent_material.albedo_color.a = stored
 	
 		
 
@@ -234,7 +235,8 @@ func paste_keyframe(kf : Keyframe):
 		elif selected_key == key:
 			selected_key = null
 		).bind(new_key))
-	#keyframe_added.emit(new_key)
+	new_key.set_meta("was_pasted", true)
+	keyframe_added.emit(new_key)
 
 func add_keyframe(mouse_pos : Vector2):
 	var new_key := Keyframe.new()

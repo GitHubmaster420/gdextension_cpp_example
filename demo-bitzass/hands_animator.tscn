@@ -44,17 +44,19 @@ sky = SubResource("Sky_owsej")
 tonemap_mode = 2
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_qodlf"]
+resource_local_to_scene = true
 top_radius = 0.0
 bottom_radius = 0.1
 height = 0.2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qodlf"]
+resource_local_to_scene = true
 transparency = 1
 no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 0.39215687)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_owsej"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_q758f"]
 radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_owsej"]
@@ -63,22 +65,24 @@ shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3j6ow"]
+resource_local_to_scene = true
 transparency = 1
 no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 0.39215687)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_q758f"]
-radius = 0.02
-height = 0.37500006
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3j6ow"]
+radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q758f"]
+resource_local_to_scene = true
 transparency = 1
 no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 0.39215687)
 
 [sub_resource type="TorusMesh" id="TorusMesh_0fnop"]
+resource_local_to_scene = true
 inner_radius = 0.07
 outer_radius = 0.1
 
@@ -94,11 +98,10 @@ albedo_color = Color(0, 0.2784314, 1, 0.30588236)
 radius = 0.02
 height = 0.1
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_3j6ow"]
-radius = 0.0
-height = 0.0
-
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8g6qd"]
+radius = 0.05
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_oykc4"]
 radius = 0.05
 height = 0.40140998
 
@@ -110,7 +113,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(0, 0.2784314, 1, 0.30588236)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_oykc4"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_8ynca"]
 radius = 0.05
 height = 0.5726471
 
@@ -122,10 +125,13 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(0, 0.2784314, 1, 0.30588236)
 
-[node name="HandsAnimator" type="Node3D" unique_id=863480283 node_paths=PackedStringArray("thigh_auto_vel_check_button", "side_panel", "hand_mesh", "low_arm_stretcher", "up_arm_stretcher", "up_arm_tangent_mesh", "low_arm_tangent_mesh", "hand_tangent_mesh", "pose_fk_gizmoables", "tangent_fk_gizmoables", "pose_mesh_instance", "up_arm_pose", "low_arm_pose", "hand_pose", "up_arm_tangent_object", "low_arm_tangent_object", "hand_tangent_object", "up_arm_velocity_tangent_object", "low_arm_velocity_tangent_object", "hand_velocity_tangent_object", "chest", "shoulder_pose")]
+[node name="HandsAnimator" type="Node3D" unique_id=863480283 node_paths=PackedStringArray("thigh_auto_vel_check_button", "side_panel", "up_arm_curve_drawer", "low_arm_curve_drawer", "hand_curve_drawer", "hand_mesh", "low_arm_stretcher", "up_arm_stretcher", "up_arm_tangent_mesh", "low_arm_tangent_mesh", "hand_tangent_mesh", "pose_fk_gizmoables", "tangent_fk_gizmoables", "pose_mesh_instance", "up_arm_pose", "low_arm_pose", "hand_pose", "up_arm_tangent_object", "low_arm_tangent_object", "hand_tangent_object", "up_arm_velocity_tangent_object", "low_arm_velocity_tangent_object", "hand_velocity_tangent_object", "chest", "shoulder_pose")]
 script = ExtResource("1_k435q")
 thigh_auto_vel_check_button = NodePath("Control/ThighAutoVelCheckButton")
 side_panel = NodePath("Control")
+up_arm_curve_drawer = NodePath("Control/UpArmCurveDrawer")
+low_arm_curve_drawer = NodePath("Control/LowArmCurveDrawer")
+hand_curve_drawer = NodePath("Control/HandCurveDrawer")
 hand_mesh = NodePath("Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose/HandMesh")
 low_arm_stretcher = NodePath("Chest/ShoulderPose/UpArmPose/LowArmPose/LowArmStretcher")
 up_arm_stretcher = NodePath("Chest/ShoulderPose/UpArmPose/UpArmStretcher")
@@ -201,7 +207,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="Stretcher" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose/VelocityTangent" unique_id=539030581 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 top_level = true
-mesh = SubResource("CapsuleMesh_owsej")
+mesh = SubResource("CapsuleMesh_q758f")
 surface_material_override/0 = SubResource("StandardMaterial3D_owsej")
 script = ExtResource("3_awd5n")
 start_stretch = NodePath("../Goal")
@@ -238,9 +244,9 @@ tangent_gizmo_controllable = NodePath("../LowArmTangent/GizmoControllable")
 velocity_gizmo_controllable = NodePath("Goal/GizmoControllable")
 
 [node name="Stretcher" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose/LowArmPose/VelocityTangent" unique_id=1292356219 node_paths=PackedStringArray("start_stretch", "end_stretch")]
-transform = Transform3D(0, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0.7601471, 0)
+transform = Transform3D(0, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0.5726471, 0)
 top_level = true
-mesh = SubResource("CapsuleMesh_q758f")
+mesh = SubResource("CapsuleMesh_3j6ow")
 surface_material_override/0 = SubResource("StandardMaterial3D_owsej")
 script = ExtResource("3_awd5n")
 start_stretch = NodePath("../Goal")
@@ -248,7 +254,6 @@ end_stretch = NodePath("../..")
 metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 
 [node name="Goal" type="Marker3D" parent="Chest/ShoulderPose/UpArmPose/LowArmPose/VelocityTangent" unique_id=85433351]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.375, 0)
 
 [node name="GizmoControllable" type="Node" parent="Chest/ShoulderPose/UpArmPose/LowArmPose/VelocityTangent/Goal" unique_id=1662598729]
 script = ExtResource("3_0fnop")
@@ -303,7 +308,7 @@ metadata/_custom_type_script = "uid://8pmv47se1oo1"
 [node name="Stretcher" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose/VelocityTangent" unique_id=974444642 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9740571, 0)
 top_level = true
-mesh = SubResource("CapsuleMesh_3j6ow")
+mesh = SubResource("CapsuleMesh_8g6qd")
 surface_material_override/0 = SubResource("StandardMaterial3D_owsej")
 script = ExtResource("3_awd5n")
 start_stretch = NodePath("../..")
@@ -320,7 +325,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 [node name="LowArmStretcher" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose/LowArmPose" unique_id=1438125130 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0.7733521, 0)
 top_level = true
-mesh = SubResource("CapsuleMesh_8g6qd")
+mesh = SubResource("CapsuleMesh_oykc4")
 surface_material_override/0 = SubResource("StandardMaterial3D_8g6qd")
 script = ExtResource("3_awd5n")
 start_stretch = NodePath("..")
@@ -330,7 +335,7 @@ metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 [node name="UpArmStretcher" type="MeshInstance3D" parent="Chest/ShoulderPose/UpArmPose" unique_id=532342106 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0.28632355, 0)
 top_level = true
-mesh = SubResource("CapsuleMesh_oykc4")
+mesh = SubResource("CapsuleMesh_8ynca")
 surface_material_override/0 = SubResource("StandardMaterial3D_oykc4")
 script = ExtResource("3_awd5n")
 start_stretch = NodePath("..")
@@ -351,7 +356,7 @@ offset_bottom = 343.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="EaseCurveDrawer" type="ColorRect" parent="Control" unique_id=1664441844 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
+[node name="UpArmCurveDrawer" type="ColorRect" parent="Control" unique_id=1664441844 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -414,7 +419,7 @@ offset_right = 17.0
 offset_bottom = 64.0
 text = "🚗"
 
-[node name="EaseCurveDrawer2" type="ColorRect" parent="Control" unique_id=377459942 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
+[node name="LowArmCurveDrawer" type="ColorRect" parent="Control" unique_id=377459942 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -480,7 +485,7 @@ offset_right = 15.0
 offset_bottom = 278.0
 text = "🚗"
 
-[node name="EaseCurveDrawer3" type="ColorRect" parent="Control" unique_id=2028814725 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
+[node name="HandCurveDrawer" type="ColorRect" parent="Control" unique_id=2028814725 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5

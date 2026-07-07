@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bv3l0texvf88e"]
+
+[ext_resource type="Script" uid="uid://bdw8efh44px7g" path="res://ease_drawer.gd" id="1_1iivc"]
+
+[node name="EaseDrawer" type="ColorRect" unique_id=336614720]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.11372549, 0.81960785, 0.7882353, 1)
+script = ExtResource("1_1iivc")
+ease_amount = 0.39

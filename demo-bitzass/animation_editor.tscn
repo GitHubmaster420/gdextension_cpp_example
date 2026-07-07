@@ -1171,7 +1171,7 @@ timeline = NodePath("..")
 script = ExtResource("1_alrdg")
 
 [node name="Ball" type="MeshInstance3D" parent="." unique_id=598210601]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06931649, 0.11520481, 0.9860784)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1536803, 0.11520481, 0.24279237)
 mesh = SubResource("SphereMesh_l4xq3")
 
 [node name="Node3D" type="Node3D" parent="." unique_id=340744025]

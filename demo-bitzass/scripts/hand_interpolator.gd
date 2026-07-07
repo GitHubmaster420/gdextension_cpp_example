@@ -132,9 +132,10 @@ func interpolate_keyframes():
 func on_keyframe_added(key : Keyframe):
 	var animator := key.animator as HandsAnimator
 	await get_skeleton().skeleton_updated
-	var stored := animator.gizmo.controllable
-	stored.gizmo = null
-	animator.gizmo.controllable = null
+	if animator.gizmo:
+		var stored := animator.gizmo.controllable
+		stored.gizmo = null
+		animator.gizmo.controllable = null
 	var shoulder_idx := get_skeleton().get_bone_parent(up_arm_idx)
 	var shoulder_tr := get_skeleton().get_bone_pose(shoulder_idx)
 	var up_arm_tr := get_skeleton().get_bone_pose(up_arm_idx)
@@ -142,12 +143,14 @@ func on_keyframe_added(key : Keyframe):
 	var hand_tr := get_skeleton().get_bone_pose(hand_idx)
 	
 	var chest_tr := get_skeleton().get_bone_global_pose(get_skeleton().get_bone_parent(shoulder_idx))
-	animator.chest.global_transform = chest_tr
-	
-	animator.shoulder_pose.transform = shoulder_tr
-	animator.up_arm_pose.transform = up_arm_tr
-	animator.low_arm_pose.transform = low_arm_tr
-	animator.hand_pose.transform = hand_tr
+	var pasted : bool = key.get_meta("was_pasted", false)
+	if not pasted:
+		animator.chest.global_transform = chest_tr
+		
+		animator.shoulder_pose.transform = shoulder_tr
+		animator.up_arm_pose.transform = up_arm_tr
+		animator.low_arm_pose.transform = low_arm_tr
+		animator.hand_pose.transform = hand_tr
 	animator.current = animator.current
 	
 	animator.request_auto_velocity.connect(calculate_auto_velocity.bind(key))

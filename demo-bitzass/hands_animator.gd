@@ -7,6 +7,11 @@ class_name HandsAnimator
 
 signal request_auto_velocity(idx : int)
 
+@export var up_arm_curve_drawer: EaseCurveDrawer
+@export var low_arm_curve_drawer: EaseCurveDrawer
+@export var hand_curve_drawer: EaseCurveDrawer
+
+
 @export var hand_mesh: MeshInstance3D
 @export var low_arm_stretcher: Stretcher
 @export var up_arm_stretcher: Stretcher
@@ -105,9 +110,30 @@ enum Mode{
 @export var use_low_arm_auto_tangent := true
 @export var use_hand_auto_tagent := true
 
-@export var up_arm_ease_curve : MyEaseInOut
-@export var low_arm_ease_curve : MyEaseInOut
-@export var hand_ease_curve : MyEaseInOut
+@export var up_arm_ease_curve : MyEaseInOut:
+	set(v):
+		up_arm_ease_curve = v
+		if not is_node_ready():
+			return
+		if not v: return
+		up_arm_curve_drawer.my_ease_in_out_curve = up_arm_ease_curve
+		v.bake_fast()
+@export var low_arm_ease_curve : MyEaseInOut:
+	set(v):
+		low_arm_ease_curve = v
+		if not is_node_ready():
+			return
+		if not v: return
+		low_arm_curve_drawer.my_ease_in_out_curve = low_arm_ease_curve
+		v.bake_fast()
+@export var hand_ease_curve : MyEaseInOut:
+	set(v):
+		hand_ease_curve = v
+		if not is_node_ready():
+			return
+		if not v: return
+		hand_curve_drawer.my_ease_in_out_curve = hand_ease_curve
+		v.bake_fast()
 
 @export_range(-1.0, 1.0, 0.01) var up_arm_auto_influence := 0.0
 @export_range(-1.0, 1.0, 0.01) var low_arm_auto_influence := 0.0
@@ -120,6 +146,9 @@ enum Mode{
 var selected := false
 
 func _ready() -> void:
+	hand_ease_curve = hand_ease_curve
+	low_arm_ease_curve = low_arm_ease_curve
+	up_arm_ease_curve = up_arm_ease_curve
 	current = current
 	#(pose_mesh_instance.get_active_material(0) as StandardMaterial3D).albedo_color.r = randf()
 	#(pose_mesh_instance.get_active_material(0) as StandardMaterial3D).albedo_color.g = randf()

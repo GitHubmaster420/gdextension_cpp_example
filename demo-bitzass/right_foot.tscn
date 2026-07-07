@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://c0qyw7mmsfsnh"]
+
+[ext_resource type="PackedScene" uid="uid://bwh06h8tepliy" path="res://scenes/RightFoot.glb" id="1_4xbmx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aq4b3"]
+no_depth_test = true
+shading_mode = 0
+
+[node name="RightFoot" unique_id=1865453928 instance=ExtResource("1_4xbmx")]
+
+[node name="Plane_002" parent="." index="0" unique_id=132155839]
+surface_material_override/0 = SubResource("StandardMaterial3D_aq4b3")
