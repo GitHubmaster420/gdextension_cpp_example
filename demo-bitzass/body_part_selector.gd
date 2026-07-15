@@ -52,6 +52,7 @@ var shift_selected := false
 func _ready() -> void:
 	selected_child = selected_child
 	for c in anim_track_holders:
+		anim_track_holders[c].mouse_filter = Control.MOUSE_FILTER_IGNORE
 		shift_selected_children[c] = false
 		c.clicked.connect(on_child_clicked)
 		c.shift_clicked.connect(on_child_shift_clicked)

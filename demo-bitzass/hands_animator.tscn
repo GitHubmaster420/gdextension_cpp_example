@@ -125,13 +125,14 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(0, 0.2784314, 1, 0.30588236)
 
-[node name="HandsAnimator" type="Node3D" unique_id=863480283 node_paths=PackedStringArray("thigh_auto_vel_check_button", "side_panel", "up_arm_curve_drawer", "low_arm_curve_drawer", "hand_curve_drawer", "hand_mesh", "low_arm_stretcher", "up_arm_stretcher", "up_arm_tangent_mesh", "low_arm_tangent_mesh", "hand_tangent_mesh", "pose_fk_gizmoables", "tangent_fk_gizmoables", "pose_mesh_instance", "up_arm_pose", "low_arm_pose", "hand_pose", "up_arm_tangent_object", "low_arm_tangent_object", "hand_tangent_object", "up_arm_velocity_tangent_object", "low_arm_velocity_tangent_object", "hand_velocity_tangent_object", "chest", "shoulder_pose")]
+[node name="HandsAnimator" type="Node3D" unique_id=863480283 node_paths=PackedStringArray("right_control", "thigh_auto_vel_check_button", "side_panel", "up_arm_curve_drawer", "low_arm_curve_drawer", "hand_curve_drawer", "hand_mesh", "low_arm_stretcher", "up_arm_stretcher", "up_arm_tangent_mesh", "low_arm_tangent_mesh", "hand_tangent_mesh", "pose_fk_gizmoables", "tangent_fk_gizmoables", "pose_mesh_instance", "up_arm_pose", "low_arm_pose", "hand_pose", "up_arm_tangent_object", "low_arm_tangent_object", "hand_tangent_object", "up_arm_velocity_tangent_object", "low_arm_velocity_tangent_object", "hand_velocity_tangent_object", "chest", "shoulder_pose")]
 script = ExtResource("1_k435q")
-thigh_auto_vel_check_button = NodePath("Control/ThighAutoVelCheckButton")
-side_panel = NodePath("Control")
-up_arm_curve_drawer = NodePath("Control/UpArmCurveDrawer")
-low_arm_curve_drawer = NodePath("Control/LowArmCurveDrawer")
-hand_curve_drawer = NodePath("Control/HandCurveDrawer")
+right_control = NodePath("RightControl")
+thigh_auto_vel_check_button = NodePath("RightControl/ThighAutoVelCheckButton")
+side_panel = NodePath("RightControl")
+up_arm_curve_drawer = NodePath("RightControl/UpArmCurveDrawer")
+low_arm_curve_drawer = NodePath("RightControl/LowArmCurveDrawer")
+hand_curve_drawer = NodePath("RightControl/HandCurveDrawer")
 hand_mesh = NodePath("Chest/ShoulderPose/UpArmPose/LowArmPose/HandPose/HandMesh")
 low_arm_stretcher = NodePath("Chest/ShoulderPose/UpArmPose/LowArmPose/LowArmStretcher")
 up_arm_stretcher = NodePath("Chest/ShoulderPose/UpArmPose/UpArmStretcher")
@@ -342,7 +343,7 @@ start_stretch = NodePath("..")
 end_stretch = NodePath("../LowArmPose")
 metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 
-[node name="Control" type="Control" parent="." unique_id=952035699]
+[node name="RightControl" type="Control" parent="." unique_id=952035699]
 layout_mode = 3
 anchors_preset = 6
 anchor_left = 1.0
@@ -356,7 +357,7 @@ offset_bottom = 343.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="UpArmCurveDrawer" type="ColorRect" parent="Control" unique_id=1664441844 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
+[node name="UpArmCurveDrawer" type="ColorRect" parent="RightControl" unique_id=1664441844 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -375,7 +376,7 @@ v_slider_2 = NodePath("../VSlider2")
 my_ease_in_out_curve = SubResource("Resource_owsej")
 metadata/_custom_type_script = "uid://burp1regbq6js"
 
-[node name="HSlider" type="HSlider" parent="Control" unique_id=304041459]
+[node name="HSlider" type="HSlider" parent="RightControl" unique_id=304041459]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -389,7 +390,7 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 
-[node name="VSlider" type="VSlider" parent="Control" unique_id=1163850725]
+[node name="VSlider" type="VSlider" parent="RightControl" unique_id=1163850725]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 33.0
@@ -400,7 +401,7 @@ max_value = 1.0
 step = 0.01
 value = 0.19999999999999996
 
-[node name="VSlider2" type="VSlider" parent="Control" unique_id=1096890411]
+[node name="VSlider2" type="VSlider" parent="RightControl" unique_id=1096890411]
 layout_mode = 0
 offset_left = 268.0
 offset_top = 33.0
@@ -411,7 +412,7 @@ max_value = 1.0
 step = 0.01
 value = 0.19999999999999996
 
-[node name="ThighAutoVelCheckButton" type="CheckButton" parent="Control" unique_id=1107812388]
+[node name="ThighAutoVelCheckButton" type="CheckButton" parent="RightControl" unique_id=1107812388]
 layout_mode = 0
 offset_left = -53.0
 offset_top = 33.0
@@ -419,7 +420,7 @@ offset_right = 17.0
 offset_bottom = 64.0
 text = "🚗"
 
-[node name="LowArmCurveDrawer" type="ColorRect" parent="Control" unique_id=377459942 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
+[node name="LowArmCurveDrawer" type="ColorRect" parent="RightControl" unique_id=377459942 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -441,7 +442,7 @@ v_slider_2 = NodePath("../VSlider4")
 my_ease_in_out_curve = SubResource("Resource_qodlf")
 metadata/_custom_type_script = "uid://burp1regbq6js"
 
-[node name="HSlider2" type="HSlider" parent="Control" unique_id=180347926]
+[node name="HSlider2" type="HSlider" parent="RightControl" unique_id=180347926]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -455,7 +456,7 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 
-[node name="VSlider3" type="VSlider" parent="Control" unique_id=287782104]
+[node name="VSlider3" type="VSlider" parent="RightControl" unique_id=287782104]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 247.0
@@ -466,7 +467,7 @@ max_value = 1.0
 step = 0.01
 value = 0.19999999999999996
 
-[node name="VSlider4" type="VSlider" parent="Control" unique_id=768839526]
+[node name="VSlider4" type="VSlider" parent="RightControl" unique_id=768839526]
 layout_mode = 0
 offset_left = 266.0
 offset_top = 247.0
@@ -477,7 +478,7 @@ max_value = 1.0
 step = 0.01
 value = 0.19999999999999996
 
-[node name="ShinAutoVelCheckButton" type="CheckButton" parent="Control" unique_id=1611029120]
+[node name="ShinAutoVelCheckButton" type="CheckButton" parent="RightControl" unique_id=1611029120]
 layout_mode = 0
 offset_left = -55.0
 offset_top = 247.0
@@ -485,7 +486,7 @@ offset_right = 15.0
 offset_bottom = 278.0
 text = "🚗"
 
-[node name="HandCurveDrawer" type="ColorRect" parent="Control" unique_id=2028814725 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
+[node name="HandCurveDrawer" type="ColorRect" parent="RightControl" unique_id=2028814725 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -506,7 +507,7 @@ v_slider_2 = NodePath("../VSlider6")
 my_ease_in_out_curve = SubResource("Resource_q758f")
 metadata/_custom_type_script = "uid://burp1regbq6js"
 
-[node name="HSlider3" type="HSlider" parent="Control" unique_id=519336333]
+[node name="HSlider3" type="HSlider" parent="RightControl" unique_id=519336333]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -520,7 +521,7 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 
-[node name="VSlider5" type="VSlider" parent="Control" unique_id=1205697570]
+[node name="VSlider5" type="VSlider" parent="RightControl" unique_id=1205697570]
 layout_mode = 0
 offset_left = 14.0
 offset_top = 490.0
@@ -531,7 +532,7 @@ max_value = 1.0
 step = 0.01
 value = 0.19999999999999996
 
-[node name="VSlider6" type="VSlider" parent="Control" unique_id=139936881]
+[node name="VSlider6" type="VSlider" parent="RightControl" unique_id=139936881]
 layout_mode = 0
 offset_left = 266.0
 offset_top = 490.0
@@ -542,7 +543,7 @@ max_value = 1.0
 step = 0.01
 value = 0.19999999999999996
 
-[node name="ShinAutoVelCheckButton2" type="CheckButton" parent="Control" unique_id=1636887599]
+[node name="ShinAutoVelCheckButton2" type="CheckButton" parent="RightControl" unique_id=1636887599]
 layout_mode = 0
 offset_left = -55.0
 offset_top = 490.0

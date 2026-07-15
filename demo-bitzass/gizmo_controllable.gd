@@ -23,9 +23,10 @@ func alt_g_pressed():
 
 func alt_r_pressed():
 	if DuckTyper.call_func_duck_typed(get_parent(), "alt_r_pressed"):
+		var stored := gizmo
 		gizmo.controllable = null
 		await get_tree().create_timer(0.05).timeout
-		gizmo.controllable = self
+		stored.controllable = self
 
 func _process(delta: float) -> void:
 	if not gizmo:

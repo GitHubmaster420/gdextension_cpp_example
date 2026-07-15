@@ -71,7 +71,11 @@ func on_keyframe_added(key : Keyframe):
 	var pasted : bool = key.get_meta("was_pasted", false)
 	if pasted:
 		return
-	await get_skeleton().skeleton_updated
+	if anim_track_holder.keyframes.size() > 1:
+		# 1 bc of order of things happening
+		await modification_processed
+	else:
+		await spine_bone_modifier.modification_processed
 	var animator := key.animator as FootAnimator
 	animator.foot_rot_curve = MyEaseInOut.new()
 	animator.shin_rot_curve = MyEaseInOut.new()
@@ -82,22 +86,31 @@ func on_keyframe_added(key : Keyframe):
 	
 	animator.pelvis.global_transform = pd
 	
-	var tt := get_skeleton().get_bone_global_pose(thigh_id)
-	var st := get_skeleton().get_bone_global_pose(shin_id)
+	var tt := get_skeleton().get_bone_pose(thigh_id)
+	var st := get_skeleton().get_bone_pose(shin_id)
 	var foot_offset := get_skeleton().get_bone_global_rest(foot_id).basis.inverse()
-	var ft := get_skeleton().get_bone_global_pose(foot_id)
+	var ft := get_skeleton().get_bone_pose(foot_id)
 	ft.basis = foot_offset * ft.basis
-	animator.thigh_length = tt.origin.distance_to(st.origin)
-	animator.shin_length = st.origin.distance_to(ft.origin)
+	animator.thigh_length = st.origin.length()
+	animator.shin_length = ft.origin.length()
 	var thigh_pose := animator.thigh_pose
-	thigh_pose.global_transform = tt
+	thigh_pose.transform = tt
 	animator.thigh_tangent.position = Vector3.ZERO
 	var shin_pose := animator.shin_pose
-	shin_pose.global_transform = st
+	shin_pose.transform = st
 	var foot_pose := animator.foot_pose
-	foot_pose.global_transform = ft
+	foot_pose.transform = ft
 	var foot_ik_pose := animator.foot_ik_pose
-	foot_ik_pose.global_transform = ft
+	foot_ik_pose.global_transform = foot_pose.global_transform
+	var ik_roll := animator.foot_ik_pose_roll
+	
+	ik_roll.global_transform = thigh_pose.global_transform
+	
+	var g := animator.gizmo
+	
+	if g:
+		if g.controllable:
+			g.global_transform = g.controllable.control_node.global_transform
 
 
 func interpolate_keyframes():
@@ -112,8 +125,10 @@ func interpolate_keyframes():
 	var animator_1 := prev_keyframe.animator as FootAnimator
 	var animator_2 := next_keyframe.animator as FootAnimator
 	
+	
 	animator_1.pelvis.global_transform = spine_bone_modifier.interpolate_pelvis_in_time(prev_keyframe.time)
 	animator_2.pelvis.global_transform = spine_bone_modifier.interpolate_pelvis_in_time(next_keyframe.time)
+	
 	
 	var foot_offset := get_skeleton().get_bone_global_rest(foot_id).basis as Quaternion
 	
@@ -160,11 +175,13 @@ func interpolate_keyframes():
 			var r00t := Quaternion.from_euler(animator_1.thigh_tangent.rotation)
 			var r01t := Quaternion.from_euler(animator_2.thigh_tangent.rotation)
 			
-			var axis_00 := (r00.inverse() * r00t).get_axis().normalized()
+			var axis_00 := (r00t).get_axis().normalized()
 			var v00 := animator_1.thigh_angular_velocity
 			var influence_00 := animator_1.thigh_tangent_next_influence
 			
-			var axis_01 := (r01.inverse() * r01t).get_axis().normalized()
+		
+			
+			var axis_01 := (r01t).get_axis().normalized()
 			var v01 := animator_2.thigh_angular_velocity
 			var influence_01 := animator_2.thigh_tangent_prev_influence
 			
@@ -183,11 +200,11 @@ func interpolate_keyframes():
 			var r10t := Quaternion.from_euler(animator_1.shin_tangent.rotation)
 			var r11t := Quaternion.from_euler(animator_2.shin_tangent.rotation)
 			
-			var axis_10 := (r10.inverse() * r10t).get_axis().normalized()
+			var axis_10 := (r10t).get_axis().normalized()
 			var v10 := animator_1.shin_angular_velocity
 			var influence_10 := animator_1.shin_tangent_next_influence
 			
-			var axis_11 := (r11.inverse() * r11t).get_axis().normalized()
+			var axis_11 := (r11t).get_axis().normalized()
 			var v11 := animator_2.shin_angular_velocity
 			var influence_11 := animator_2.shin_tangent_prev_influence
 			
@@ -200,11 +217,11 @@ func interpolate_keyframes():
 			var r20t := Quaternion.from_euler(animator_1.foot_tangent.rotation) * foot_offset
 			var r21t := Quaternion.from_euler(animator_2.foot_tangent.rotation) * foot_offset
 			
-			var axis_20 := (r20.inverse() * r20t).get_axis().normalized()
+			var axis_20 := (r20t).get_axis().normalized()
 			var v20 := animator_1.foot_angular_velocity
 			var influence_20 := animator_2.foot_tangent_next_influence
 			
-			var axis_21 := (r21.inverse() * r21t).get_axis().normalized()
+			var axis_21 := (r21t).get_axis().normalized()
 			var v21 := animator_2.foot_angular_velocity
 			var influence_21 := animator_2.shin_tangent_prev_influence
 			

@@ -18,12 +18,16 @@ func interpolate_keyframes_in_time(time : float) -> Transform3D:
 	var k1 := k_idxs[0]
 	var k2 := k_idxs[1]
 	
-	var animator_1 := prev_keyframe.animator as RootAnimator
-	var animator_2 := next_keyframe.animator as RootAnimator
+	var animator_1 := anim_track_holder.keyframes[k1].animator as RootAnimator
+	var animator_2 := anim_track_holder.keyframes[k2].animator as RootAnimator
+	var t := get_t_from_keyframes(time, anim_track_holder.keyframes[k1], anim_track_holder.keyframes[k2])
+	var dur := next_keyframe.time - prev_keyframe.time
+	var rot := QuaternionExtender.my_quat_interpolate(animator_1.root.basis.get_rotation_quaternion(), animator_1.angular_velocity_tangent, 1, animator_1.angular_velocity_amount,
+	animator_2.root.basis.get_rotation_quaternion(), animator_2.angular_velocity_tangent,1, animator_2.angular_velocity_amount, t, dur, animator_2.rot_ease_curve.baked_points)
 	
-	var t := get_t_from_keyframes(time)
+	var loc := MyCurve3D.interpolate(animator_1.root.global_position, animator_1.velocity_tangent_vector, animator_2.root.global_position, animator_2.velocity_tangent_vector, t, dur, animator_2.loc_ease_curve.baked_points)	
 	
-	return animator_1.root.global_transform.interpolate_with(animator_2.root.global_transform, t) * get_skeleton().get_bone_global_rest(0)
+	return Transform3D(rot, loc) * get_skeleton().get_bone_global_rest(root_idx)
 	
 
 func interpolate_keyframes():

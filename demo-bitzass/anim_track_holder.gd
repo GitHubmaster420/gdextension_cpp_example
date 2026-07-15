@@ -157,7 +157,10 @@ func _ready() -> void:
 	
 	visibility_changed.connect(func():
 		for k in keyframes:
-			k.animator.visible = visible
+			if is_visible_in_tree():
+				k.animator.visible = true
+			else:
+				k.animator.visible = false
 			if not visible:
 				edited_key = null
 			else:

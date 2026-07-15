@@ -1,6 +1,9 @@
 extends Animator
 class_name HandsAnimator
 
+@export var right_control: Control
+
+
 @export var thigh_auto_vel_check_button: CheckButton
 
 @export var side_panel: Control
@@ -167,6 +170,10 @@ func _ready() -> void:
 	thigh_auto_vel_check_button.toggled.connect(func(b:  bool):
 		use_up_arm_auto_tangent = b
 		)
+	visibility_changed.connect(func():
+		if not is_visible_in_tree():
+			right_control.hide()
+		)
 
 func on_gizmo_set(_g : Gizmo):
 	edited = Edited.POSE
@@ -194,17 +201,17 @@ func _process(delta: float) -> void:
 		up_arm_tangent = (up_arm_tangent_object.basis as Quaternion).get_axis()
 	else:
 		if up_arm_tangent:
-			up_arm_tangent_object.basis = Quaternion(up_arm_tangent, up_arm_angular_velocity)
+			up_arm_tangent_object.basis = Quaternion(up_arm_tangent, PI/2.0)
 	if not use_low_arm_auto_tangent:
 		low_arm_tangent = (low_arm_tangent_object.basis as Quaternion).get_axis()
 	else:
 		if low_arm_tangent:
-			low_arm_tangent_object.basis = Quaternion(low_arm_tangent, low_arm_angular_velocity)
+			low_arm_tangent_object.basis = Quaternion(low_arm_tangent, PI/2.0)
 	if not use_hand_auto_tagent:
 		hand_tangent = (hand_tangent_object.basis as Quaternion).get_axis()
 	else:
 		if hand_tangent:
-			hand_tangent_object.basis = Quaternion(hand_tangent, hand_angular_velocity)
+			hand_tangent_object.basis = Quaternion(hand_tangent, PI/2.0)
 
 func set_aut_velocity(idx : int, v : float):
 	match idx:

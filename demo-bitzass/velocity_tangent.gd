@@ -24,6 +24,10 @@ signal velocity_set(v : float)
 @export var tangent_gizmo_controllable : GizmoControllable
 @export var velocity_gizmo_controllable : GizmoControllable
 
+@export var use_location_velocity := false
+@export var location_velocity_object : Marker3D
+@export var location_velocity_gizmo_controllable : GizmoControllable
+
 func set_goal_object_p_with_vel(vel : float):
 	goal_object.position.y = vel / VEL_MULTIPLIER
 
@@ -42,7 +46,7 @@ func _process(delta: float) -> void:
 		global_basis = Basis.IDENTITY
 		return
 	visible = true
-	var temp := Vector3.RIGHT if global_basis.y != Vector3.RIGHT else Vector3.UP
+	var temp := Vector3.RIGHT if (global_basis.y != Vector3.RIGHT and global_basis.y != Vector3.LEFT) else Vector3.UP
 	
 	global_basis.z = temp.cross(global_basis.y).normalized()
 	
@@ -68,7 +72,16 @@ func _input(event: InputEvent) -> void:
 			if velocity_gizmo_controllable.gizmo:
 				if velocity_gizmo_controllable.gizmo.controllable == velocity_gizmo_controllable:
 					velocity_gizmo_controllable.gizmo.controllable = tangent_gizmo_controllable
+					tangent_gizmo_controllable.gizmo._input(event)
 		if event.keycode == KEY_G:
 			if tangent_gizmo_controllable.gizmo:
 				if tangent_gizmo_controllable.gizmo.controllable == tangent_gizmo_controllable:
 					tangent_gizmo_controllable.gizmo.controllable = velocity_gizmo_controllable
+					velocity_gizmo_controllable.gizmo._input(event)
+		if event.keycode == KEY_V and event.pressed:
+			if not use_location_velocity:
+				return
+			if velocity_gizmo_controllable.gizmo:
+				velocity_gizmo_controllable.gizmo.controllable = location_velocity_gizmo_controllable
+			elif location_velocity_gizmo_controllable.gizmo:
+				location_velocity_gizmo_controllable.gizmo.controllable = velocity_gizmo_controllable

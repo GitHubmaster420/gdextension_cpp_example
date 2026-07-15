@@ -7,21 +7,80 @@ func _init() -> void:
 
 static var spine_animators : Array[SpineAnimator]
 
+@export var pelvis_mesh : MeshInstance3D
+@export var hips_mesh : MeshInstance3D
+@export var chest_mesh : MeshInstance3D
+
+@export var pelvis_tangent_mesh: MeshInstance3D
+@export var hip_tangent_mesh: MeshInstance3D
+@export var chest_tangent_mesh: MeshInstance3D
+
+@export var  pelvis_g_tangent_use_auto_tangent := true
+@export var pelvis_r_tangent_use_auto_tagent:= true
+@export var hips_r_tangent_use_auto_tagent := true
+@export var chest_r_tangent_use_auto_tagent := true
+
+@export var pelvis_tangent: Marker3D
+@export var hip_tangent: Marker3D
+@export var chest_tangent: Marker3D
+@export var pelvis_loc_vel: Marker3D
+
+@export var pelvis_g_check_button: CheckButton
+@export var pelvis_r_check_button: CheckButton
+@export var hips_r_check_button: CheckButton
+@export var chest_r_check_button: CheckButton
+
+
+@export var pelvis_velocity_tangent: VelocityTangent
+@export var hip_velocity_tangent: VelocityTangent
+@export var chest_velocity_tangent: VelocityTangent
+
+@export var pelvis_g_tangent_vector : Vector3
+@export var pelvis_g_tangent_magnitude : float
+
+@export var pelvis_r_tangent_vector : Vector3
+
+@export var hips_r_tangent_vector : Vector3
+
+@export var chest_r_tangent_vector : Vector3
+
+
+@export var pelvis_loc_ease_curve : MyEaseInOut:
+	set(v):
+		pelvis_loc_ease_curve = v
+		pelvis_loc_ease_curve.bake_fast()
+		if not is_node_ready():
+			return
+		pelvis_g_curve_drawer.my_ease_in_out_curve = v
+
 @export var pelvis_rot_ease_curve : MyEaseInOut:
 	set(v):
 		pelvis_rot_ease_curve = v
 		pelvis_rot_ease_curve.bake_fast()
+		if not is_node_ready():
+			return
+		pelvis_r_curve_drawer.my_ease_in_out_curve = v
+		
 @export var hip_rot_ease_curve : MyEaseInOut:
 	set(v):
 		hip_rot_ease_curve = v
 		hip_rot_ease_curve.bake_fast()
+		if not is_node_ready():
+			return
+		hips_r_curve_drawe.my_ease_in_out_curve = v
 @export var chest_rot_ease_curve : MyEaseInOut:
 	set(v):
 		chest_rot_ease_curve = v
 		chest_rot_ease_curve.bake_fast()
+		if not is_node_ready():
+			return
+		chest_r_curve_drawer.my_ease_in_out_curve = v
 
-@export var auto_tangent_influence_spin_box: SpinBox
-@export var angular_velocity_spin_box: SpinBox
+@export var pelvis_g_curve_drawer: EaseCurveDrawer
+@export var pelvis_r_curve_drawer: EaseCurveDrawer
+@export var hips_r_curve_drawe: EaseCurveDrawer
+@export var chest_r_curve_drawer: EaseCurveDrawer
+
 
 @export var pelvis_g_tangent_auto_influence : float: ## -1.0 for prev keyframe, 1.0 for next
 	set(v):
@@ -45,12 +104,23 @@ static var spine_animators : Array[SpineAnimator]
 		pelvis_g_vel = v
 		if not is_node_ready():
 			return
-		print("pelvis g muthafucking vel: ", pelvis_g_vel, " idx: ", spine_animators.find(self))
 		if pelvis_g_vel == 0:
 			pass
 @export var pelvis_r_vel : float ## RAD/S
 @export var hip_r_vel : float ## RAD/S
 @export var chest_r_vel : float ## RAD/S
+
+enum Mode{
+	POSE,
+	TANGENT
+}
+
+@export var mode := Mode.POSE:
+	set(v):
+		mode = v
+		var stored := current
+		current = not current
+		current = stored
 
 enum Edited{
 	PELVIS_G,
@@ -62,46 +132,13 @@ enum Edited{
 @export var edited := Edited.PELVIS_G:
 	set(v):
 		edited = v
-		if not is_node_ready():
-			return
-
-		angular_velocity_spin_box.suffix = "deg/s"
-		match edited:
-			Edited.PELVIS_G:
-				angular_velocity_spin_box.step = 0.01
-				angular_velocity_spin_box.max_value = 20.0
-				auto_tangent_influence_spin_box.set_value_no_signal(pelvis_g_tangent_auto_influence)
-				angular_velocity_spin_box.set_value_no_signal(pelvis_g_vel)
-				angular_velocity_spin_box.suffix = "m/s"
-				
-			Edited.PELVIS_R:
-				angular_velocity_spin_box.step = 1.0
-				angular_velocity_spin_box.max_value = 360.0 * 8
-				auto_tangent_influence_spin_box.set_value_no_signal(pelvis_r_tangent_auto_influence)
-				angular_velocity_spin_box.set_value_no_signal(pelvis_r_vel)
-			Edited.HIP_R:
-				angular_velocity_spin_box.step = 1.0
-				angular_velocity_spin_box.max_value = 360.0 * 8
-				auto_tangent_influence_spin_box.set_value_no_signal(hip_r_tangent_auto_influence)
-				angular_velocity_spin_box.set_value_no_signal(hip_r_vel)
-			Edited.CHEST_R:
-				angular_velocity_spin_box.step = 1.0
-				angular_velocity_spin_box.max_value = 360.0 * 8
-				auto_tangent_influence_spin_box.set_value_no_signal(chest_r_auto_influence)
-				angular_velocity_spin_box.set_value_no_signal(chest_r_vel)
-				
-
-@export var use_auto_tangent := true:
-	set(v):
-		use_auto_tangent = true
-		#TODO: add option for false, includes making tangent objects
-		auto_tangent_influence_spin_box.visible = use_auto_tangent
 
 @export var rest_transforms : Array[Transform3D]
 
 @export var current_transforms : Array[Transform3D]
 
 @export var gizmo_controllables : Array[GizmoControllable]
+@export var tangent_controllables : Array[GizmoControllable]
 
 @export var root : Marker3D
 @export var pelvis_root : Marker3D
@@ -132,8 +169,42 @@ func _ready() -> void:
 	visibility_changed.connect(on_visibility_changed)
 	edited = edited
 	gizmo_set.connect(on_gizmo_set)
-	auto_tangent_influence_spin_box.value_changed.connect(on_tangent_influence_changed)
-	angular_velocity_spin_box.value_changed.connect(on_vel_changed)
+	var stored := current
+	current = not current
+	current = stored
+	
+	pelvis_loc_ease_curve = pelvis_loc_ease_curve
+	pelvis_rot_ease_curve = pelvis_rot_ease_curve
+	hip_rot_ease_curve = hip_rot_ease_curve
+	chest_rot_ease_curve = chest_rot_ease_curve
+	
+	pelvis_g_check_button.button_pressed = pelvis_g_tangent_use_auto_tangent
+	pelvis_r_check_button.button_pressed = pelvis_r_tangent_use_auto_tagent
+	hips_r_check_button.button_pressed = hips_r_tangent_use_auto_tagent
+	chest_r_check_button.button_pressed = chest_r_tangent_use_auto_tagent
+	
+	pelvis_g_check_button.toggled.connect(func(b : bool):
+		pelvis_g_tangent_use_auto_tangent = b
+		)
+	pelvis_r_check_button.toggled.connect(func(b : bool):
+		pelvis_r_tangent_use_auto_tagent = b
+		)
+	hips_r_check_button.toggled.connect(func(b : bool):
+		hips_r_tangent_use_auto_tagent = b
+		)
+	chest_r_check_button.toggled.connect(func(b : bool):
+		chest_r_tangent_use_auto_tagent = b
+		)
+	
+	pelvis_velocity_tangent.velocity_set.connect(func(v : float):
+		pelvis_r_vel = v
+		)
+	hip_velocity_tangent.velocity_set.connect(func(v : float):
+		hip_r_vel = v
+		)
+	chest_velocity_tangent.velocity_set.connect(func(v : float):
+		chest_r_vel = v
+		)
 	
 
 func on_tangent_influence_changed(value : float):
@@ -163,27 +234,15 @@ func on_vel_changed(value : float):
 		
 
 func on_visibility_changed():
-	var stored := angular_velocity_spin_box.value
 	if not gizmo:
-		auto_tangent_influence_spin_box.visible = false
-		angular_velocity_spin_box.visible = false
+
 		return
-	auto_tangent_influence_spin_box.visible = visible
-	angular_velocity_spin_box.visible = visible
+
 
 func on_gizmo_mode_set(mode : Gizmo.Mode):
 	if not gizmo:
 		return
-	match current:
-		0:
-			if mode == Gizmo.Mode.GRAB:
-				edited = Edited.PELVIS_G
-			else:
-				edited = Edited.PELVIS_R
-		1:
-			edited = Edited.HIP_R
-		2:
-			edited = Edited.CHEST_R
+
 
 func on_gizmo_set(_gizmo : Gizmo):
 	if not _gizmo:
@@ -194,98 +253,127 @@ func on_gizmo_set(_gizmo : Gizmo):
 func _process(delta: float) -> void:
 	if return_early and Engine.is_editor_hint():
 		return
+	if pelvis_g_tangent_use_auto_tangent:
+		pelvis_loc_vel.position = pelvis_g_tangent_vector * pelvis_g_vel / 10.0
+	else:
+		pelvis_g_tangent_vector = pelvis_loc_vel.position.normalized()
+		pelvis_g_vel = pelvis_loc_vel.position.length() * 10.0
+	if pelvis_r_tangent_use_auto_tagent:
+		pelvis_tangent.basis = Quaternion(pelvis_r_tangent_vector.normalized(), PI/2.0) as Basis if pelvis_r_tangent_vector.length_squared() > 0 else Basis.IDENTITY
+	else:
+		pelvis_r_tangent_vector = pelvis_tangent.basis.get_rotation_quaternion().get_axis()
+	if hips_r_tangent_use_auto_tagent:
+		hip_tangent.basis = Quaternion(hips_r_tangent_vector.normalized(), PI/2.0) as Basis if hips_r_tangent_vector.length_squared() > 0 else Basis.IDENTITY
+	else:
+		hips_r_tangent_vector = hip_tangent.basis.get_rotation_quaternion().get_axis()
+	if chest_r_tangent_use_auto_tagent:
+		chest_tangent.basis = Quaternion(chest_r_tangent_vector.normalized(), PI/2.0) as Basis if chest_r_tangent_vector.length_squared() > 0 else Basis.IDENTITY
+	else:
+		chest_r_tangent_vector = chest_tangent.basis.get_rotation_quaternion().get_axis()
+	
 	update_transforms()
 
 func update_transforms():
 
-	var rests := rest_transforms
+
+	current_transforms = get_transforms_from_drivers(root.transform, pelvis_root.transform, hip_pose.basis, chest_pose.basis)
 	
-	var super_t := pelvis_root.global_transform
-	
-	var delta_position := pelvis_root.global_position - rests[0].origin
-	var hip_b := hip_pose.global_basis.orthonormalized()
-	var chest_b := chest_pose.global_basis.orthonormalized()
-	var pelvis_t := pelvis_final.global_transform.orthonormalized()
-	
-	var offset : Vector3
-	
-	var hips_to_pelvis := rests[hip_start_idx].origin - rests[0].origin
-	
-	offset = super_t.basis * hips_to_pelvis - hips_to_pelvis
-	var hip_start_origin := rests[hip_start_idx].origin + delta_position + offset
-	
-	current_transforms = get_transforms_from_drivers(super_t, pelvis_t, hip_b, chest_b)
-	
-	hip_pose.global_position = hip_start_origin
-	pelvis_final.global_position = (root.global_transform * skeleton.get_bone_global_rest(0).inverse()) * current_transforms[0].origin
-	chest_pose.global_position = (root.global_transform * skeleton.get_bone_global_rest(0).inverse()) * current_transforms[-1].origin
+	hip_pose.global_position = current_transforms[hip_start_idx].origin
+	pelvis_final.global_position = current_transforms[0].origin
+	chest_pose.global_position = current_transforms[-1].origin
 	for i in range(current_transforms.size()):
 		multi_mesh_instance_3d.multimesh.set_instance_transform(i, current_transforms[i])
 
-func get_transforms_from_drivers(super_t : Transform3D, pelvis_t : Transform3D, hip_b : Basis, chest_b : Basis) -> Array[Transform3D]:# TODO: pass root t
-	
-	var rests : Array[Transform3D] = rest_transforms
-	
-	#rests.assign(rest_transforms.map(func(t : Transform3D):
-		#
-		#return t * Transform3D(skeleton.get_bone_global_rest(0).basis * root.global_basis.inverse())
-		#)
-	#)
-	var delta_position :=  super_t.origin - rests[0].origin
-	
+func get_transforms_from_drivers(root_global : Transform3D, pelvis_as_parent : Transform3D, hip_local : Basis, chest_local : Basis) -> Array[Transform3D]:# TODO: pass root t
 	var transforms : Array[Transform3D]
 	
-	transforms.clear()
-	transforms.resize(last_idx - first_idx + 1)
-	transforms.fill(Transform3D())
+	transforms = rest_transforms.duplicate()
 	
-	var offset : Vector3
+	var pelvis_global := root_global * pelvis_as_parent
+	var hip_global := pelvis_global.basis * hip_local
+	var chest_global := pelvis_global.basis * chest_local
 	
-	var hips_to_pelvis := rests[hip_start_idx].origin - rests[0].origin
+	var pelvis_rest := rest_transforms[0]
 	
-	offset = super_t.basis * hips_to_pelvis - hips_to_pelvis
+	var pelvis_offset := pelvis_global
 	
-	var hip_start_basis := pelvis_t.basis
-	var hip_start_origin := rests[hip_start_idx].origin + delta_position + offset
-	var hip_start_t := Transform3D(hip_start_basis, hip_start_origin)
-	var prev_rest := rests[hip_start_idx]
-	transforms[hip_start_idx].basis = super_t.basis
-	transforms[hip_start_idx].origin = hip_start_t.origin
-	#hip_start_basis = hip_start_basis.orthonormalized()
-	var prev_pos := prev_rest.origin + delta_position + offset
-	for i in range(hip_start_idx - 1, -1, -1):
-		var b := super_t.basis.orthonormalized().slerp(hip_b, 1.0 - float(i) / float(hip_start_idx))
+	var root_rest := skeleton.get_bone_global_rest(0)
+	
+
+	
+	transforms.resize(rest_transforms.size())
+	
+	var global_pos_offset := (pelvis_global.origin -pelvis_rest.origin)
+	
+	var root_delta := root_global.basis * root_rest.basis.inverse()
+	
+	var p := pelvis_rest.origin
+	
+	var p2 := root_delta * p
+	
+	var correction = p2 - p
+	#
+	#global_pos_offset += correction
+	
+	transforms[0].basis = (pelvis_offset * rest_transforms[0]).basis
+	
+	transforms[0].origin += global_pos_offset
+	
+	var old := transforms[0]
+	
+	
+	
+	for i in range(1, transforms.size()):
+		transforms[i].basis = (pelvis_offset * rest_transforms[i]).basis
 		
-		b = (skeleton.get_bone_global_rest(0).basis * root.global_basis.inverse()) * b
+		transforms[i].origin = old.origin + (old.basis * rest_transforms[i - 1].basis.inverse()) * (rest_transforms[i].origin - rest_transforms[i-1].origin)
 		
-		var this_rest_pos := rests[i].origin
-		var delta := this_rest_pos - prev_rest.origin
-		var new := rests[i]
-		new.basis = b * rests[i].basis
-		#new.origin = prev_pos + rests[i].basis.inverse() * new.basis * delta
-		new.origin = prev_pos + b * delta
-		prev_pos = new.origin
-		prev_rest = rests[i]
-		transforms[i] = new
-	prev_rest = rests[hip_start_idx]
-	prev_pos = prev_rest.origin + delta_position + offset
-	var old_b := super_t.basis
-	for i in range(hip_start_idx, last_idx - first_idx + hip_start_idx - 1):
-		var t := float(i - hip_start_idx + 1) / float((last_idx - first_idx) - (hip_start_idx) + 1)
-		var b := super_t.basis.slerp(chest_b, t)
-		b = (skeleton.get_bone_global_rest(0).basis * root.global_basis.inverse()) * b
-		var this_rest_pos := rests[i].origin
-		var delta := this_rest_pos - prev_rest.origin
-		var new := rests[i]
-		var old := rests[i - 1]
-		old.basis = (old.basis * old_b).orthonormalized()
-		old_b = b
-		new.basis = (new.basis * b).orthonormalized()
-		new.origin = prev_pos + rests[i - 1].basis.inverse() * old.basis * delta
-		prev_pos = new.origin
-		prev_rest = rests[i]
-		transforms[i] = new
-	return transforms
+		old = transforms[i]
+
+	
+	old = transforms[hip_start_idx]
+	
+	var old_offset := pelvis_offset.basis
+	
+	for i in range(hip_start_idx -1, -1, -1):
+		var start := pelvis_global.basis.orthonormalized()
+		var end := hip_global.orthonormalized()
+		var t := float(i) / float(hip_start_idx)
+		
+		t = 1.0 - t
+		
+		var offset := start.slerp(end, t)
+	
+		transforms[i].basis = offset * rest_transforms[i].basis
+		
+		transforms[i].origin = old.origin + offset * (rest_transforms[i].origin - rest_transforms[i + 1].origin)
+		
+		old_offset = offset
+		
+		old = transforms[i]
+	
+	old = transforms[hip_start_idx]
+	
+	old_offset = pelvis_offset.basis
+	
+	for i in range(hip_start_idx, transforms.size(), 1):
+		var start := pelvis_global.basis.orthonormalized()
+		var end := chest_global.orthonormalized()
+		var t := float(i + 1 - hip_start_idx) / float(transforms.size() - hip_start_idx)
+		
+		var offset := start.slerp(end, t)
+	
+		transforms[i].basis = offset * rest_transforms[i].basis
+		
+		if i != hip_start_idx:
+			transforms[i].origin = old.origin + old_offset * (rest_transforms[i].origin - rest_transforms[i - 1].origin)
+		
+		old_offset = offset
+		
+		old = transforms[i]
+
+	
+	return transforms if not Input.is_action_pressed("ui_accept") else rest_transforms
 
 func get_rest_transforms():
 	rest_transforms.clear()
@@ -320,29 +408,78 @@ var current := 0:
 		if r:
 			return
 		if gizmo:
-			current_controllable = gizmo_controllables[current]
-			match current:
-				0:
-					if gizmo.mode == Gizmo.Mode.GRAB:
-						edited = Edited.PELVIS_G
-					else:
-						edited = Edited.PELVIS_R
-				1:
-					edited = Edited.HIP_R
-				2:
-					edited = Edited.CHEST_R
+			match mode:
+				Mode.POSE:
+					(pelvis_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+					(hip_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+					(chest_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+					current_controllable = gizmo_controllables[current]
+					match current:
+						0:
+							if gizmo.mode == Gizmo.Mode.GRAB:
+								edited = Edited.PELVIS_G
+							else:
+								edited = Edited.PELVIS_R
+							(pelvis_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", true)
+							(hips_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", false)
+							(chest_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", false)
+							
+						1:
+							edited = Edited.HIP_R
+							(pelvis_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", false)
+							(hips_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", true)
+							(chest_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", false)
+						2:
+							edited = Edited.CHEST_R
+							(pelvis_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", false)
+							(hips_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", false)
+							(chest_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", true)
+				Mode.TANGENT:
+					current_controllable = tangent_controllables[current]
+					(pelvis_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", false)
+					(hips_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", false)
+					(chest_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("selected", false)
+					match current:
+						0:
+							(pelvis_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+							(hip_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+							(chest_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+						1:
+							(pelvis_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+							(hip_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+							(chest_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+						2:
+							(pelvis_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+							(hip_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+							(chest_tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+						
+							
 
 func add_debug_rest():
 	pass
 
 func select():
-	pass
+	var stored := current
+	current = not current
+	current = stored
 
 func deselect():
 	pass
 
 func right_clicked_empty(pressed : bool):
 	pass
+
+func highlight():
+	set_color(Color.MAGENTA)
+
+func also_highlight():
+	set_color(Color.BROWN)
+
+func un_highlight():
+	set_color(Color.AQUA)
+
+func set_color(c : Color):
+	(pelvis_mesh.get_active_material(0) as ShaderMaterial).set_shader_parameter("albedo", c)
 
 func _input(event: InputEvent) -> void:
 	if not gizmo:
@@ -353,3 +490,5 @@ func _input(event: InputEvent) -> void:
 				current += 1
 			elif event.keycode == KEY_A:
 				current -= 1
+			elif event.keycode == KEY_S:
+				mode = Mode.TANGENT if mode == Mode.POSE else Mode.POSE

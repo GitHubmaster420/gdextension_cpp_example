@@ -39,7 +39,7 @@ func _ready() -> void:
 
 func get_t_from_keyframes(time : float, k1 := prev_keyframe, k2 := next_keyframe) -> float:
 	if k1.time == k2.time:
-		return 0
+		return 1
 	return clampf(remap(time, k1.time, k2.time, 0, 1), 0, 1)
 
 

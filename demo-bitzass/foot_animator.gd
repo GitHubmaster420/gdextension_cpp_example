@@ -1,18 +1,40 @@
 class_name FootAnimator
 extends Animator
 
-@export var thigh_rot_curve : MyEaseInOut: ## works as thigh rot or roll if ik, does nothing if hermite
+@export var left_side: Control
+@export var right_control: Control
+
+
+@export var thigh_rot_curve : MyEaseInOut: ## works as thigh rot or roll if ik
 	set(v):
 		thigh_rot_curve = v
 		thigh_rot_curve.bake_fast()
-@export var shin_rot_curve : MyEaseInOut: ## works as shin rot or ik lok if ik, does nothing if hermite
+		if not is_node_ready():
+			return
+		thigh_ease_curve_drawer.my_ease_in_out_curve = thigh_rot_curve
+@export var shin_rot_curve : MyEaseInOut: ## works as shin rot or ik loc if ik
 	set(v):
 		shin_rot_curve = v
 		shin_rot_curve.bake_fast()
-@export var foot_rot_curve : MyEaseInOut: ## works as foot rot fk or ik, does nothing if hermite
+		if not is_node_ready():
+			return
+		shin_ease_curve_drawer.my_ease_in_out_curve = shin_rot_curve
+		
+@export var foot_rot_curve : MyEaseInOut: ## works as foot rot fk or ik
 	set(v):
 		foot_rot_curve = v
 		foot_rot_curve.bake_fast()
+		if not is_node_ready():
+			return
+		foot_ease_curve_drawer.my_ease_in_out_curve = foot_rot_curve
+
+@export var shin_start_ease: EaseDrawer
+@export var shin_end_ease: EaseDrawer
+@export var foot_start_ease: EaseDrawer
+@export var foot_end_ease: EaseDrawer
+@export var thigh_start_ease: EaseDrawer
+@export var thigh_end_ease: EaseDrawer
+
 
 signal on_ground_set
 
@@ -315,6 +337,38 @@ func _ready() -> void:
 	is_on_ground = is_on_ground
 	gizmo_set.connect(on_gizmo_set)
 	gizmo = gizmo
+	
+	thigh_rot_curve = thigh_rot_curve
+	shin_rot_curve = shin_rot_curve
+	foot_rot_curve = foot_rot_curve
+	
+	thigh_start_ease.value_changed.connect(func(v : float):
+		thigh_tangent_prev_influence = v
+		)
+	thigh_end_ease.value_changed.connect(func(v : float):
+		thigh_tangent_next_influence = v
+		)
+	shin_start_ease.value_changed.connect(func(v : float):
+		shin_tangent_prev_influence = v
+		)
+	shin_end_ease.value_changed.connect(func(v : float):
+		shin_tangent_next_influence = v
+		)
+	foot_start_ease.value_changed.connect(func(v : float):
+		foot_tangent_prev_influence = v
+		)
+	foot_start_ease.value_changed.connect(func(v : float):
+		foot_tangent_next_influence = v
+		)
+	
+	thigh_tangent_prev_influence = thigh_start_ease.ease_amount
+	thigh_tangent_next_influence = thigh_end_ease.ease_amount
+	shin_tangent_prev_influence = shin_start_ease.ease_amount
+	shin_tangent_next_influence = shin_end_ease.ease_amount
+	foot_tangent_prev_influence = foot_start_ease.ease_amount
+	foot_tangent_next_influence = foot_end_ease.ease_amount
+	
+	
 	#thigh_tangent_next_angle_menu.angle_set.connect(func():
 		#thigh_tangent_next_influence = (thigh_tangent_next_angle_menu.angle)/180.0)
 	#thigh_tangent_prev_angle_menu.angle_set.connect(func():
@@ -370,9 +424,12 @@ func _ready() -> void:
 	#foot_angular_velocity_setter.text_submitted.connect(func(text : String):
 		#foot_angular_velocity = deg_to_rad(float(text))
 		#)
+	
 	visibility_changed.connect(func():
-		if not visible:
+		if not is_visible_in_tree():
 			#hide_stuff()
+			right_control.hide()
+			left_side.hide()
 			return
 		if not gizmo:
 			return
@@ -400,6 +457,8 @@ func _ready() -> void:
 
 func select():
 	selected = true
+	right_control.show()
+	left_side.show()
 	match edited:
 		Edited.POSE:
 			select_pose()
@@ -419,6 +478,8 @@ func deselect():
 		(m.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
 	#pose_material.albedo_color.a = 0.1
 	#tangent_material.albedo_color.a = 0.1
+	right_control.hide()
+	left_side.hide()
 
 func select_pose():
 	pass

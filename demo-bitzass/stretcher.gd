@@ -23,6 +23,8 @@ func stretch_to_target():
 	if mesh is not CapsuleMesh:
 		mesh = CapsuleMesh.new()
 		mesh.radius = 0.05
+	if (mesh as CapsuleMesh).radius < 0.02:
+		(mesh as CapsuleMesh).radius = 0.02
 	if not is_visible_in_tree():
 		return
 	(mesh as CapsuleMesh).height = start_pos.distance_to(end_pos)
