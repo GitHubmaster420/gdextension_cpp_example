@@ -228,7 +228,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(2.1658838e-07, 0.6478233, 0.17070371, 1)
 
-[node name="SpineAnimator" type="Node3D" unique_id=96204510 node_paths=PackedStringArray("pelvis_mesh", "hips_mesh", "chest_mesh", "pelvis_tangent_mesh", "hip_tangent_mesh", "chest_tangent_mesh", "pelvis_tangent", "hip_tangent", "chest_tangent", "pelvis_loc_vel", "pelvis_g_check_button", "pelvis_r_check_button", "hips_r_check_button", "chest_r_check_button", "pelvis_velocity_tangent", "hip_velocity_tangent", "chest_velocity_tangent", "pelvis_g_curve_drawer", "pelvis_r_curve_drawer", "hips_r_curve_drawe", "chest_r_curve_drawer", "gizmo_controllables", "tangent_controllables", "root", "pelvis_root", "pelvis_final", "hip_pose", "chest_pose", "skeleton", "multi_mesh_instance_3d", "gizmo")]
+[node name="SpineAnimator" type="Node3D" unique_id=96204510 node_paths=PackedStringArray("pelvis_mesh", "hips_mesh", "chest_mesh", "pelvis_tangent_mesh", "hip_tangent_mesh", "chest_tangent_mesh", "pelvis_tangent", "hip_tangent", "chest_tangent", "pelvis_loc_vel", "pelvis_g_check_button", "pelvis_r_check_button", "hips_r_check_button", "chest_r_check_button", "pelvis_velocity_tangent", "hip_velocity_tangent", "chest_velocity_tangent", "right_side", "pelvis_g_curve_drawer", "pelvis_r_curve_drawer", "hips_r_curve_drawe", "chest_r_curve_drawer", "gizmo_controllables", "tangent_controllables", "root", "pelvis_root", "pelvis_final", "hip_pose", "chest_pose", "skeleton", "multi_mesh_instance_3d", "gizmo")]
 script = ExtResource("1_3iju0")
 pelvis_mesh = NodePath("Root/PelvisRoot/PelvisMesh")
 hips_mesh = NodePath("Root/PelvisRoot/HipPose/PelvisFinal/HipsMesh")
@@ -251,6 +251,7 @@ pelvis_loc_ease_curve = SubResource("Resource_o2wqe")
 pelvis_rot_ease_curve = SubResource("Resource_rcvvc")
 hip_rot_ease_curve = SubResource("Resource_8wowj")
 chest_rot_ease_curve = SubResource("Resource_45gas")
+right_side = NodePath("RightSide")
 pelvis_g_curve_drawer = NodePath("RightSide/PelvisGCurveDrawer")
 pelvis_r_curve_drawer = NodePath("RightSide/PelvisRCurveDrawer")
 hips_r_curve_drawe = NodePath("RightSide/HipsRCurveDrawe")
@@ -1993,6 +1994,7 @@ offset_left = -144.896
 offset_top = -23.814003
 offset_right = -100.896
 offset_bottom = 0.18599701
+button_pressed = true
 text = "🚗"
 
 [node name="PelvisRCheckButton" type="CheckButton" parent="RightSide" unique_id=2020657533]
@@ -2006,6 +2008,7 @@ offset_left = -146.90399
 offset_top = -15.567017
 offset_right = -76.904
 offset_bottom = 15.432983
+button_pressed = true
 text = "🚗"
 
 [node name="HipsRCheckButton" type="CheckButton" parent="RightSide" unique_id=403423450]
@@ -2019,6 +2022,7 @@ offset_left = -141.90399
 offset_top = -15.203003
 offset_right = -71.90399
 offset_bottom = 15.796997
+button_pressed = true
 text = "🚗"
 
 [node name="ChestRCheckButton" type="CheckButton" parent="RightSide" unique_id=1806335452]
@@ -2032,6 +2036,7 @@ offset_left = -137.41599
 offset_top = -15.426025
 offset_right = -67.41599
 offset_bottom = 15.573975
+button_pressed = true
 text = "🚗"
 
 [node name="PelvisLocVelParent" type="Marker3D" parent="." unique_id=1960252407]

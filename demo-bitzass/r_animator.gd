@@ -76,6 +76,8 @@ static var spine_animators : Array[SpineAnimator]
 			return
 		chest_r_curve_drawer.my_ease_in_out_curve = v
 
+@export var right_side: Control
+
 @export var pelvis_g_curve_drawer: EaseCurveDrawer
 @export var pelvis_r_curve_drawer: EaseCurveDrawer
 @export var hips_r_curve_drawe: EaseCurveDrawer
@@ -235,8 +237,9 @@ func on_vel_changed(value : float):
 
 func on_visibility_changed():
 	if not gizmo:
-
 		return
+	if not is_visible_in_tree():
+		right_side.visible = false
 
 
 func on_gizmo_mode_set(mode : Gizmo.Mode):
@@ -254,10 +257,10 @@ func _process(delta: float) -> void:
 	if return_early and Engine.is_editor_hint():
 		return
 	if pelvis_g_tangent_use_auto_tangent:
-		pelvis_loc_vel.position = pelvis_g_tangent_vector * pelvis_g_vel / 10.0
+		pelvis_loc_vel.position = pelvis_g_tangent_vector * pelvis_g_vel
 	else:
 		pelvis_g_tangent_vector = pelvis_loc_vel.position.normalized()
-		pelvis_g_vel = pelvis_loc_vel.position.length() * 10.0
+		pelvis_g_vel = pelvis_loc_vel.position.length()
 	if pelvis_r_tangent_use_auto_tagent:
 		pelvis_tangent.basis = Quaternion(pelvis_r_tangent_vector.normalized(), PI/2.0) as Basis if pelvis_r_tangent_vector.length_squared() > 0 else Basis.IDENTITY
 	else:
@@ -462,9 +465,10 @@ func select():
 	var stored := current
 	current = not current
 	current = stored
+	right_side.visible = true
 
 func deselect():
-	pass
+	right_side.visible = false
 
 func right_clicked_empty(pressed : bool):
 	pass

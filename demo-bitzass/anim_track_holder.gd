@@ -169,6 +169,25 @@ func _ready() -> void:
 					edited_key = next_key
 
 		)
+	for new_key in keyframes:
+		new_key.mouse_entered.connect((func(key : Keyframe):
+			hovered_key = key
+			key.color = Color.YELLOW
+			key.hovered = true
+		).bind(new_key))
+		new_key.mouse_exited.connect((func(key : Keyframe):
+			if key == hovered_key:
+				hovered_key = null
+				key.color = Color.WHITE
+				key.hovered = false
+				).bind(new_key))
+		new_key.clicked.connect((func(was_clicked : bool, key : Keyframe):
+			if was_clicked:
+				selected_key = key
+			elif selected_key == key:
+				selected_key = null
+			).bind(new_key))
+			
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -245,7 +264,9 @@ func add_keyframe(mouse_pos : Vector2):
 	var new_key := Keyframe.new()
 	add_child(new_key)
 	keyframes.append(new_key)
-	new_key.animator = animator.instantiate()
+	var tmp := animator.instantiate()
+	var new := Animator.duplicate_without_instantiation(tmp)
+	new_key.animator = new
 	DuckTyper.set_variable_duck_typed(new_key.animator, "is_right", is_right)
 	if empty_canvas:
 		empty_canvas.right_clicked.connect(new_key.animator.right_clicked_empty)

@@ -13,7 +13,7 @@ var timeline_selected := false:
 
 var playing := false
 
-var time := 0.0:
+@export var time := 0.0:
 	set(v):
 		time = v
 		if not is_node_ready():
@@ -90,6 +90,8 @@ func _input(event: InputEvent) -> void:
 			playing = not playing
 
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	if playing:
 		time += delta
 		if time > max_time:

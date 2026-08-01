@@ -14,7 +14,6 @@
 [ext_resource type="Script" uid="uid://xp6xr1wt03i1" path="res://ik_hermite_selector.gd" id="12_fielv"]
 [ext_resource type="Script" uid="uid://373h65y0mns7" path="res://fk_hermite_selector.gd" id="14_fielv"]
 [ext_resource type="Script" uid="uid://burp1regbq6js" path="res://cubic_curve_drawer.gd" id="15_uglq4"]
-[ext_resource type="Script" uid="uid://bdw8efh44px7g" path="res://ease_drawer.gd" id="16_16p6a"]
 [ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://resources/my_ease_in_out.gd" id="16_wwjn6"]
 
 [sub_resource type="Resource" id="Resource_uglq4"]
@@ -38,7 +37,7 @@ points = PackedVector2Array(0, 0, 0.00057987374, 1.454569e-11, 0.0011586864, 1.1
 baked_points = PackedFloat32Array(0, 3.676243e-08, 3.027971e-07, 1.0547477e-06, 2.584167e-06, 5.218387e-06, 9.328561e-06, 1.5333173e-05, 2.3705885e-05, 3.4977358e-05, 4.975107e-05, 6.870295e-05, 9.2601156e-05, 0.00012230575, 0.00015879539, 0.0002031663, 0.00025666252, 0.0003206868, 0.00039682665, 0.00048686893, 0.00059284415, 0.00071704516, 0.0008620562, 0.0010308177, 0.0012266405, 0.0014532792, 0.0017149757, 0.0020165325, 0.0023633714, 0.0027615996, 0.0032181344, 0.0037407104, 0.0043380777, 0.0050199623, 0.00579728, 0.0066821342, 0.0076879016, 0.008829309, 0.010122419, 0.011584617, 0.013234517, 0.015091829, 0.017177127, 0.019511547, 0.022116473, 0.025012918, 0.028221203, 0.031760186, 0.035646945, 0.039896134, 0.04451954, 0.049525816, 0.054920312, 0.06070501, 0.06687863, 0.07343694, 0.08037283, 0.08767706, 0.09533847, 0.10334442, 0.11168116, 0.12033438, 0.12928936, 0.13853131, 0.14804551, 0.15781778, 0.16783412, 0.17808135, 0.1885467, 0.19921806, 0.21008414, 0.22113417, 0.23235817, 0.24374668, 0.25529096, 0.2669827, 0.27881432, 0.29077858, 0.302869, 0.31507927, 0.3274038, 0.33983707, 0.35237423, 0.36501038, 0.3777415, 0.39056337, 0.40347242, 0.4164649, 0.42953768, 0.44268784, 0.45591247, 0.46920893, 0.48257473, 0.49600756, 0.5095054, 0.5230661, 0.5366882, 0.5503694, 0.56410855, 0.57790405, 0.5917544, 0.60565853, 0.6196153, 0.6336235, 0.6476823, 0.66179085, 0.6759483, 0.69015396, 0.7044074, 0.718708, 0.73305535, 0.74744946, 0.76188976, 0.7763763, 0.79090935, 0.80548894, 0.8201154, 0.83478945, 0.84951186, 0.8642834, 0.87910575, 0.8939807, 0.9089104, 0.9238982, 0.9389485, 0.9540673, 0.9692647, 0.9845582)
 metadata/_custom_type_script = "uid://bsa4fukt7asth"
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_wwjn6"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_uglq4"]
 radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_imthv"]
@@ -66,7 +65,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 0.39215687)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_16p6a"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_wwjn6"]
 radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q77p2"]
@@ -122,7 +121,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(0, 0.49, 0.23683335, 0.29411766)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_hmbkd"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_16p6a"]
 radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j5lu3"]
@@ -143,7 +142,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 0.39215687)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_5ufbc"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_hmbkd"]
 radius = 0.05
 height = 0.35500002
 
@@ -155,7 +154,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(0, 0.49, 0.23683335, 0.29411766)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_imthv"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_5ufbc"]
 radius = 0.05
 height = 0.3280343
 
@@ -204,19 +203,12 @@ points = PackedVector2Array(0, 0, 0.0005800151, 2.8322503e-07, 0.001159251, 1.13
 baked_points = PackedFloat32Array(0, 5.1921255e-05, 0.00020954278, 0.00047612702, 0.00085495866, 0.0013496213, 0.0019636159, 0.0027007556, 0.0035649543, 0.004560361, 0.005691306, 0.006962268, 0.008377881, 0.009943104, 0.011663048, 0.013543147, 0.015589095, 0.017806655, 0.020202177, 0.02278206, 0.025553156, 0.02852266, 0.03169802, 0.03508713, 0.038698312, 0.042540282, 0.046622116, 0.05095344, 0.05554435, 0.06040543, 0.06554779, 0.070983104, 0.07672363, 0.08278222, 0.08917224, 0.0959078, 0.103003494, 0.11047475, 0.11833729, 0.12660766, 0.13530278, 0.14444011, 0.15403743, 0.16411282, 0.1746843, 0.18576995, 0.19738714, 0.20955276, 0.22228245, 0.23558992, 0.24948691, 0.26398188, 0.27907985, 0.2947805, 0.31107864, 0.32796186, 0.34541038, 0.3633957, 0.38188052, 0.40081754, 0.42015, 0.43981192, 0.459729, 0.47982025, 0.5, 0.5201796, 0.540271, 0.5601881, 0.5798501, 0.5991825, 0.61811954, 0.63660425, 0.6545897, 0.67203814, 0.68892133, 0.7052195, 0.72092015, 0.736018, 0.7505131, 0.7644101, 0.77771753, 0.7904473, 0.8026128, 0.81423, 0.82531565, 0.83588713, 0.8459626, 0.8555599, 0.8646972, 0.87339234, 0.8816627, 0.88952523, 0.89699656, 0.9040922, 0.91082776, 0.91721785, 0.92327636, 0.9290169, 0.9344522, 0.9395945, 0.9444556, 0.94904655, 0.95337784, 0.95745975, 0.9613016, 0.96491283, 0.96830195, 0.9714773, 0.97444683, 0.97721785, 0.97979784, 0.98219335, 0.9844109, 0.9864569, 0.988337, 0.9900569, 0.99162215, 0.9930377, 0.99430877, 0.9954396, 0.99643505, 0.99729925, 0.9980364, 0.9986504, 0.99914503, 0.9995239, 0.99979043, 0.999948)
 metadata/_custom_type_script = "uid://bsa4fukt7asth"
 
-[node name="FootAnimator" type="Node3D" unique_id=1245429443 node_paths=PackedStringArray("left_side", "right_control", "shin_start_ease", "shin_end_ease", "foot_start_ease", "foot_end_ease", "thigh_start_ease", "thigh_end_ease", "grounded_foot", "foot_meshes", "pie_menu", "thigh_stretcher", "shin_stetcher", "foot_pose_mesh", "thigh_tangent_mesh", "shin_tangent_mesh", "foot_tangent_mesh", "pelvis", "thigh_pose", "shin_pose", "foot_pose", "thigh_tangent", "shin_tangent", "foot_tangent", "shin_ease_curve_drawer", "shin_h_slider", "shin_v_slider", "shin_v_slider_2", "foot_ease_curve_drawer", "foot_h_slider", "foot_v_slider", "foot_v_slider_2", "thigh_ease_curve_drawer", "thigh_h_slider", "thigh_v_slider", "thigh_v_slider_2", "thigh_velocity_tangent", "shin_velocity_tangent", "foot_velocity_tangent", "pose_fk_gizmoables", "tangent_fk_gizmoables", "pose_mode_ik_gizmoables", "tangent_mode_ik_gizmoables", "foot_ik_pose", "foot_ik_tangent", "foot_ik_pose_roll", "foot_ik_tangent_roll", "interp_mode_pie_menu")]
+[node name="FootAnimator" type="Node3D" unique_id=1245429443 node_paths=PackedStringArray("right_control", "grounded_foot", "foot_meshes", "pie_menu", "thigh_stretcher", "shin_stetcher", "foot_pose_mesh", "thigh_tangent_mesh", "shin_tangent_mesh", "foot_tangent_mesh", "pelvis", "thigh_pose", "shin_pose", "foot_pose", "thigh_tangent", "shin_tangent", "foot_tangent", "shin_ease_curve_drawer", "shin_h_slider", "shin_v_slider", "shin_v_slider_2", "foot_ease_curve_drawer", "foot_h_slider", "foot_v_slider", "foot_v_slider_2", "thigh_ease_curve_drawer", "thigh_h_slider", "thigh_v_slider", "thigh_v_slider_2", "thigh_velocity_tangent", "shin_velocity_tangent", "foot_velocity_tangent", "pose_fk_gizmoables", "tangent_fk_gizmoables", "pose_mode_ik_gizmoables", "tangent_mode_ik_gizmoables", "foot_ik_pose", "foot_ik_tangent", "foot_ik_pose_roll", "foot_ik_tangent_roll", "interp_mode_pie_menu")]
 script = ExtResource("1_8duu2")
-left_side = NodePath("LeftSide")
 right_control = NodePath("RightControl")
 thigh_rot_curve = SubResource("Resource_uglq4")
 shin_rot_curve = SubResource("Resource_wwjn6")
 foot_rot_curve = SubResource("Resource_16p6a")
-shin_start_ease = NodePath("LeftSide/ShinStartEase")
-shin_end_ease = NodePath("LeftSide/ShinEndEase")
-foot_start_ease = NodePath("LeftSide/FootStartEase")
-foot_end_ease = NodePath("LeftSide/FootEndEase")
-thigh_start_ease = NodePath("LeftSide/ThighStartEase")
-thigh_end_ease = NodePath("LeftSide/ThighEndEase")
 grounded_foot = NodePath("FootControllerScene/GroundedFoot")
 foot_meshes = [NodePath("Pelvis/ThighPose/ShinPose/FootPose/RightFoot/FootPoseMesh")]
 pie_menu = NodePath("MousePieMenu")
@@ -289,7 +281,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 [node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighPose/ThighVelocityTangent" unique_id=565614178 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(-1, -8.001042e-09, 0, -8.001042e-09, 1, 0, 0, 0, -1, 0, 0.5703786, 0)
 top_level = true
-mesh = SubResource("CapsuleMesh_wwjn6")
+mesh = SubResource("CapsuleMesh_uglq4")
 surface_material_override/0 = SubResource("StandardMaterial3D_imthv")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../..")
@@ -381,7 +373,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 [node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighPose/ShinPose/ShinVelocityTangent" unique_id=1096229232 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(0, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0.21544236, -0.0067283553)
 top_level = true
-mesh = SubResource("CapsuleMesh_16p6a")
+mesh = SubResource("CapsuleMesh_wwjn6")
 surface_material_override/0 = SubResource("StandardMaterial3D_q77p2")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../..")
@@ -423,7 +415,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 [node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighPose/ShinPose/FootPose/FootVelocityTangent" unique_id=955475494 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, 0, 0, 0, -0.6040985, -0.79690963, 0, 0.79690963, -0.6040985, -6.7576913e-09, -0.09063658, -0.124720655)
 top_level = true
-mesh = SubResource("CapsuleMesh_hmbkd")
+mesh = SubResource("CapsuleMesh_16p6a")
 surface_material_override/0 = SubResource("StandardMaterial3D_j5lu3")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../..")
@@ -445,7 +437,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_wwjn6")
 [node name="ThighStretcher" type="MeshInstance3D" parent="Pelvis/ThighPose" unique_id=925815456 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, 0, 0, 0, -0.99982035, 0.018953113, 0, -0.018953113, -0.99982035, 0, 0.39291048, -0.0033641777)
 top_level = true
-mesh = SubResource("CapsuleMesh_5ufbc")
+mesh = SubResource("CapsuleMesh_hmbkd")
 surface_material_override/0 = SubResource("StandardMaterial3D_uglq4")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("..")
@@ -455,7 +447,7 @@ metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 [node name="ShinStetcher" type="MeshInstance3D" parent="Pelvis/ThighPose" unique_id=881187306 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, -2.0600563e-08, 7.941442e-09, -2.2078265e-08, -0.9330699, 0.35969502, 0, -0.359695, -0.93306994, -3.3788456e-09, 0.06240289, -0.06572451)
 top_level = true
-mesh = SubResource("CapsuleMesh_imthv")
+mesh = SubResource("CapsuleMesh_5ufbc")
 surface_material_override/0 = SubResource("StandardMaterial3D_16p6a")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../ShinPose")
@@ -513,7 +505,7 @@ grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 script = ExtResource("5_h0gvp")
 
-[node name="PoseFkIk" type="Label" parent="MousePieMenu" unique_id=1877426429 node_paths=PackedStringArray("foot_animator")]
+[node name="PoseFkIk" type="Label" parent="MousePieMenu" unique_id=1877426429]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_left = 345.0
@@ -522,9 +514,8 @@ offset_right = 410.0
 offset_bottom = 252.0
 text = "Pose : IK"
 script = ExtResource("6_sfyrg")
-foot_animator = NodePath("../..")
 
-[node name="TangentFkIk" type="Label" parent="MousePieMenu" unique_id=772727618 node_paths=PackedStringArray("foot_animator")]
+[node name="TangentFkIk" type="Label" parent="MousePieMenu" unique_id=772727618]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_left = 137.0
@@ -533,9 +524,8 @@ offset_right = 228.0
 offset_bottom = 151.0
 text = "Tangent: FK"
 script = ExtResource("7_t76mn")
-foot_animator = NodePath("../..")
 
-[node name="GroundedOrAerial" type="Label" parent="MousePieMenu" unique_id=1773383019 node_paths=PackedStringArray("foot_animator")]
+[node name="GroundedOrAerial" type="Label" parent="MousePieMenu" unique_id=1773383019]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_left = 134.0
@@ -544,7 +534,6 @@ offset_right = 212.0
 offset_bottom = 388.0
 text = "Grounded"
 script = ExtResource("8_dbjyx")
-foot_animator = NodePath("../..")
 
 [node name="FootControllerScene" parent="." unique_id=562095217 instance=ExtResource("8_t76mn")]
 
@@ -569,7 +558,7 @@ pivot_offset_ratio = Vector2(0.5, 0.5)
 script = ExtResource("5_h0gvp")
 metadata/_custom_type_script = "uid://d1pq500b0t0ae"
 
-[node name="IKHermiteSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=1348599774 node_paths=PackedStringArray("foot_aimator")]
+[node name="IKHermiteSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=1348599774]
 modulate = Color(0, 0.043137256, 0.85882354, 1)
 layout_mode = 0
 offset_left = 355.0
@@ -578,9 +567,8 @@ offset_right = 438.0
 offset_bottom = 262.0
 text = "IK Hermite"
 script = ExtResource("12_fielv")
-foot_aimator = NodePath("../..")
 
-[node name="FootConstantSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=126633696 node_paths=PackedStringArray("foot_animator", "pie_menu")]
+[node name="FootConstantSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=126633696]
 modulate = Color(0, 0.043137256, 0.85882354, 1)
 layout_mode = 0
 offset_left = 137.0
@@ -589,10 +577,8 @@ offset_right = 207.0
 offset_bottom = 160.0
 text = "Constant"
 script = ExtResource("12_ai6gc")
-foot_animator = NodePath("../..")
-pie_menu = NodePath("..")
 
-[node name="FKHermiteSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=1865498080 node_paths=PackedStringArray("foot_animator", "pie_menu")]
+[node name="FKHermiteSelector" type="Label" parent="InterpSelectorPieMenu" unique_id=1865498080]
 modulate = Color(0, 0.043137256, 0.85882354, 1)
 layout_mode = 0
 offset_left = 137.0
@@ -601,8 +587,6 @@ offset_right = 224.0
 offset_bottom = 396.0
 text = "FK Hermite"
 script = ExtResource("14_fielv")
-foot_animator = NodePath("../..")
-pie_menu = NodePath("..")
 
 [node name="RightControl" type="Control" parent="." unique_id=744273026]
 layout_mode = 3
@@ -820,231 +804,5 @@ min_value = -1.0
 max_value = 1.0
 step = 0.01
 value = 0.19999999999999996
-
-[node name="LeftSide" type="Control" parent="." unique_id=1503685286]
-layout_mode = 3
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -67.0
-offset_right = 223.0
-offset_bottom = 321.0
-grow_vertical = 2
-
-[node name="ShinStartEase" type="ColorRect" parent="LeftSide" unique_id=390653508 node_paths=PackedStringArray("v_slider")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.48900002
-anchor_top = 0.441
-anchor_right = 0.48900002
-anchor_bottom = 0.441
-offset_left = -50.047005
-offset_top = -49.872986
-offset_right = 49.952995
-offset_bottom = 50.127014
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.11372549, 0.81960785, 0.7882353, 1)
-script = ExtResource("16_16p6a")
-v_slider = NodePath("VSlider")
-invert_x = true
-metadata/_custom_type_script = "uid://bdw8efh44px7g"
-
-[node name="VSlider" type="VSlider" parent="LeftSide/ShinStartEase" unique_id=1228510465]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -73.0
-offset_top = -54.235016
-offset_right = -53.0
-offset_bottom = 42.764984
-grow_horizontal = 2
-grow_vertical = 2
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="ShinEndEase" type="ColorRect" parent="LeftSide" unique_id=747073129 node_paths=PackedStringArray("v_slider")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.108
-anchor_top = 0.43800002
-anchor_right = 1.108
-anchor_bottom = 0.43800002
-offset_left = -50.084015
-offset_top = -49.944016
-offset_right = 49.915985
-offset_bottom = 50.055984
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.11372549, 0.81960785, 0.7882353, 1)
-script = ExtResource("16_16p6a")
-v_slider = NodePath("VSlider")
-invert_x = null
-metadata/_custom_type_script = "uid://bdw8efh44px7g"
-
-[node name="VSlider" type="VSlider" parent="LeftSide/ShinEndEase" unique_id=1529777025]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 56.0
-offset_top = -48.0
-offset_right = 76.0
-offset_bottom = 47.0
-grow_horizontal = 2
-grow_vertical = 2
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="FootStartEase" type="ColorRect" parent="LeftSide" unique_id=880092447 node_paths=PackedStringArray("v_slider")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.48900002
-anchor_top = 0.712
-anchor_right = 0.48900002
-anchor_bottom = 0.712
-offset_left = -50.047005
-offset_top = -49.837006
-offset_right = 49.952995
-offset_bottom = 50.162994
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.11372549, 0.81960785, 0.7882353, 1)
-script = ExtResource("16_16p6a")
-v_slider = NodePath("VSlider")
-invert_x = true
-metadata/_custom_type_script = "uid://bdw8efh44px7g"
-
-[node name="VSlider" type="VSlider" parent="LeftSide/FootStartEase" unique_id=1332603512]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -79.0
-offset_top = -46.419006
-offset_right = -59.0
-offset_bottom = 46.580994
-grow_horizontal = 2
-grow_vertical = 2
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="FootEndEase" type="ColorRect" parent="LeftSide" unique_id=942123842 node_paths=PackedStringArray("v_slider")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.126
-anchor_top = 0.711
-anchor_right = 1.126
-anchor_bottom = 0.711
-offset_left = -50.098007
-offset_top = -49.86801
-offset_right = 49.901993
-offset_bottom = 50.13199
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.11372549, 0.81960785, 0.7882353, 1)
-script = ExtResource("16_16p6a")
-v_slider = NodePath("VSlider")
-invert_x = null
-metadata/_custom_type_script = "uid://bdw8efh44px7g"
-
-[node name="VSlider" type="VSlider" parent="LeftSide/FootEndEase" unique_id=460631469]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 54.0
-offset_top = -53.0
-offset_right = 74.0
-offset_bottom = 55.0
-grow_horizontal = 2
-grow_vertical = 2
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="ThighStartEase" type="ColorRect" parent="LeftSide" unique_id=139177002 node_paths=PackedStringArray("v_slider")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.49800003
-anchor_top = 0.157
-anchor_right = 0.49800003
-anchor_bottom = 0.157
-offset_left = -50.05401
-offset_top = -49.916008
-offset_right = 49.94599
-offset_bottom = 50.083992
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.11372549, 0.81960785, 0.7882353, 1)
-script = ExtResource("16_16p6a")
-v_slider = NodePath("VSlider")
-invert_x = true
-metadata/_custom_type_script = "uid://bdw8efh44px7g"
-
-[node name="VSlider" type="VSlider" parent="LeftSide/ThighStartEase" unique_id=1188698671]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -77.0
-offset_top = -59.000015
-offset_right = -57.0
-offset_bottom = 53.999985
-grow_horizontal = 2
-grow_vertical = 2
-max_value = 1.0
-step = 0.01
-value = 1.0
-
-[node name="ThighEndEase" type="ColorRect" parent="LeftSide" unique_id=5446539 node_paths=PackedStringArray("v_slider")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.103
-anchor_top = 0.157
-anchor_right = 1.103
-anchor_bottom = 0.157
-offset_left = -49.96901
-offset_top = -49.916
-offset_right = 50.03099
-offset_bottom = 50.084007
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.11372549, 0.81960785, 0.7882353, 1)
-script = ExtResource("16_16p6a")
-v_slider = NodePath("VSlider")
-invert_x = null
-metadata/_custom_type_script = "uid://bdw8efh44px7g"
-
-[node name="VSlider" type="VSlider" parent="LeftSide/ThighEndEase" unique_id=587746122]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 52.5
-offset_top = -55.000015
-offset_right = 72.5
-offset_bottom = 49.99998
-grow_horizontal = 2
-grow_vertical = 2
-max_value = 1.0
-step = 0.01
-value = 1.0
 
 [editable path="FootControllerScene"]

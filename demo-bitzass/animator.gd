@@ -49,3 +49,73 @@ func select_tangent():
 
 func to_resource():
 	pass
+
+static func remap_var(value: Variant, map: Dictionary) -> Variant:
+	if value is Node:
+		return map.get(value, value)
+
+	elif value is Array:
+		var arr = value.duplicate()
+		for i in arr.size():
+			arr[i] = remap_var(arr[i], map)
+		return arr
+
+	elif value is Dictionary:
+		var dict = {}
+		for k in value:
+			dict[remap_var(k, map)] = remap_var(value[k], map)
+		return dict
+
+	else:
+		return value
+
+static func duplicate_without_instantiation(animator : Animator) -> Animator:
+	var this := animator
+	var children := animator.find_children("*", "", true, false)
+	var new : Animator
+	if animator is FootAnimator:
+		new = FootAnimator.new()
+	elif animator is HandsAnimator:
+		new = HandsAnimator.new()
+	elif animator is SpineAnimator:
+		new = SpineAnimator.new()
+	elif animator is RootAnimator:
+		new = RootAnimator.new()
+	elif animator is HeadAnimator:
+		new = HeadAnimator.new()
+	else:
+		assert(false)
+	var new_children = children.duplicate(true)
+	var new_and_old_parents : Dictionary[Node, Node]
+	new_and_old_parents[animator] = new
+	for i in range(new_children.size()):
+		new_and_old_parents[children[i]] = new_children[i]
+	
+	for c in children:
+		if c is AnimationCreator:
+			continue
+		var new_node := new_and_old_parents[c]
+		if new_node.get_parent() == animator:
+			var new_parent := new
+			new_node.reparent(new_parent, new_node is Control)
+	
+	for old_node in new_and_old_parents:
+		var new_node := new_and_old_parents[old_node]
+
+		for p in old_node.get_property_list():
+			if !(p.usage & PROPERTY_USAGE_STORAGE):
+				continue
+
+			new_node.set(
+				p.name,
+				remap_var(old_node.get(p.name), new_and_old_parents)
+			)
+		
+	for p in this.get_property_list():
+		if !(p.usage & PROPERTY_USAGE_STORAGE):
+			continue
+
+		new.set(p.name, remap_var(this.get(p.name), new_and_old_parents))
+	return new
+	
+	

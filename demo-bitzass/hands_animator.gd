@@ -27,6 +27,8 @@ signal request_auto_velocity(idx : int)
 var current := 0:
 	set(v):
 		current = v
+		if not is_node_ready():
+			return
 		if current > max_current:
 			current = 0
 		elif current < 0:

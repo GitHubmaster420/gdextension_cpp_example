@@ -1,6 +1,8 @@
 extends MenuLabel
 
-@export var foot_animator : FootAnimator
+var foot_animator : FootAnimator:
+	get:
+		return get_parent().get_parent()
 
 func _ready() -> void:
 	foot_animator.on_ground_set.connect(func():

@@ -108,7 +108,7 @@ func interpolate_keyframes():
 		animator_1.up_arm_tangent = QuaternionExtender.get_auto_velocity_axis(animator_1.up_arm_pose.basis, animator_0.up_arm_pose.basis, animator_2.up_arm_pose.basis, (animator_1.up_arm_auto_influence + 1) / 2.0)
 	if animator_2.use_up_arm_auto_tangent:
 		animator_2.up_arm_tangent = QuaternionExtender.get_auto_velocity_axis(animator_2.up_arm_pose.basis, animator_1.up_arm_pose.basis, animator_3.up_arm_pose.basis, (animator_2.up_arm_auto_influence + 1) / 2.0)
-	up_arm_rot_setter.rot = QuaternionExtender.my_quat_interpolate(r_up_arm_0, animator_1.up_arm_tangent, 1, animator_1.up_arm_angular_velocity, r_up_arm_1, animator_2.up_arm_tangent, 1, animator_2.up_arm_angular_velocity, t, next_keyframe.time - prev_keyframe.time, animator_2.up_arm_ease_curve.baked_points)
+	up_arm_rot_setter.rot = QuaternionExtender.my_quat_interpolate(r_up_arm_0, animator_1.up_arm_tangent, animator_1.up_arm_angular_velocity, r_up_arm_1, animator_2.up_arm_tangent, animator_2.up_arm_angular_velocity, t, next_keyframe.time - prev_keyframe.time, animator_2.up_arm_ease_curve.baked_points)
 	
 	var r_low_arm_0 := Quaternion.from_euler(animator_1.low_arm_pose.rotation)
 	var r_low_arm_1 := Quaternion.from_euler(animator_2.low_arm_pose.rotation)
@@ -116,7 +116,7 @@ func interpolate_keyframes():
 		animator_1.low_arm_tangent = QuaternionExtender.get_auto_velocity_axis(animator_1.low_arm_pose.basis, animator_0.low_arm_pose.basis, animator_2.low_arm_pose.basis, (animator_1.low_arm_auto_influence + 1) / 2.0)
 	if animator_2.use_low_arm_auto_tangent:
 		animator_2.low_arm_tangent = QuaternionExtender.get_auto_velocity_axis(animator_2.low_arm_pose.basis, animator_1.low_arm_pose.basis, animator_3.low_arm_pose.basis, (animator_2.low_arm_auto_influence + 1) / 2.0)
-	low_arm_rot_setter.rot = QuaternionExtender.my_quat_interpolate(r_low_arm_0, animator_1.low_arm_tangent, 1, animator_1.low_arm_angular_velocity, r_low_arm_1, animator_2.low_arm_tangent, 1, animator_2.low_arm_angular_velocity, t, next_keyframe.time - prev_keyframe.time, animator_2.low_arm_ease_curve.baked_points)
+	low_arm_rot_setter.rot = QuaternionExtender.my_quat_interpolate(r_low_arm_0, animator_1.low_arm_tangent, animator_1.low_arm_angular_velocity, r_low_arm_1, animator_2.low_arm_tangent, animator_2.low_arm_angular_velocity, t, next_keyframe.time - prev_keyframe.time, animator_2.low_arm_ease_curve.baked_points)
 	
 	var r_hand_0 := Quaternion.from_euler(animator_1.hand_pose.rotation)
 	var r_hand_1 := Quaternion.from_euler(animator_2.hand_pose.rotation)
@@ -124,9 +124,7 @@ func interpolate_keyframes():
 		animator_1.hand_tangent = QuaternionExtender.get_auto_velocity_axis(animator_1.hand_pose.basis, animator_0.hand_pose.basis, animator_2.hand_pose.basis, (animator_1.hand_auto_influence + 1) / 2.0)
 	if animator_2.use_hand_auto_tagent:
 		animator_2.hand_tangent = QuaternionExtender.get_auto_velocity_axis(animator_2.hand_pose.basis, animator_1.hand_pose.basis, animator_3.hand_pose.basis, (animator_2.hand_auto_influence + 1) / 2.0)
-	hand_rot_setter.rot = QuaternionExtender.my_quat_interpolate(r_hand_0, animator_1.hand_tangent, 1, animator_1.hand_angular_velocity, r_hand_1, animator_2.hand_tangent, 1, animator_2.hand_angular_velocity, t, next_keyframe.time - prev_keyframe.time, animator_2.hand_ease_curve.baked_points)
-	
-	
+	hand_rot_setter.rot = QuaternionExtender.my_quat_interpolate(r_hand_0, animator_1.hand_tangent, animator_1.hand_angular_velocity, r_hand_1, animator_2.hand_tangent, animator_2.hand_angular_velocity, t, next_keyframe.time - prev_keyframe.time, animator_2.hand_ease_curve.baked_points)
 	
 
 func on_keyframe_added(key : Keyframe):
@@ -210,7 +208,7 @@ func calculate_auto_velocity(idx : int, kf : Keyframe):
 			next_v = next.hand_angular_velocity
 			ease_points = next.hand_ease_curve.baked_points
 			
-	var mag := QuaternionExtender.get_auto_velocity(prev_q, prev_ax, prev_infl, prev_v, next_q, next_ax, next_infl, next_v, next_kf.time - prev_kf.time, ease_points)
+	var mag := QuaternionExtender.get_auto_velocity(prev_q, prev_ax, prev_v, next_q, next_ax, next_v, next_kf.time - prev_kf.time, ease_points)
 	(kf.animator as HandsAnimator).set_aut_velocity(idx, mag)
 		
 	

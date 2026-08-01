@@ -4,8 +4,16 @@ class_name HeadAnimator
 @export var chest: Marker3D
 @export var neck: Marker3D
 @export var head: Marker3D
+@export var neck_2: Marker3D
+
+@export var neck_control: Marker3D
+
 
 @export var gizmo_controllables : Array[GizmoControllable]
+
+@export var skeleton_3d: Skeleton3D
+
+@export var neck_rests : Array[Transform3D]
 
 var current_gizmoable : GizmoControllable:
 	set(v):
@@ -26,6 +34,12 @@ var current := 0:
 			current = 0
 		current_gizmoable = gizmo_controllables[current]
 		
+
+func _process(delta: float) -> void:
+	var offset := neck_control.basis.slerp(Basis.IDENTITY, 0.5)
+	
+	neck.basis = offset * neck_rests[0].basis
+	neck_2.basis = offset * neck_rests[1].basis
 
 func select():
 	pass

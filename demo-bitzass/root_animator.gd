@@ -19,6 +19,10 @@ var current := 0
 @export var rot_ease_curve : MyEaseInOut
 @export var loc_ease_curve : MyEaseInOut
 
+@export var tangent_mesh: MeshInstance3D
+@export var root_mesh: MeshInstance3D
+
+
 enum Mode{
 	POSE,
 	TANGENT
@@ -32,8 +36,12 @@ enum Mode{
 		match mode:
 			Mode.POSE:
 				gizmo.controllable = gizmo_controllable
+				(root_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+				(tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
 			Mode.TANGENT:
-				gizmo_controllable = tangent_gizmo_controllable
+				gizmo.controllable = tangent_gizmo_controllable
+				(root_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+				(tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
 			
 
 func _ready() -> void:
@@ -45,7 +53,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	angular_velocity_tangent = (root_tangent.basis as Quaternion).get_axis()
-	velocity_tangent_vector = vel_object.position * 10.0
+	velocity_tangent_vector = vel_object.position
 
 func on_gizmo_set(_gizmo : Gizmo):
 	gizmo_controllable.gizmo = _gizmo
@@ -62,10 +70,11 @@ func _input(event: InputEvent) -> void:
 			mode = Mode.TANGENT if mode == Mode.POSE else Mode.POSE
 
 func select():
-	pass
+	mode = Mode.POSE
 
 func deselect():
-	pass
+	(root_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+	(tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
 
 func right_clicked_empty(pressed : bool):
 	pass

@@ -1,6 +1,7 @@
 extends MenuLabel
 
-@export var foot_aimator : FootAnimator
-
+var foot_animator : FootAnimator:
+	get:
+		return get_parent().get_parent()
 func select():
-	foot_aimator.interp_mode = FootAnimator.InterpMode.IK_HERMITE
+	foot_animator.interp_mode = FootAnimator.InterpMode.IK_HERMITE

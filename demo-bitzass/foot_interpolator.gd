@@ -64,6 +64,8 @@ func _validate_property(property: Dictionary) -> void:
 			property.hint_string = skeleton.get_concatenated_bone_names()
 
 func _process_modification_with_delta(_delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	on_time_changed(anim_track_holder.time)
 	interpolate_keyframes()
 
@@ -157,7 +159,7 @@ func interpolate_keyframes():
 			thigh_rot_setter.rot = r_t
 			var r_s := rots[1]
 			shin_rot_setter.rot = r_s
-			var r_f := rots[0].inverse() * rots[1].inverse() * (tr1.basis.get_rotation_quaternion().slerp(tr2.basis.get_rotation_quaternion(), t) * foot_offset)
+			var r_f := rots[1].inverse() * rots[0].inverse() * (tr1.basis.get_rotation_quaternion().slerp(tr2.basis.get_rotation_quaternion(), t) * foot_offset)
 			foot_rot_setter.rot = r_f
 		FootAnimator.InterpMode.CONSTANT:
 			var rt := Quaternion.from_euler(animator_1.thigh_pose.rotation)
@@ -177,19 +179,17 @@ func interpolate_keyframes():
 			
 			var axis_00 := (r00t).get_axis().normalized()
 			var v00 := animator_1.thigh_angular_velocity
-			var influence_00 := animator_1.thigh_tangent_next_influence
 			
 		
 			
 			var axis_01 := (r01t).get_axis().normalized()
 			var v01 := animator_2.thigh_angular_velocity
-			var influence_01 := animator_2.thigh_tangent_prev_influence
 			
 			#var qt00 := r00 * Quaternion(axis_00, angle_00)
 			#var qt01 := r01 * Quaternion(axis_01, angle_01)
 			#
 			var dur := next_keyframe.time - prev_keyframe.time
-			var r0 := QuaternionExtender.my_quat_interpolate(r00, axis_00, influence_00, v00, r01, axis_01, influence_01, v01, t, dur, animator_2.thigh_rot_curve.baked_points)
+			var r0 := QuaternionExtender.my_quat_interpolate(r00, axis_00, v00, r01, axis_01, v01, t, dur, animator_2.thigh_rot_curve.baked_points)
 			
 			
 			thigh_rot_setter.rot = r0
@@ -202,28 +202,25 @@ func interpolate_keyframes():
 			
 			var axis_10 := (r10t).get_axis().normalized()
 			var v10 := animator_1.shin_angular_velocity
-			var influence_10 := animator_1.shin_tangent_next_influence
 			
 			var axis_11 := (r11t).get_axis().normalized()
 			var v11 := animator_2.shin_angular_velocity
-			var influence_11 := animator_2.shin_tangent_prev_influence
 			
-			var r1 := QuaternionExtender.my_quat_interpolate(r10, axis_10, influence_10, v10, r11, axis_11, influence_11, v11, t, dur, animator_2.shin_rot_curve.baked_points)
+			var r1 := QuaternionExtender.my_quat_interpolate(r10, axis_10, v10, r11, axis_11, v11, t, dur, animator_2.shin_rot_curve.baked_points)
 			
 			shin_rot_setter.rot = r1
 			
-			var r20 := Quaternion.from_euler(animator_1.foot_pose.rotation) * foot_offset
-			var r21 := Quaternion.from_euler(animator_2.foot_pose.rotation) * foot_offset
-			var r20t := Quaternion.from_euler(animator_1.foot_tangent.rotation) * foot_offset
-			var r21t := Quaternion.from_euler(animator_2.foot_tangent.rotation) * foot_offset
+			var r20 := Quaternion.from_euler(animator_1.foot_pose.rotation)
+			var r21 := Quaternion.from_euler(animator_2.foot_pose.rotation)
+			var r20t := Quaternion.from_euler(animator_1.foot_tangent.rotation)
+			var r21t := Quaternion.from_euler(animator_2.foot_tangent.rotation)
 			
 			var axis_20 := (r20t).get_axis().normalized()
 			var v20 := animator_1.foot_angular_velocity
-			var influence_20 := animator_2.foot_tangent_next_influence
 			
 			var axis_21 := (r21t).get_axis().normalized()
 			var v21 := animator_2.foot_angular_velocity
-			var influence_21 := animator_2.shin_tangent_prev_influence
 			
-			var r2 := QuaternionExtender.my_quat_interpolate(r20, axis_20, influence_20, v20, r21, axis_21, influence_21, v21, t, dur, animator_2.foot_rot_curve.baked_points)
+			var r2 := QuaternionExtender.my_quat_interpolate(r20, axis_20, v20, r21, axis_21, v21, t, dur, animator_2.foot_rot_curve.baked_points)
+			r2 = r2 * foot_offset
 			foot_rot_setter.rot = r2

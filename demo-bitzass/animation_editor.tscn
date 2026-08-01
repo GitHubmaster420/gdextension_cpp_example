@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c835271q7cw32" path="res://action.gd" id="1_alrdg"]
 [ext_resource type="Script" uid="uid://ci64carqx66cu" path="res://empyty_canvas.gd" id="1_ewbd3"]
+[ext_resource type="Script" uid="uid://cq350kls0fyqr" path="res://animation_editor.gd" id="1_x6m4r"]
 [ext_resource type="Script" uid="uid://bgh7tdamac872" path="res://master_time.gd" id="2_3gsoi"]
 [ext_resource type="Script" uid="uid://drbnb8uuhxdtx" path="res://body_part_selector.gd" id="2_soljt"]
 [ext_resource type="Script" uid="uid://bytaqurdhtaev" path="res://selector_child.gd" id="3_eckwp"]
@@ -973,7 +974,10 @@ top_radius = 0.0
 bottom_radius = 0.1
 height = 0.3
 
-[node name="AnimationEditor" type="Node3D" unique_id=1079719040]
+[node name="AnimationEditor" type="Node3D" unique_id=1079719040 node_paths=PackedStringArray("save_button", "file_name_editor")]
+script = ExtResource("1_x6m4r")
+save_button = NodePath("SaveButton")
+file_name_editor = NodePath("SaveButton/FileNameEditor")
 
 [node name="EmptyCanvas" type="ColorRect" parent="." unique_id=60538895]
 anchors_preset = 15
@@ -998,17 +1002,10 @@ pivot_offset_ratio = Vector2(0.5, 0.5)
 virtual_keyboard_type = 2
 
 [node name="BodyPartSelector" type="ColorRect" parent="." unique_id=1947854811 node_paths=PackedStringArray("anim_track_holders", "master_time", "gizmo", "animation_player")]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -512.0
-offset_top = -308.0
-offset_right = -369.00012
-offset_bottom = -165.00047
-grow_horizontal = 2
-grow_vertical = 2
+offset_left = 64.0
+offset_top = 16.0
+offset_right = 206.99988
+offset_bottom = 158.99953
 pivot_offset_ratio = Vector2(0.5, 0.5)
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -2568,8 +2565,10 @@ influence = 1.0
 script = ExtResource("14_43flw")
 head_name = "spine.006"
 neck_name = "spine.004"
+neck_2_name = "spine.005"
 head_idx = 7
 neck_idx = 5
+neck_2_idx = 6
 anim_track_holder = NodePath("AnimTackHolder")
 metadata/_custom_type_script = "uid://cddyhwojh7wm3"
 
@@ -3064,3 +3063,28 @@ right_foot_anim_track_holder = NodePath("../FootballCityCharacter/metarig/Skelet
 left_foot_anim_track_holder = NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftFootInterpolator/AnimTackHolder")
 right_hand_anim_track_holder = NodePath("../FootballCityCharacter/metarig/Skeleton3D/RightHandInterpolator/AnimTackHolder")
 left_hand_anim_track_holder = NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftHandInterpolator/AnimTackHolder")
+
+[node name="SaveButton" type="Button" parent="." unique_id=1225970768]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -55.0
+offset_top = 10.0
+offset_right = -12.0
+offset_bottom = 41.0
+grow_horizontal = 0
+text = "save"
+
+[node name="FileNameEditor" type="LineEdit" parent="SaveButton" unique_id=1124501359]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.5
+offset_top = 19.5
+offset_right = 30.0
+offset_bottom = 50.5
+grow_horizontal = 2
+grow_vertical = 2

@@ -22,8 +22,8 @@ func interpolate_keyframes_in_time(time : float) -> Transform3D:
 	var animator_2 := anim_track_holder.keyframes[k2].animator as RootAnimator
 	var t := get_t_from_keyframes(time, anim_track_holder.keyframes[k1], anim_track_holder.keyframes[k2])
 	var dur := next_keyframe.time - prev_keyframe.time
-	var rot := QuaternionExtender.my_quat_interpolate(animator_1.root.basis.get_rotation_quaternion(), animator_1.angular_velocity_tangent, 1, animator_1.angular_velocity_amount,
-	animator_2.root.basis.get_rotation_quaternion(), animator_2.angular_velocity_tangent,1, animator_2.angular_velocity_amount, t, dur, animator_2.rot_ease_curve.baked_points)
+	var rot := QuaternionExtender.my_quat_interpolate(animator_1.root.basis.get_rotation_quaternion(), animator_1.angular_velocity_tangent, animator_1.angular_velocity_amount,
+	animator_2.root.basis.get_rotation_quaternion(), animator_2.angular_velocity_tangent, animator_2.angular_velocity_amount, t, dur, animator_2.rot_ease_curve.baked_points)
 	
 	var loc := MyCurve3D.interpolate(animator_1.root.global_position, animator_1.velocity_tangent_vector, animator_2.root.global_position, animator_2.velocity_tangent_vector, t, dur, animator_2.loc_ease_curve.baked_points)	
 	

@@ -173,9 +173,9 @@ func interpolate_keyframes_in_time(time : float) -> Array[Transform3D]:
 	var velocity_vector_1 := animator_1.pelvis_g_tangent_vector * animator_1.pelvis_g_vel
 	var velocity_vector_2 := animator_2.pelvis_g_tangent_vector * animator_2.pelvis_g_vel
 	
-	var super_t := QuaternionExtender.my_quat_interpolate(super_t_1.basis, super_t_1.basis * pelvis_r_velocity_vector_1, 1, animator_1.pelvis_r_vel, super_t_2.basis, super_t_2.basis * pelvis_r_velocity_vector_2, 1, animator_2.pelvis_r_vel, t, k2.time - k1.time, animator_2.pelvis_rot_ease_curve.baked_points)
-	var hip_b := QuaternionExtender.my_quat_interpolate(hip_b_1, hip_b_1 * hip_r_velocity_vector_1, 1, animator_1.hip_r_vel, hip_b_2, hip_b_2 * hip_r_velocity_vector_2, 1, animator_2.hip_r_vel, t, k2.time - k1.time, animator_2.hip_rot_ease_curve.baked_points)
-	var chest_b := QuaternionExtender.my_quat_interpolate(chest_b_1, chest_b_1 * chest_r_velocity_vector_1, 1, animator_1.chest_r_vel, chest_b_2, chest_b_2 * chest_r_velocity_vector_2, 1, animator_2.chest_r_vel, t, k2.time - k1.time, animator_2.chest_rot_ease_curve.baked_points)
+	var super_t := QuaternionExtender.my_quat_interpolate(super_t_1.basis, super_t_1.basis * pelvis_r_velocity_vector_1, animator_1.pelvis_r_vel, super_t_2.basis, super_t_2.basis * pelvis_r_velocity_vector_2, animator_2.pelvis_r_vel, t, k2.time - k1.time, animator_2.pelvis_rot_ease_curve.baked_points)
+	var hip_b := QuaternionExtender.my_quat_interpolate(hip_b_1, hip_b_1 * hip_r_velocity_vector_1, animator_1.hip_r_vel, hip_b_2, hip_b_2 * hip_r_velocity_vector_2, animator_2.hip_r_vel, t, k2.time - k1.time, animator_2.hip_rot_ease_curve.baked_points)
+	var chest_b := QuaternionExtender.my_quat_interpolate(chest_b_1, chest_b_1 * chest_r_velocity_vector_1, animator_1.chest_r_vel, chest_b_2, chest_b_2 * chest_r_velocity_vector_2, animator_2.chest_r_vel, t, k2.time - k1.time, animator_2.chest_rot_ease_curve.baked_points)
 	
 	var super_t_location := MyCurve3D.interpolate(super_t_1.origin, velocity_vector_1, super_t_2.origin, velocity_vector_2, t, k2.time - k1.time, animator_2.pelvis_loc_ease_curve.baked_points)
 	#

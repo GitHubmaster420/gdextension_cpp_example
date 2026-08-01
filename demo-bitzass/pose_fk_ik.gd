@@ -1,6 +1,8 @@
 extends MenuLabel
 
-@export var foot_animator : FootAnimator
+var foot_animator : FootAnimator:
+	get:
+		return get_parent().get_parent()
 
 var mode := FootAnimator.Mode.IK:
 	set(v):

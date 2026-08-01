@@ -23,11 +23,25 @@ points = PackedVector2Array(0, 0, 0.0005800151, 2.8322503e-07, 0.001159251, 1.13
 baked_points = PackedFloat32Array(0, 5.1921255e-05, 0.00020954278, 0.00047612702, 0.00085495866, 0.0013496213, 0.0019636159, 0.0027007556, 0.0035649543, 0.004560361, 0.005691306, 0.006962268, 0.008377881, 0.009943104, 0.011663048, 0.013543147, 0.015589095, 0.017806655, 0.020202177, 0.02278206, 0.025553156, 0.02852266, 0.03169802, 0.03508713, 0.038698312, 0.042540282, 0.046622116, 0.05095344, 0.05554435, 0.06040543, 0.06554779, 0.070983104, 0.07672363, 0.08278222, 0.08917224, 0.0959078, 0.103003494, 0.11047475, 0.11833729, 0.12660766, 0.13530278, 0.14444011, 0.15403743, 0.16411282, 0.1746843, 0.18576995, 0.19738714, 0.20955276, 0.22228245, 0.23558992, 0.24948691, 0.26398188, 0.27907985, 0.2947805, 0.31107864, 0.32796186, 0.34541038, 0.3633957, 0.38188052, 0.40081754, 0.42015, 0.43981192, 0.459729, 0.47982025, 0.5, 0.5201796, 0.540271, 0.5601881, 0.5798501, 0.5991825, 0.61811954, 0.63660425, 0.6545897, 0.67203814, 0.68892133, 0.7052195, 0.72092015, 0.736018, 0.7505131, 0.7644101, 0.77771753, 0.7904473, 0.8026128, 0.81423, 0.82531565, 0.83588713, 0.8459626, 0.8555599, 0.8646972, 0.87339234, 0.8816627, 0.88952523, 0.89699656, 0.9040922, 0.91082776, 0.91721785, 0.92327636, 0.9290169, 0.9344522, 0.9395945, 0.9444556, 0.94904655, 0.95337784, 0.95745975, 0.9613016, 0.96491283, 0.96830195, 0.9714773, 0.97444683, 0.97721785, 0.97979784, 0.98219335, 0.9844109, 0.9864569, 0.988337, 0.9900569, 0.99162215, 0.9930377, 0.99430877, 0.9954396, 0.99643505, 0.99729925, 0.9980364, 0.9986504, 0.99914503, 0.9995239, 0.99979043, 0.999948)
 metadata/_custom_type_script = "uid://bsa4fukt7asth"
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_13nmh"]
+resource_local_to_scene = true
+top_radius = 0.0
+bottom_radius = 0.1
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6olce"]
+resource_local_to_scene = true
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 0.1)
+
 [sub_resource type="TorusMesh" id="TorusMesh_13nmh"]
 inner_radius = 0.45
 outer_radius = 0.5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8r01s"]
+resource_local_to_scene = true
 transparency = 1
 no_depth_test = true
 shading_mode = 0
@@ -36,7 +50,7 @@ albedo_color = Color(0.5686275, 0.72156864, 1, 0.654902)
 [sub_resource type="PrismMesh" id="PrismMesh_16iyi"]
 size = Vector3(0.1, 0.1, 0.03)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_16iyi"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_13nmh"]
 radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gyryg"]
@@ -44,7 +58,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_13nmh"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_16iyi"]
 radius = 0.0
 height = 0.0
 
@@ -53,7 +67,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(2.1658838e-07, 0.6478233, 0.17070371, 1)
 
-[node name="RootAnimator" type="Node3D" unique_id=961584023 node_paths=PackedStringArray("gizmo_controllable", "tangent_gizmo_controllable", "root", "root_tangent", "velocity_tangent", "vel_object")]
+[node name="RootAnimator" type="Node3D" unique_id=961584023 node_paths=PackedStringArray("gizmo_controllable", "tangent_gizmo_controllable", "root", "root_tangent", "velocity_tangent", "vel_object", "tangent_mesh", "root_mesh")]
 script = ExtResource("1_aihef")
 gizmo_controllable = NodePath("Root/GizmoControllable")
 tangent_gizmo_controllable = NodePath("Root/RootTangent/GizmoControllable")
@@ -63,6 +77,8 @@ velocity_tangent = NodePath("Root/VelocityTangent")
 vel_object = NodePath("VelParent/VelObject")
 rot_ease_curve = SubResource("Resource_16iyi")
 loc_ease_curve = SubResource("Resource_6olce")
+tangent_mesh = NodePath("Root/RootTangent/TangentMesh")
+root_mesh = NodePath("Root/RootMesh")
 
 [node name="Root" type="Marker3D" parent="." unique_id=721969205]
 
@@ -77,7 +93,12 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 script = ExtResource("2_o81b5")
 metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Root" unique_id=919340513]
+[node name="TangentMesh" type="MeshInstance3D" parent="Root/RootTangent" unique_id=650438779]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.099999964, 1.8626451e-09)
+mesh = SubResource("CylinderMesh_13nmh")
+surface_material_override/0 = SubResource("StandardMaterial3D_6olce")
+
+[node name="RootMesh" type="MeshInstance3D" parent="Root" unique_id=919340513]
 mesh = SubResource("TorusMesh_13nmh")
 surface_material_override/0 = SubResource("StandardMaterial3D_8r01s")
 
@@ -109,7 +130,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="Stretcher" type="MeshInstance3D" parent="Root/VelocityTangent" unique_id=1884337146 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 top_level = true
-mesh = SubResource("CapsuleMesh_16iyi")
+mesh = SubResource("CapsuleMesh_13nmh")
 surface_material_override/0 = SubResource("StandardMaterial3D_gyryg")
 script = ExtResource("4_13nmh")
 start_stretch = NodePath("../..")
@@ -132,7 +153,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="Stretcher" type="MeshInstance3D" parent="VelParent" unique_id=1816476537 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 top_level = true
-mesh = SubResource("CapsuleMesh_13nmh")
+mesh = SubResource("CapsuleMesh_16iyi")
 surface_material_override/0 = SubResource("StandardMaterial3D_16iyi")
 script = ExtResource("4_13nmh")
 start_stretch = NodePath("..")

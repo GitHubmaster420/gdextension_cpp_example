@@ -1,7 +1,6 @@
 class_name FootAnimator
 extends Animator
 
-@export var left_side: Control
 @export var right_control: Control
 
 
@@ -27,14 +26,6 @@ extends Animator
 		if not is_node_ready():
 			return
 		foot_ease_curve_drawer.my_ease_in_out_curve = foot_rot_curve
-
-@export var shin_start_ease: EaseDrawer
-@export var shin_end_ease: EaseDrawer
-@export var foot_start_ease: EaseDrawer
-@export var foot_end_ease: EaseDrawer
-@export var thigh_start_ease: EaseDrawer
-@export var thigh_end_ease: EaseDrawer
-
 
 signal on_ground_set
 
@@ -171,12 +162,6 @@ var selected := false
 @export var thigh_v_slider_2: VSlider
 
 
-@export var thigh_tangent_prev_influence : float
-@export var thigh_tangent_next_influence : float
-@export var shin_tangent_prev_influence : float
-@export var shin_tangent_next_influence : float
-@export var foot_tangent_prev_influence : float
-@export var foot_tangent_next_influence : float
 
 #@export var thigh_angular_velocity_setter: LineEdit
 #@export var shin_angular_velocity_setter: LineEdit
@@ -342,31 +327,7 @@ func _ready() -> void:
 	shin_rot_curve = shin_rot_curve
 	foot_rot_curve = foot_rot_curve
 	
-	thigh_start_ease.value_changed.connect(func(v : float):
-		thigh_tangent_prev_influence = v
-		)
-	thigh_end_ease.value_changed.connect(func(v : float):
-		thigh_tangent_next_influence = v
-		)
-	shin_start_ease.value_changed.connect(func(v : float):
-		shin_tangent_prev_influence = v
-		)
-	shin_end_ease.value_changed.connect(func(v : float):
-		shin_tangent_next_influence = v
-		)
-	foot_start_ease.value_changed.connect(func(v : float):
-		foot_tangent_prev_influence = v
-		)
-	foot_start_ease.value_changed.connect(func(v : float):
-		foot_tangent_next_influence = v
-		)
-	
-	thigh_tangent_prev_influence = thigh_start_ease.ease_amount
-	thigh_tangent_next_influence = thigh_end_ease.ease_amount
-	shin_tangent_prev_influence = shin_start_ease.ease_amount
-	shin_tangent_next_influence = shin_end_ease.ease_amount
-	foot_tangent_prev_influence = foot_start_ease.ease_amount
-	foot_tangent_next_influence = foot_end_ease.ease_amount
+
 	
 	
 	#thigh_tangent_next_angle_menu.angle_set.connect(func():
@@ -429,7 +390,6 @@ func _ready() -> void:
 		if not is_visible_in_tree():
 			#hide_stuff()
 			right_control.hide()
-			left_side.hide()
 			return
 		if not gizmo:
 			return
@@ -458,7 +418,6 @@ func _ready() -> void:
 func select():
 	selected = true
 	right_control.show()
-	left_side.show()
 	match edited:
 		Edited.POSE:
 			select_pose()
@@ -479,7 +438,6 @@ func deselect():
 	#pose_material.albedo_color.a = 0.1
 	#tangent_material.albedo_color.a = 0.1
 	right_control.hide()
-	left_side.hide()
 
 func select_pose():
 	pass

@@ -8,7 +8,7 @@ extends ColorRect
 
 var shift_selected_children : Dictionary[SelectorChild, bool]
 
-@export var selected_child : SelectorChild:
+var selected_child : SelectorChild:
 	set(v):
 		if selected_child:
 			selected_child.color.v = 0.5
