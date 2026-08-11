@@ -96,11 +96,14 @@ func interpolate_keyframes():
 	animator_1.shoulder_pose.position = get_skeleton().get_bone_rest(get_skeleton().get_bone_parent(up_arm_idx)).origin
 	animator_2.shoulder_pose.position = get_skeleton().get_bone_rest(get_skeleton().get_bone_parent(up_arm_idx)).origin
 	
-	var chest_offset_1 := chest_rest.basis.inverse() * spine_1.basis as Quaternion
-	var chest_offset_2 := chest_rest.basis.inverse() * spine_2.basis as Quaternion
+	var r_shoulder_0 := animator_1.shoulder_pose.basis.get_rotation_quaternion()
+	var r_shoulder_1 := animator_2.shoulder_pose.basis.get_rotation_quaternion()
+	if animator_1.use_shoulder_auto_tangent:
+		animator_1.shoulder_tangent = QuaternionExtender.get_auto_velocity_axis(animator_1.shoulder_pose.basis, animator_0.shoulder_pose.basis, animator_2.shoulder_pose.basis, (animator_1.shoulder_auto_influence + 1) / 2.0)
+	if animator_2.use_shoulder_auto_tangent:
+		animator_2.shoulder_tangent = QuaternionExtender.get_auto_velocity_axis(animator_2.shoulder_pose.basis, animator_1.shoulder_pose.basis, animator_3.shoulder_pose.basis, (animator_2.shoulder_auto_influence + 1) / 2.0)
 	
-	chest_offset_1 = chest_offset_1.inverse()
-	chest_offset_2 = chest_offset_2.inverse()
+	shoulder_rot_setter.rot = QuaternionExtender.my_quat_interpolate(r_shoulder_0, animator_1.shoulder_tangent, animator_1.shoulder_angular_velocity, r_shoulder_1, animator_2.shoulder_tangent, animator_2.shoulder_angular_velocity, t, next_keyframe.time - prev_keyframe.time, animator_2.shoulder_ease_curve.baked_points)
 	
 	var r_up_arm_0 := Quaternion.from_euler(animator_1.up_arm_pose.rotation)
 	var r_up_arm_1 := Quaternion.from_euler(animator_2.up_arm_pose.rotation)
@@ -132,7 +135,8 @@ func on_keyframe_added(key : Keyframe):
 	await get_skeleton().skeleton_updated
 	if animator.gizmo:
 		var stored := animator.gizmo.controllable
-		stored.gizmo = null
+		if stored:
+			stored.gizmo = null
 		animator.gizmo.controllable = null
 	var shoulder_idx := get_skeleton().get_bone_parent(up_arm_idx)
 	var shoulder_tr := get_skeleton().get_bone_pose(shoulder_idx)
@@ -152,6 +156,10 @@ func on_keyframe_added(key : Keyframe):
 	animator.current = animator.current
 	
 	animator.request_auto_velocity.connect(calculate_auto_velocity.bind(key))
+	
+	await get_tree().process_frame
+	animator.thih_length = get_skeleton().get_bone_rest(low_arm_idx).origin.length()
+	animator.shin_length = get_skeleton().get_bone_rest(hand_idx).origin.length()
 
 func calculate_auto_velocity(idx : int, kf : Keyframe):
 	var caller := kf.animator as HandsAnimator

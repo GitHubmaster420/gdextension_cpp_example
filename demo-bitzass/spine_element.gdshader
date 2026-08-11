@@ -23,9 +23,11 @@ uniform vec3 uv2_offset;
 
 uniform bool selected = false;
 
+uniform float scale = 0.1;
+
 void vertex() {
 	UV = UV * uv1_scale.xy + uv1_offset.xy;
-	VERTEX.y += cos(UV.x * 2.0 * TAU) / 10.0;
+	VERTEX.y += cos(UV.x * 2.0 * TAU) * scale;
 }
 
 void fragment() {

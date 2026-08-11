@@ -28,7 +28,7 @@ func _input(event: InputEvent) -> void:
 			global_position -= global_basis.z * 0.1
 		
 	if event is InputEventMouseMotion:
-		if not mid_pressed:
+		if not mid_pressed and not event.alt_pressed:
 			return
 		match mode:
 			Mode.GRAB:

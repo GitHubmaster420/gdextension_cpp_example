@@ -36,18 +36,54 @@ func _validate_property(property: Dictionary) -> void:
 
 func on_keyframe_added(key : Keyframe):
 	await get_skeleton().skeleton_updated
-	print("t before: ", get_skeleton().get_bone_global_pose(spine_based_idx))
+	var prev_key : Keyframe
+	var next_key : Keyframe
+	if key in anim_track_holder.keyframes:
+		var this_idx := anim_track_holder.keyframes.find(key)
+		
+		if this_idx > 0:
+			prev_key = anim_track_holder.keyframes[this_idx - 1]
+		if this_idx < anim_track_holder.keyframes.size() - 1:
+			next_key = anim_track_holder.keyframes[this_idx + 1]
+		if this_idx <= 0:
+			prev_key = next_key
+		if this_idx >= anim_track_holder.keyframes.size() - 1:
+			next_key = prev_key
+	else:
+		var time := key.time
+		
+		var ks := get_next_and_prev_keyframes_indices(time)
+		prev_key = anim_track_holder.keyframes[ks[0]]
+		next_key = anim_track_holder.keyframes[ks[1]]
 	var animator := key.animator as SpineAnimator
 	animator.pelvis_rot_ease_curve = MyEaseInOut.new()
 	animator.hip_rot_ease_curve = MyEaseInOut.new()
 	animator.chest_rot_ease_curve = MyEaseInOut.new()
-	await get_tree().create_timer(0.1).timeout
-	await get_skeleton().skeleton_updated
-	print("t after: ", get_skeleton().get_bone_global_pose(spine_based_idx))
+	if not prev_key or not next_key:
+		return
+	var t := get_t_from_keyframes(key.time, prev_key, next_key)
 	
-	print("root t: ", get_skeleton().get_bone_global_pose(0), " root rest: ", get_skeleton().get_bone_global_rest(0), " pelvis rest: ", get_skeleton().get_bone_global_rest(spine_based_idx))
-
+	var pelvis_b := interpolate_pelvis_basis(prev_key, next_key, t)
+	var pelvis_l := interpolate_pelvis_loc(prev_key, next_key, t)
+	var hip_b := interpolate_hip_basis(prev_key, next_key, t)
+	var chest_b := interpolate_chest_basis(prev_key, next_key, t)
+	
+	animator.pelvis_root.transform = Transform3D(pelvis_b, pelvis_l)
+	animator.hip_pose.basis = hip_b
+	animator.chest_pose.basis = chest_b
+	if not animator.gizmo:
+		return
+	if not animator.gizmo.controllable:
+		return
+	var stored := animator.gizmo.controllable
+	
+	animator.gizmo.controllable = null
+	
+	animator.gizmo.controllable = stored
+	
 func _process_modification_with_delta(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	if not anim_track_holder:
 		return
 	on_time_changed(anim_track_holder.time)
@@ -163,21 +199,11 @@ func interpolate_keyframes_in_time(time : float) -> Array[Transform3D]:
 			var chest_b_3 := animator_3.chest_pose.global_basis.orthonormalized()
 			animator_2.chest_r_tangent_vector = QuaternionExtender.get_auto_velocity_axis(chest_b_2, chest_b_1, chest_b_3, (animator_2.chest_r_auto_influence + 1) / 2.0)
 	
-	var pelvis_r_velocity_vector_1 := animator_1.pelvis_r_tangent_vector
-	var pelvis_r_velocity_vector_2 := animator_2.pelvis_r_tangent_vector
-	var hip_r_velocity_vector_1 := animator_1.hips_r_tangent_vector
-	var hip_r_velocity_vector_2 := animator_2.hips_r_tangent_vector
-	var chest_r_velocity_vector_1 := animator_1.hips_r_tangent_vector
-	var chest_r_velocity_vector_2 := animator_2.hips_r_tangent_vector
+	var super_t := interpolate_pelvis_basis(k1, k2, t)
+	var hip_b := interpolate_hip_basis(k1, k2, t)
+	var chest_b := interpolate_chest_basis(k1, k2, t)
 	
-	var velocity_vector_1 := animator_1.pelvis_g_tangent_vector * animator_1.pelvis_g_vel
-	var velocity_vector_2 := animator_2.pelvis_g_tangent_vector * animator_2.pelvis_g_vel
-	
-	var super_t := QuaternionExtender.my_quat_interpolate(super_t_1.basis, super_t_1.basis * pelvis_r_velocity_vector_1, animator_1.pelvis_r_vel, super_t_2.basis, super_t_2.basis * pelvis_r_velocity_vector_2, animator_2.pelvis_r_vel, t, k2.time - k1.time, animator_2.pelvis_rot_ease_curve.baked_points)
-	var hip_b := QuaternionExtender.my_quat_interpolate(hip_b_1, hip_b_1 * hip_r_velocity_vector_1, animator_1.hip_r_vel, hip_b_2, hip_b_2 * hip_r_velocity_vector_2, animator_2.hip_r_vel, t, k2.time - k1.time, animator_2.hip_rot_ease_curve.baked_points)
-	var chest_b := QuaternionExtender.my_quat_interpolate(chest_b_1, chest_b_1 * chest_r_velocity_vector_1, animator_1.chest_r_vel, chest_b_2, chest_b_2 * chest_r_velocity_vector_2, animator_2.chest_r_vel, t, k2.time - k1.time, animator_2.chest_rot_ease_curve.baked_points)
-	
-	var super_t_location := MyCurve3D.interpolate(super_t_1.origin, velocity_vector_1, super_t_2.origin, velocity_vector_2, t, k2.time - k1.time, animator_2.pelvis_loc_ease_curve.baked_points)
+	var super_t_location := interpolate_pelvis_loc(k1, k2, t)
 	#
 	#print("origin 1: ", super_t_1.origin, " origin 2: ", super_t_2.origin, " super t loc: ", super_t_location)
 	#
@@ -187,7 +213,58 @@ func interpolate_keyframes_in_time(time : float) -> Array[Transform3D]:
 	
 	return transforms
 	
+func interpolate_pelvis_basis(key_1 : Keyframe, key_2 : Keyframe, t : float) -> Quaternion:
+	var animator_1 := key_1.animator as SpineAnimator
+	var animator_2 := key_2.animator as SpineAnimator
+	var b_1 := animator_1.pelvis_root.basis.get_rotation_quaternion()
+	var b_2 := animator_2.pelvis_root.basis.get_rotation_quaternion()
+	var pelvis_r_velocity_vector_1 := animator_1.pelvis_r_tangent_vector
+	var pelvis_r_velocity_vector_2 := animator_2.pelvis_r_tangent_vector
 	
+	var super_t := QuaternionExtender.my_quat_interpolate(b_1, pelvis_r_velocity_vector_1, animator_1.pelvis_r_vel, b_2, pelvis_r_velocity_vector_2, animator_2.pelvis_r_vel, t, key_2.time - key_1.time, animator_2.pelvis_rot_ease_curve.baked_points)
+
+	return super_t
+
+func interpolate_hip_basis(key_1 : Keyframe, key_2 : Keyframe, t : float) -> Quaternion:
+	var animator_1 := key_1.animator as SpineAnimator
+	var animator_2 := key_2.animator as SpineAnimator
+	var b_1 := animator_1.hip_pose.basis.get_rotation_quaternion()
+	var b_2 := animator_2.hip_pose.basis.get_rotation_quaternion()
+	var hip_r_velocity_vector_1 := animator_1.hips_r_tangent_vector
+	var hip_r_velocity_vector_2 := animator_2.pelvis_r_tangent_vector
+	
+	var super_t := QuaternionExtender.my_quat_interpolate(b_1, hip_r_velocity_vector_1, animator_1.hip_r_vel, b_2, hip_r_velocity_vector_2, animator_2.hip_r_vel, t, key_2.time - key_1.time, animator_2.hip_rot_ease_curve.baked_points)
+
+	return super_t
+
+func interpolate_chest_basis(key_1 : Keyframe, key_2 : Keyframe, t : float) -> Quaternion:
+	var animator_1 := key_1.animator as SpineAnimator
+	var animator_2 := key_2.animator as SpineAnimator
+	var b_1 := animator_1.chest_pose.basis.get_rotation_quaternion()
+	var b_2 := animator_2.chest_pose.basis.get_rotation_quaternion()
+	var chest_r_velocity_vector_1 := animator_1.chest_r_tangent_vector
+	var chest_r_velocity_vector_2 := animator_2.pelvis_r_tangent_vector
+	
+	var super_t := QuaternionExtender.my_quat_interpolate(b_1, chest_r_velocity_vector_1, animator_1.chest_r_vel, b_2, chest_r_velocity_vector_2, animator_2.chest_r_vel, t, key_2.time - key_1.time, animator_2.chest_rot_ease_curve.baked_points)
+
+	return super_t
+
+func interpolate_pelvis_loc(key_1 : Keyframe, key_2 : Keyframe, t : float) -> Vector3:
+	var animator_1 := key_1.animator as SpineAnimator
+	var animator_2 := key_2.animator as SpineAnimator
+	
+	var loc_1 := animator_1.pelvis_root.position
+	var loc_2 := animator_2.pelvis_root.position
+	
+	var root_1_b := animator_1.root.basis
+	var root_2_b := animator_2.root.basis
+	
+	var velocity_vector_1 := root_1_b.inverse() * (animator_1.pelvis_g_tangent_vector * animator_1.pelvis_g_vel)
+	var velocity_vector_2 := root_2_b.inverse() * (animator_2.pelvis_g_tangent_vector * animator_2.pelvis_g_vel)
+	
+	var loc := MyCurve3D.interpolate(loc_1, velocity_vector_1, loc_2, velocity_vector_2, t, key_2.time - key_1.time, animator_2.pelvis_loc_ease_curve.baked_points)
+	
+	return loc
 
 func interpolate_keyframes():
 	if anim_track_holder.keyframes.size() == 0:

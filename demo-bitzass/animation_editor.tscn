@@ -7,8 +7,11 @@
 [ext_resource type="Script" uid="uid://drbnb8uuhxdtx" path="res://body_part_selector.gd" id="2_soljt"]
 [ext_resource type="Script" uid="uid://bytaqurdhtaev" path="res://selector_child.gd" id="3_eckwp"]
 [ext_resource type="Script" uid="uid://dyvw3vyhgdgw6" path="res://foot_interpolator.gd" id="7_pydpm"]
+[ext_resource type="Texture2D" uid="uid://dcjxj5q5mnrm4" path="res://img/FootballColor.png" id="8_n0yad"]
+[ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="8_oixud"]
 [ext_resource type="Script" uid="uid://cj48msmgolhd1" path="res://mouse_controllable_camera.gd" id="8_pydpm"]
 [ext_resource type="PackedScene" uid="uid://cgwnew2a2dmj" path="res://gizmo.tscn" id="8_tsqd4"]
+[ext_resource type="Texture2D" uid="uid://ckdequr40m8mf" path="res://img/FootballNormals.png" id="9_50eb3"]
 [ext_resource type="Script" uid="uid://ckuqlvhqic6in" path="res://scripts/root_interpolator.gd" id="9_jdf7t"]
 [ext_resource type="Script" uid="uid://cucp8c44vpoml" path="res://scripts/rotation_setter.gd" id="9_lletu"]
 [ext_resource type="Script" uid="uid://dx1ghy6xnvwtx" path="res://scenes/spine_bone_modifier.gd" id="9_we0b5"]
@@ -23,6 +26,12 @@
 [ext_resource type="PackedScene" uid="uid://btx61h3olllvr" path="res://hands_animator.tscn" id="16_pqhu1"]
 [ext_resource type="PackedScene" uid="uid://blxr0sbw30u85" path="res://foot_animator.tscn" id="16_uall8"]
 [ext_resource type="Script" uid="uid://dsn8baxswmye4" path="res://copy_paster.gd" id="17_mxi6m"]
+[ext_resource type="Texture2D" uid="uid://bq341oxs586xq" path="res://img/PxlFtbl.png" id="27_50eb3"]
+[ext_resource type="Texture2D" uid="uid://dd8w06jr3ia37" path="res://img/FtblClckd.png" id="28_htyk1"]
+[ext_resource type="Texture2D" uid="uid://j3313wg08cft" path="res://img/FtblHvrd.png" id="29_4i0se"]
+[ext_resource type="Script" uid="uid://fwbnxx22q58c" path="res://football_selector.gd" id="30_4i0se"]
+[ext_resource type="Script" uid="uid://bwbyn5ldiqnda" path="res://ball_keyframe_adder.gd" id="32_0vs3x"]
+[ext_resource type="Script" uid="uid://b68hmvexn53ab" path="res://ball_key_frames.gd" id="32_dwm3c"]
 
 [sub_resource type="Animation" id="Animation_we0b5"]
 length = 0.001
@@ -86,6 +95,11 @@ _data = {
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3rrt7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8w783"]
+albedo_texture = ExtResource("8_n0yad")
+normal_enabled = true
+normal_texture = ExtResource("9_50eb3")
 
 [sub_resource type="SphereMesh" id="SphereMesh_l4xq3"]
 radius = 0.1
@@ -969,10 +983,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_43flw"]
-top_radius = 0.0
-bottom_radius = 0.1
-height = 0.3
+[sub_resource type="BoxMesh" id="BoxMesh_htyk1"]
 
 [node name="AnimationEditor" type="Node3D" unique_id=1079719040 node_paths=PackedStringArray("save_button", "file_name_editor")]
 script = ExtResource("1_x6m4r")
@@ -1132,7 +1143,7 @@ color = Color(0.2901961, 0.4392157, 1, 1)
 script = ExtResource("3_eckwp")
 metadata/_custom_type_script = "uid://bytaqurdhtaev"
 
-[node name="MasterTime" type="ColorRect" parent="." unique_id=2052880457 node_paths=PackedStringArray("current_time_label", "max_time_input", "anim_track_holders")]
+[node name="MasterTime" type="ColorRect" parent="." unique_id=2052880457 node_paths=PackedStringArray("current_time_label", "max_time_input", "anim_track_holders", "ball", "ball_keyframes")]
 z_index = 100
 anchors_preset = -1
 anchor_left = 0.5
@@ -1151,6 +1162,8 @@ script = ExtResource("2_3gsoi")
 current_time_label = NodePath("CurrentTimeLabel")
 max_time_input = NodePath("../MaxTimeInput")
 anim_track_holders = [NodePath("../FootballCityCharacter/metarig/Skeleton3D/RootModifier/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/SpineBoneModifier/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/HeadInterpolator/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/RightFootInterpolator/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftFootInterpolator/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/RightHandInterpolator/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftHandInterpolator/AnimTackHolder")]
+ball = NodePath("../Ball")
+ball_keyframes = [null]
 
 [node name="CurrentTimeLabel" type="ColorRect" parent="MasterTime" unique_id=616845878]
 material = SubResource("ShaderMaterial_3rrt7")
@@ -1174,7 +1187,13 @@ script = ExtResource("1_alrdg")
 
 [node name="Ball" type="MeshInstance3D" parent="." unique_id=598210601]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1536803, 0.11520481, 0.24279237)
+material_override = SubResource("StandardMaterial3D_8w783")
 mesh = SubResource("SphereMesh_l4xq3")
+
+[node name="GizmoControllable" type="Node" parent="Ball" unique_id=39227875]
+script = ExtResource("8_oixud")
+grabbable = true
+metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="Node3D" type="Node3D" parent="." unique_id=340744025]
 transform = Transform3D(1, 0, 0, 0, 0.9659259, 0.25881907, 0, -0.25881907, 0.9659258, 0, 0, 0)
@@ -2545,7 +2564,7 @@ empty_canvas = NodePath("../../../../../EmptyCanvas")
 gizmo = NodePath("../../../../../Gizmo")
 animator = ExtResource("10_3gsoi")
 
-[node name="HeadInterpolator" type="SkeletonModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=1935184217 node_paths=PackedStringArray("anim_track_holder")]
+[node name="HeadInterpolator" type="SkeletonModifier3D" parent="FootballCityCharacter/metarig/Skeleton3D" unique_id=1935184217 node_paths=PackedStringArray("spine_bone_modifier", "anim_track_holder")]
 unique_name_in_owner = false
 process_mode = 0
 process_priority = 0
@@ -2569,6 +2588,7 @@ neck_2_name = "spine.005"
 head_idx = 7
 neck_idx = 5
 neck_2_idx = 6
+spine_bone_modifier = NodePath("../SpineBoneModifier")
 anim_track_holder = NodePath("AnimTackHolder")
 metadata/_custom_type_script = "uid://cddyhwojh7wm3"
 
@@ -3051,10 +3071,6 @@ script = ExtResource("12_lletu")
 gizmo = NodePath("../Gizmo")
 anim_track_holders = [NodePath("../FootballCityCharacter/metarig/Skeleton3D/SpineBoneModifier/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/RightFootInterpolator/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftFootInterpolator/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/RightHandInterpolator/AnimTackHolder"), NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftHandInterpolator/AnimTackHolder")]
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1000290298]
-transform = Transform3D(1, -1.7763568e-14, 5.684342e-14, 7.1054274e-15, 0.99999994, -7.4505806e-08, -1.4210855e-14, 1.4901161e-08, 0.99999994, 0, 0, 0)
-mesh = SubResource("CylinderMesh_43flw")
-
 [node name="CopyPaster" type="Node" parent="." unique_id=1647363804 node_paths=PackedStringArray("master_time", "anim_track_holders", "right_foot_anim_track_holder", "left_foot_anim_track_holder", "right_hand_anim_track_holder", "left_hand_anim_track_holder")]
 script = ExtResource("17_mxi6m")
 master_time = NodePath("../MasterTime")
@@ -3063,6 +3079,32 @@ right_foot_anim_track_holder = NodePath("../FootballCityCharacter/metarig/Skelet
 left_foot_anim_track_holder = NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftFootInterpolator/AnimTackHolder")
 right_hand_anim_track_holder = NodePath("../FootballCityCharacter/metarig/Skeleton3D/RightHandInterpolator/AnimTackHolder")
 left_hand_anim_track_holder = NodePath("../FootballCityCharacter/metarig/Skeleton3D/LeftHandInterpolator/AnimTackHolder")
+
+[node name="BallKeyframeAdder" type="TextureRect" parent="." unique_id=141026972 node_paths=PackedStringArray("master_time", "color_rect", "color_rect_2", "ball_key_frames")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -69.0
+offset_top = 91.0
+offset_right = -5.0
+offset_bottom = 155.0
+texture = ExtResource("27_50eb3")
+script = ExtResource("32_0vs3x")
+master_time = NodePath("../MasterTime")
+color_rect = NodePath("MeshInstance2D")
+color_rect_2 = NodePath("MeshInstance2D2")
+ball_key_frames = NodePath("../BallKeyFrames")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="BallKeyframeAdder" unique_id=1834510920]
+position = Vector2(31.999964, 32)
+scale = Vector2(10, 40)
+mesh = SubResource("BoxMesh_htyk1")
+
+[node name="MeshInstance2D2" type="MeshInstance2D" parent="BallKeyframeAdder" unique_id=1689274935]
+position = Vector2(31.999964, 32)
+rotation = -1.5707964
+scale = Vector2(10, 40)
+mesh = SubResource("BoxMesh_htyk1")
 
 [node name="SaveButton" type="Button" parent="." unique_id=1225970768]
 anchors_preset = 1
@@ -3088,3 +3130,41 @@ offset_right = 30.0
 offset_bottom = 50.5
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="BallSelector" type="TextureButton" parent="." unique_id=663925066 node_paths=PackedStringArray("ball_key_frames")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -136.0
+offset_top = 90.0
+offset_right = -72.0
+offset_bottom = 154.0
+grow_horizontal = 0
+toggle_mode = true
+texture_normal = ExtResource("27_50eb3")
+texture_pressed = ExtResource("28_htyk1")
+texture_hover = ExtResource("29_4i0se")
+script = ExtResource("30_4i0se")
+ball_key_frames = NodePath("../BallKeyFrames")
+metadata/_custom_type_script = "uid://fwbnxx22q58c"
+
+[node name="BallKeyFrames" type="Control" parent="." unique_id=1692722849 node_paths=PackedStringArray("ball", "master_time", "gizmo")]
+layout_mode = 3
+anchor_left = 0.5
+anchor_top = 0.012
+anchor_right = 0.5
+anchor_bottom = 0.012
+offset_left = -352.0
+offset_top = -7.776
+offset_right = 351.0
+offset_bottom = 12.224
+mouse_filter = 2
+script = ExtResource("32_dwm3c")
+ball = NodePath("../Ball")
+master_time = NodePath("../MasterTime")
+gizmo = NodePath("../Gizmo")
+ball_tex = ExtResource("27_50eb3")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1962720893]
+offset_right = 40.0
+offset_bottom = 40.0

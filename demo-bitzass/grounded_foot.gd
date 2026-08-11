@@ -26,13 +26,13 @@ enum PivotMode{
 
 var controllable : Marker3D
 
-var pivot_mode := PivotMode.ON_TOE
+@export var pivot_mode := PivotMode.ON_TOE
 
 @export var toe_pivot: Marker3D
 @export var heel_pivot: Marker3D
 
-@onready var toe_to_ankle := toe_pivot.position-position
-@onready var heel_to_ankle := heel_pivot.position-position
+@export var toe_to_ankle : Vector3
+@export var heel_to_ankle : Vector3
 
 func _ready() -> void:
 	pos_at_start = position
@@ -41,8 +41,11 @@ func _ready() -> void:
 			controllable = toe_pivot
 		PivotMode.ON_HEEL:
 			controllable = heel_pivot
-	if gizmo:
-		on_gizmo_released()
+	if not toe_to_ankle:
+		toe_to_ankle = toe_pivot.position - position
+	if not heel_to_ankle:
+		heel_to_ankle = toe_pivot.position - position
+
 
 func on_gizmo_released():
 	match pivot_mode:

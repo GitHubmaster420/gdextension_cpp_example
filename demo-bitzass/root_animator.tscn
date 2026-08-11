@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="2_o81b5"]
 [ext_resource type="Script" uid="uid://8pmv47se1oo1" path="res://velocity_tangent.gd" id="3_gyryg"]
 [ext_resource type="Script" uid="uid://dotx4kxu4bpob" path="res://stretcher.gd" id="4_13nmh"]
+[ext_resource type="Script" uid="uid://burp1regbq6js" path="res://cubic_curve_drawer.gd" id="6_16iyi"]
 
 [sub_resource type="Resource" id="Resource_16iyi"]
 resource_local_to_scene = true
@@ -50,7 +51,7 @@ albedo_color = Color(0.5686275, 0.72156864, 1, 0.654902)
 [sub_resource type="PrismMesh" id="PrismMesh_16iyi"]
 size = Vector3(0.1, 0.1, 0.03)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_13nmh"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_16iyi"]
 radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gyryg"]
@@ -58,7 +59,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 1)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_16iyi"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_6olce"]
 radius = 0.0
 height = 0.0
 
@@ -67,7 +68,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(2.1658838e-07, 0.6478233, 0.17070371, 1)
 
-[node name="RootAnimator" type="Node3D" unique_id=961584023 node_paths=PackedStringArray("gizmo_controllable", "tangent_gizmo_controllable", "root", "root_tangent", "velocity_tangent", "vel_object", "tangent_mesh", "root_mesh")]
+[node name="RootAnimator" type="Node3D" unique_id=961584023 node_paths=PackedStringArray("gizmo_controllable", "tangent_gizmo_controllable", "root", "root_tangent", "velocity_tangent", "vel_object", "pos_curve_drawer", "rot_curve_drawer", "right_side", "tangent_mesh", "root_mesh")]
 script = ExtResource("1_aihef")
 gizmo_controllable = NodePath("Root/GizmoControllable")
 tangent_gizmo_controllable = NodePath("Root/RootTangent/GizmoControllable")
@@ -77,6 +78,9 @@ velocity_tangent = NodePath("Root/VelocityTangent")
 vel_object = NodePath("VelParent/VelObject")
 rot_ease_curve = SubResource("Resource_16iyi")
 loc_ease_curve = SubResource("Resource_6olce")
+pos_curve_drawer = NodePath("RightSide/PosCurveDrawer")
+rot_curve_drawer = NodePath("RightSide/RotCurveDrawer")
+right_side = NodePath("RightSide")
 tangent_mesh = NodePath("Root/RootTangent/TangentMesh")
 root_mesh = NodePath("Root/RootMesh")
 
@@ -130,7 +134,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="Stretcher" type="MeshInstance3D" parent="Root/VelocityTangent" unique_id=1884337146 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 top_level = true
-mesh = SubResource("CapsuleMesh_13nmh")
+mesh = SubResource("CapsuleMesh_16iyi")
 surface_material_override/0 = SubResource("StandardMaterial3D_gyryg")
 script = ExtResource("4_13nmh")
 start_stretch = NodePath("../..")
@@ -153,9 +157,160 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 
 [node name="Stretcher" type="MeshInstance3D" parent="VelParent" unique_id=1816476537 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 top_level = true
-mesh = SubResource("CapsuleMesh_16iyi")
+mesh = SubResource("CapsuleMesh_6olce")
 surface_material_override/0 = SubResource("StandardMaterial3D_16iyi")
 script = ExtResource("4_13nmh")
 start_stretch = NodePath("..")
 end_stretch = NodePath("../VelObject")
 metadata/_custom_type_script = "uid://dotx4kxu4bpob"
+
+[node name="RightSide" type="Control" parent="." unique_id=2053405691]
+layout_mode = 3
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -216.0
+offset_top = -315.0
+offset_bottom = 324.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="PosCurveDrawer" type="ColorRect" parent="RightSide" unique_id=2133367803 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.36100003
+anchor_top = 0.29000002
+anchor_right = 0.36100003
+anchor_bottom = 0.29000002
+offset_left = -99.976006
+offset_top = -100.31001
+offset_right = 100.023994
+offset_bottom = 99.68999
+color = Color(0, 0.20784314, 0.03137255, 1)
+script = ExtResource("6_16iyi")
+h_slider = NodePath("HSlider")
+v_slider_1 = NodePath("VSlider")
+v_slider_2 = NodePath("VSlider2")
+metadata/_custom_type_script = "uid://burp1regbq6js"
+
+[node name="HSlider" type="HSlider" parent="RightSide/PosCurveDrawer" unique_id=901610299]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.50200003
+anchor_top = 0.5
+anchor_right = 0.50200003
+anchor_bottom = 0.5
+offset_left = -100.40001
+offset_top = -124.0
+offset_right = 100.59999
+offset_bottom = -91.0
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="VSlider" type="VSlider" parent="RightSide/PosCurveDrawer" unique_id=1620993921]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.0
+offset_top = -104.0
+offset_right = -108.0
+offset_bottom = 101.0
+grow_horizontal = 2
+grow_vertical = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+value = 0.19999999999999996
+
+[node name="VSlider2" type="VSlider" parent="RightSide/PosCurveDrawer" unique_id=163190294]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 105.0
+offset_top = -100.0
+offset_right = 122.0
+offset_bottom = 105.0
+grow_horizontal = 2
+grow_vertical = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+value = 0.19999999999999996
+
+[node name="RotCurveDrawer" type="ColorRect" parent="RightSide" unique_id=1965454274 node_paths=PackedStringArray("h_slider", "v_slider_1", "v_slider_2")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.39800003
+anchor_top = 0.66
+anchor_right = 0.39800003
+anchor_bottom = 0.66
+offset_left = -99.96801
+offset_top = -99.74002
+offset_right = 100.03199
+offset_bottom = 100.25998
+color = Color(0, 0.20784314, 0.03137255, 1)
+script = ExtResource("6_16iyi")
+h_slider = NodePath("HSlider")
+v_slider_1 = NodePath("VSlider")
+v_slider_2 = NodePath("VSlider2")
+metadata/_custom_type_script = "uid://burp1regbq6js"
+
+[node name="HSlider" type="HSlider" parent="RightSide/RotCurveDrawer" unique_id=1481666140]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.50200003
+anchor_top = 0.5
+anchor_right = 0.50200003
+anchor_bottom = 0.5
+offset_left = -100.40001
+offset_top = -124.0
+offset_right = 100.59999
+offset_bottom = -91.0
+max_value = 1.0
+step = 0.01
+value = 0.5
+
+[node name="VSlider" type="VSlider" parent="RightSide/RotCurveDrawer" unique_id=989869345]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.0
+offset_top = -104.0
+offset_right = -108.0
+offset_bottom = 101.0
+grow_horizontal = 2
+grow_vertical = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+value = 0.19999999999999996
+
+[node name="VSlider2" type="VSlider" parent="RightSide/RotCurveDrawer" unique_id=1819856939]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 105.0
+offset_top = -100.0
+offset_right = 122.0
+offset_bottom = 105.0
+grow_horizontal = 2
+grow_vertical = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+value = 0.19999999999999996

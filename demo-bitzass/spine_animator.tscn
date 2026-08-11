@@ -175,6 +175,7 @@ shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
 shader_parameter/selected = true
+shader_parameter/scale = 0.1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rcvvc"]
 resource_local_to_scene = true
@@ -207,6 +208,7 @@ shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
 shader_parameter/selected = false
+shader_parameter/scale = 0.1
 
 [sub_resource type="SphereMesh" id="SphereMesh_0by38"]
 radius = 0.05
@@ -236,6 +238,10 @@ chest_mesh = NodePath("Root/PelvisRoot/ChestPose/ChestMesh")
 pelvis_tangent_mesh = NodePath("Root/PelvisRoot/PelvisTangent/PelvisTangentMesh")
 hip_tangent_mesh = NodePath("Root/PelvisRoot/HipPose/HipTangent/HipTangentMesh")
 chest_tangent_mesh = NodePath("Root/PelvisRoot/ChestPose/ChestTangent/ChestTangentMesh")
+pelvis_g_tangent_use_auto_tangent = false
+pelvis_r_tangent_use_auto_tagent = false
+hips_r_tangent_use_auto_tagent = false
+chest_r_tangent_use_auto_tagent = false
 pelvis_tangent = NodePath("Root/PelvisRoot/PelvisTangent")
 hip_tangent = NodePath("Root/PelvisRoot/HipPose/HipTangent")
 chest_tangent = NodePath("Root/PelvisRoot/ChestPose/ChestTangent")
@@ -1747,7 +1753,7 @@ value = 0.5
 
 [node name="VSlider" type="VSlider" parent="RightSide/PelvisGCurveDrawer" unique_id=1350780995]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1764,7 +1770,7 @@ step = 0.01
 
 [node name="VSlider2" type="VSlider" parent="RightSide/PelvisGCurveDrawer" unique_id=95099716]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1815,7 +1821,7 @@ value = 0.5
 
 [node name="VSlider" type="VSlider" parent="RightSide/PelvisRCurveDrawer" unique_id=941771238]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1832,7 +1838,7 @@ step = 0.01
 
 [node name="VSlider2" type="VSlider" parent="RightSide/PelvisRCurveDrawer" unique_id=776550114]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1883,7 +1889,7 @@ value = 0.5
 
 [node name="VSlider" type="VSlider" parent="RightSide/HipsRCurveDrawe" unique_id=1258410888]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1900,7 +1906,7 @@ step = 0.01
 
 [node name="VSlider2" type="VSlider" parent="RightSide/HipsRCurveDrawe" unique_id=1791939969]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1951,7 +1957,7 @@ value = 0.5
 
 [node name="VSlider" type="VSlider" parent="RightSide/ChestRCurveDrawer" unique_id=1156257051]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1968,7 +1974,7 @@ step = 0.01
 
 [node name="VSlider2" type="VSlider" parent="RightSide/ChestRCurveDrawer" unique_id=1112464307]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -1994,7 +2000,6 @@ offset_left = -144.896
 offset_top = -23.814003
 offset_right = -100.896
 offset_bottom = 0.18599701
-button_pressed = true
 text = "🚗"
 
 [node name="PelvisRCheckButton" type="CheckButton" parent="RightSide" unique_id=2020657533]
@@ -2008,7 +2013,6 @@ offset_left = -146.90399
 offset_top = -15.567017
 offset_right = -76.904
 offset_bottom = 15.432983
-button_pressed = true
 text = "🚗"
 
 [node name="HipsRCheckButton" type="CheckButton" parent="RightSide" unique_id=403423450]
@@ -2022,7 +2026,6 @@ offset_left = -141.90399
 offset_top = -15.203003
 offset_right = -71.90399
 offset_bottom = 15.796997
-button_pressed = true
 text = "🚗"
 
 [node name="ChestRCheckButton" type="CheckButton" parent="RightSide" unique_id=1806335452]
@@ -2036,7 +2039,6 @@ offset_left = -137.41599
 offset_top = -15.426025
 offset_right = -67.41599
 offset_bottom = 15.573975
-button_pressed = true
 text = "🚗"
 
 [node name="PelvisLocVelParent" type="Marker3D" parent="." unique_id=1960252407]

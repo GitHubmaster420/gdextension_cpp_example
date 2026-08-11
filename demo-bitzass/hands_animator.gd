@@ -4,12 +4,17 @@ class_name HandsAnimator
 @export var right_control: Control
 
 
-@export var thigh_auto_vel_check_button: CheckButton
+@export var shoulder_auto_vel_check_button: CheckButton
+@export var up_arm_auto_vel_check_button: CheckButton
+@export var fore_arm_auto_vel_check_button: CheckButton
+@export var hand_auto_vel_check_button: CheckButton
+
 
 @export var side_panel: Control
 
 signal request_auto_velocity(idx : int)
 
+@export var shoulder_curve_drawer: EaseCurveDrawer
 @export var up_arm_curve_drawer: EaseCurveDrawer
 @export var low_arm_curve_drawer: EaseCurveDrawer
 @export var hand_curve_drawer: EaseCurveDrawer
@@ -18,10 +23,14 @@ signal request_auto_velocity(idx : int)
 @export var hand_mesh: MeshInstance3D
 @export var low_arm_stretcher: Stretcher
 @export var up_arm_stretcher: Stretcher
+@export var shoulder_stretcher: Stretcher
+
 
 @export var up_arm_tangent_mesh: MeshInstance3D
 @export var low_arm_tangent_mesh: MeshInstance3D
 @export var hand_tangent_mesh: MeshInstance3D
+@export var shoulder_tangent_mesh: MeshInstance3D
+
 
 
 var current := 0:
@@ -33,7 +42,7 @@ var current := 0:
 			current = 0
 		elif current < 0:
 			current = max_current
-		var meshes : Array[MeshInstance3D] = [up_arm_stretcher, low_arm_stretcher, hand_mesh, up_arm_tangent_mesh, low_arm_tangent_mesh, hand_tangent_mesh]
+		var meshes : Array[MeshInstance3D] = [shoulder_stretcher, up_arm_stretcher, low_arm_stretcher, hand_mesh, shoulder_tangent_mesh, up_arm_tangent_mesh, low_arm_tangent_mesh, hand_tangent_mesh]
 		for m in meshes:
 			(m.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
 		if not gizmo:
@@ -42,29 +51,39 @@ var current := 0:
 		var m_idx : int
 		match edited:
 			Edited.POSE:
-				current_gimoables = pose_fk_gizmoables
+				current_gimoables = pose_fk_gizmoables if pose_mode == Mode.FK else pose_ik_gizmoables
 				m_idx = current
 			Edited.TANGENT:
 				current_gimoables = tangent_fk_gizmoables
-				m_idx = 3 + current
+				m_idx = 4 + current
 			_:
 				assert(false)
 		if selected:
-			(meshes[m_idx].get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+			if edited == Edited.POSE and pose_mode == Mode.IK:
+				match current:
+					0:
+						(meshes[0].get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+					1:
+						(meshes[1].get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+						(meshes[2].get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+					2:
+						(meshes[3].get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
+			else:
+				(meshes[m_idx].get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.5
 		gizmo.controllable = current_gimoables[current]
 		current_gimoables[current].gizmo = gizmo
 
-var max_current := 2:
+var max_current := 3:
 	set(v):
 		match edited:
 			Edited.POSE:
 				match pose_mode:
 					Mode.FK:
-						max_current = 2
+						max_current = 3
 					Mode.IK:
-						max_current = 1
+						max_current = 2
 			Edited.TANGENT:
-				max_current = 2
+				max_current = 3
 		
 		current = current
 
@@ -87,14 +106,27 @@ enum Mode{
 
 @export var pose_fk_gizmoables : Array[GizmoControllable]
 
+@export var pose_ik_gizmoables : Array[GizmoControllable]
+
 @export var tangent_fk_gizmoables : Array[GizmoControllable]
 
 @export var pose_mesh_instance : MeshInstance3D
 
+
+@export var shoulder_pose: Marker3D
 @export var up_arm_pose: Marker3D
 @export var low_arm_pose: Marker3D
 @export var hand_pose: Marker3D
 
+@export var ik_roll: IkRoll
+@export var ik_target: Marker3D
+
+@export var fk_ik_switch: CheckButton
+
+@export var thih_length : float
+@export var shin_length : float
+
+@export var shoulder_tangent_object : Marker3D
 @export var up_arm_tangent_object : Marker3D
 @export var low_arm_tangent_object : Marker3D
 @export var hand_tangent_object : Marker3D
@@ -105,15 +137,24 @@ enum Mode{
 
 @export var chest: Marker3D
 
-@export var shoulder_pose: Marker3D
-
+@export var shoulder_tangent : Vector3
 @export var up_arm_tangent : Vector3
 @export var low_arm_tangent : Vector3
 @export var hand_tangent : Vector3
 
+@export var use_shoulder_auto_tangent := true
 @export var use_up_arm_auto_tangent := true
 @export var use_low_arm_auto_tangent := true
 @export var use_hand_auto_tagent := true
+
+@export var shoulder_ease_curve : MyEaseInOut:
+	set(v):
+		shoulder_ease_curve = v
+		if not is_node_ready():
+			return
+		if not v: return
+		shoulder_curve_drawer.my_ease_in_out_curve = v
+		v.bake_fast()
 
 @export var up_arm_ease_curve : MyEaseInOut:
 	set(v):
@@ -121,7 +162,7 @@ enum Mode{
 		if not is_node_ready():
 			return
 		if not v: return
-		up_arm_curve_drawer.my_ease_in_out_curve = up_arm_ease_curve
+		up_arm_curve_drawer.my_ease_in_out_curve = v
 		v.bake_fast()
 @export var low_arm_ease_curve : MyEaseInOut:
 	set(v):
@@ -129,7 +170,7 @@ enum Mode{
 		if not is_node_ready():
 			return
 		if not v: return
-		low_arm_curve_drawer.my_ease_in_out_curve = low_arm_ease_curve
+		low_arm_curve_drawer.my_ease_in_out_curve = v
 		v.bake_fast()
 @export var hand_ease_curve : MyEaseInOut:
 	set(v):
@@ -137,13 +178,15 @@ enum Mode{
 		if not is_node_ready():
 			return
 		if not v: return
-		hand_curve_drawer.my_ease_in_out_curve = hand_ease_curve
+		hand_curve_drawer.my_ease_in_out_curve = v
 		v.bake_fast()
 
+@export_range(-1.0, 1.0, 0.01) var shoulder_auto_influence := 0.0
 @export_range(-1.0, 1.0, 0.01) var up_arm_auto_influence := 0.0
 @export_range(-1.0, 1.0, 0.01) var low_arm_auto_influence := 0.0
 @export_range(-1.0, 1.0, 0.01) var hand_auto_influence := 0.0
 
+@export var shoulder_angular_velocity : float
 @export var up_arm_angular_velocity : float
 @export var low_arm_angular_velocity : float
 @export var hand_angular_velocity : float
@@ -168,13 +211,36 @@ func _ready() -> void:
 	up_arm_velocity_tangent_object.velocity_set.connect(func(v : float):
 		up_arm_angular_velocity = v
 		)
-	thigh_auto_vel_check_button.button_pressed = use_up_arm_auto_tangent
-	thigh_auto_vel_check_button.toggled.connect(func(b:  bool):
+	shoulder_auto_vel_check_button.button_pressed = use_shoulder_auto_tangent
+	up_arm_auto_vel_check_button.button_pressed = use_up_arm_auto_tangent
+	fore_arm_auto_vel_check_button.button_pressed = use_low_arm_auto_tangent
+	hand_auto_vel_check_button.button_pressed = use_hand_auto_tagent
+	shoulder_auto_vel_check_button.toggled.connect(func(b:  bool):
+		use_shoulder_auto_tangent = b
+		)
+	up_arm_auto_vel_check_button.toggled.connect(func(b:  bool):
 		use_up_arm_auto_tangent = b
 		)
+	fore_arm_auto_vel_check_button.toggled.connect(func(b:  bool):
+		use_low_arm_auto_tangent = b
+		)
+	hand_auto_vel_check_button.toggled.connect(func(b:  bool):
+		use_hand_auto_tagent = b
+		)
+	
 	visibility_changed.connect(func():
 		if not is_visible_in_tree():
 			right_control.hide()
+		)
+	thih_length = low_arm_pose.position.length()
+	shin_length = hand_pose.position.length()
+	
+	
+	fk_ik_switch.button_pressed = pose_mode != Mode.FK
+	
+	fk_ik_switch.toggled.connect(func(b : bool):
+		pose_mode = Mode.FK if not b else Mode.IK
+		max_current = max_current
 		)
 
 func on_gizmo_set(_g : Gizmo):
@@ -199,6 +265,11 @@ func right_clicked_empty(is_clicked : bool):
 	pass
 
 func _process(delta: float) -> void:
+	if not use_shoulder_auto_tangent:
+		shoulder_tangent = (shoulder_tangent_object.basis).get_rotation_quaternion().get_axis()
+	else:
+		if shoulder_tangent:
+			shoulder_tangent_object.basis = Quaternion(shoulder_tangent, PI/2.0)
 	if not use_up_arm_auto_tangent:
 		up_arm_tangent = (up_arm_tangent_object.basis as Quaternion).get_axis()
 	else:
@@ -214,7 +285,16 @@ func _process(delta: float) -> void:
 	else:
 		if hand_tangent:
 			hand_tangent_object.basis = Quaternion(hand_tangent, PI/2.0)
-
+	if pose_mode == Mode.IK:
+		var qs := IkInterpstatic.get_ik_interpolation(up_arm_pose.global_position, ik_target.global_position, thih_length, shin_length, ik_roll.global_rotation.y)
+		up_arm_pose.global_rotation = qs[0].get_euler()
+		low_arm_pose.rotation = qs[1].get_euler()
+		hand_pose.global_basis = ik_target.global_basis
+		ik_roll.global_position = up_arm_pose.global_position
+	else:
+		ik_target.global_transform = hand_pose.global_transform
+		ik_roll.global_transform = up_arm_pose.global_transform
+			
 func set_aut_velocity(idx : int, v : float):
 	match idx:
 		0:

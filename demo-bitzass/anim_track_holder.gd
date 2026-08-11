@@ -1,4 +1,3 @@
-@tool
 extends ColorRect
 class_name AnimTrackHolder
 
@@ -148,6 +147,11 @@ func on_lassoed():
 			lasso_selected_keyframes.append(k)
 
 func _ready() -> void:
+	current_time_label.owner = owner
+	for c in get_children():
+		if "CurrentTime" in c.name:
+			if c != current_time_label:
+				c.queue_free()
 	if lasso:
 		lasso.lassoed.connect(on_lassoed)
 	max_time = max_time
@@ -187,7 +191,9 @@ func _ready() -> void:
 			elif selected_key == key:
 				selected_key = null
 			).bind(new_key))
-			
+		if empty_canvas:
+			if not empty_canvas.right_clicked.is_connected(new_key.animator.right_clicked_empty):
+				empty_canvas.right_clicked.connect(new_key.animator.right_clicked_empty)
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -206,7 +212,9 @@ func _gui_input(event: InputEvent) -> void:
 				var prev_keyframe_idx := get_next_and_prev_keyframes_indices(clicked_time)[0]
 				if prev_keyframe_idx == -1:
 					return
-				keyframes[prev_keyframe_idx].animator.interp_mode_pie_menu.visible = true
+				if keyframes[prev_keyframe_idx].animator.interp_mode_pie_menu:
+					
+					keyframes[prev_keyframe_idx].animator.interp_mode_pie_menu.visible = true
 				
 				#add_keyframe(mouse_pos)
 				pass
@@ -262,6 +270,8 @@ func paste_keyframe(kf : Keyframe):
 
 func add_keyframe(mouse_pos : Vector2):
 	var new_key := Keyframe.new()
+	new_key.owner = owner
+	new_key.name = "Keyframe"
 	add_child(new_key)
 	keyframes.append(new_key)
 	var tmp := animator.instantiate()

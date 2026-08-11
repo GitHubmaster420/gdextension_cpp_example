@@ -48,7 +48,7 @@ func get_next_and_prev_keyframes_indices(t : float) -> Array[int]:
 
 func on_time_changed(t : float):
 	current_time = t
-	if anim_track_holder.keyframes.size() == 0:
+	if anim_track_holder.keyframes.size() == 0 or Engine.is_editor_hint():
 		return
 	var indices := get_next_and_prev_keyframes_indices(t)
 	prev_keyframe_idx = indices[0]

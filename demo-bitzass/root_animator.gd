@@ -16,8 +16,25 @@ var current := 0
 
 @export var velocity_tangent_vector : Vector3
 
-@export var rot_ease_curve : MyEaseInOut
-@export var loc_ease_curve : MyEaseInOut
+@export var rot_ease_curve : MyEaseInOut:
+	set(v):
+		rot_ease_curve = v
+		v.bake_fast()
+		if not is_node_ready():
+			return
+		rot_curve_drawer.my_ease_in_out_curve = v
+@export var loc_ease_curve : MyEaseInOut:
+	set(v):
+		loc_ease_curve = v
+		v.bake_fast()
+		if not is_node_ready():
+			return
+		pos_curve_drawer.my_ease_in_out_curve = v
+
+@export var pos_curve_drawer: EaseCurveDrawer
+@export var rot_curve_drawer: EaseCurveDrawer
+
+@export var right_side: Control
 
 @export var tangent_mesh: MeshInstance3D
 @export var root_mesh: MeshInstance3D
@@ -45,11 +62,16 @@ enum Mode{
 			
 
 func _ready() -> void:
+	rot_ease_curve = rot_ease_curve
+	loc_ease_curve = loc_ease_curve
 	gizmo_set.connect(on_gizmo_set)
 	velocity_tangent.velocity_set.connect(func(v : float):
 		angular_velocity_amount = v
 		)
-	
+	visibility_changed.connect(func():
+		if not is_visible_in_tree():
+			right_side.visible = false
+		)
 
 func _process(delta: float) -> void:
 	angular_velocity_tangent = (root_tangent.basis as Quaternion).get_axis()
@@ -71,10 +93,12 @@ func _input(event: InputEvent) -> void:
 
 func select():
 	mode = Mode.POSE
+	right_side.visible = true
 
 func deselect():
 	(root_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
 	(tangent_mesh.get_active_material(0) as StandardMaterial3D).albedo_color.a = 0.1
+	right_side.visible = false
 
 func right_clicked_empty(pressed : bool):
 	pass

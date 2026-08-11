@@ -22,6 +22,8 @@ var playing := false
 		for holder in anim_track_holders:
 			holder.time = time
 
+signal max_time_set(time : float)
+
 @export var max_time := 2.0:
 	set(v):
 		max_time = snappedf(v, 1.0/30.0)
@@ -30,6 +32,7 @@ var playing := false
 		for h in anim_track_holders:
 			h.max_time = max_time
 		time = time
+		max_time_set.emit(max_time)
 
 @export var anim_track_holders : Array[AnimTrackHolder]
 var current_anim_track_holder : AnimTrackHolder:
@@ -57,6 +60,9 @@ var current_anim_track_holder : AnimTrackHolder:
 		playing = false
 		current_anim_track_holder.visible = true
 		#visible = false
+
+@export var ball : MeshInstance3D
+@export var ball_keyframes : Array[BallKeyFrame]
 
 func _ready() -> void:
 	for h in anim_track_holders:
@@ -99,3 +105,6 @@ func _process(delta: float) -> void:
 	var mouse_pos_clamped := clampf(get_local_mouse_position().x, 0, size.x)
 	if timeline_selected:
 		time = snapped(remap(mouse_pos_clamped, 0, size.x, 0, max_time), 1.0 / 30.0)
+
+func add_ball_keyframe():
+	pass
