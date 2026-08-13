@@ -37,7 +37,7 @@ points = PackedVector2Array(0, 0, 0.0005800151, 2.8322503e-07, 0.001159251, 1.13
 baked_points = PackedFloat32Array(0, 5.1921255e-05, 0.00020954278, 0.00047612702, 0.00085495866, 0.0013496213, 0.0019636159, 0.0027007556, 0.0035649543, 0.004560361, 0.005691306, 0.006962268, 0.008377881, 0.009943104, 0.011663048, 0.013543147, 0.015589095, 0.017806655, 0.020202177, 0.02278206, 0.025553156, 0.02852266, 0.03169802, 0.03508713, 0.038698312, 0.042540282, 0.046622116, 0.05095344, 0.05554435, 0.06040543, 0.06554779, 0.070983104, 0.07672363, 0.08278222, 0.08917224, 0.0959078, 0.103003494, 0.11047475, 0.11833729, 0.12660766, 0.13530278, 0.14444011, 0.15403743, 0.16411282, 0.1746843, 0.18576995, 0.19738714, 0.20955276, 0.22228245, 0.23558992, 0.24948691, 0.26398188, 0.27907985, 0.2947805, 0.31107864, 0.32796186, 0.34541038, 0.3633957, 0.38188052, 0.40081754, 0.42015, 0.43981192, 0.459729, 0.47982025, 0.5, 0.5201796, 0.540271, 0.5601881, 0.5798501, 0.5991825, 0.61811954, 0.63660425, 0.6545897, 0.67203814, 0.68892133, 0.7052195, 0.72092015, 0.736018, 0.7505131, 0.7644101, 0.77771753, 0.7904473, 0.8026128, 0.81423, 0.82531565, 0.83588713, 0.8459626, 0.8555599, 0.8646972, 0.87339234, 0.8816627, 0.88952523, 0.89699656, 0.9040922, 0.91082776, 0.91721785, 0.92327636, 0.9290169, 0.9344522, 0.9395945, 0.9444556, 0.94904655, 0.95337784, 0.95745975, 0.9613016, 0.96491283, 0.96830195, 0.9714773, 0.97444683, 0.97721785, 0.97979784, 0.98219335, 0.9844109, 0.9864569, 0.988337, 0.9900569, 0.99162215, 0.9930377, 0.99430877, 0.9954396, 0.99643505, 0.99729925, 0.9980364, 0.9986504, 0.99914503, 0.9995239, 0.99979043, 0.999948)
 metadata/_custom_type_script = "uid://bsa4fukt7asth"
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_uglq4"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_hmbkd"]
 radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_imthv"]
@@ -65,7 +65,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 0.39215687)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_wwjn6"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_5ufbc"]
 radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q77p2"]
@@ -121,7 +121,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(0, 0.49, 0.23683335, 0.29411766)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_16p6a"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_imthv"]
 radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j5lu3"]
@@ -142,7 +142,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(1, 0, 0, 0.39215687)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_hmbkd"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_q77p2"]
 radius = 0.05
 height = 0.35500002
 
@@ -154,7 +154,7 @@ no_depth_test = true
 shading_mode = 0
 albedo_color = Color(0, 0.49, 0.23683335, 0.29411766)
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_5ufbc"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_j5lu3"]
 radius = 0.05
 height = 0.3280343
 
@@ -259,7 +259,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 [node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighPose/ThighVelocityTangent" unique_id=565614178 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(-1, -8.001042e-09, 0, -8.001042e-09, 1, 0, 0, 0, -1, 0, 0.5703786, 0)
 top_level = true
-mesh = SubResource("CapsuleMesh_uglq4")
+mesh = SubResource("CapsuleMesh_hmbkd")
 surface_material_override/0 = SubResource("StandardMaterial3D_imthv")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../..")
@@ -351,7 +351,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 [node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighPose/ShinPose/ShinVelocityTangent" unique_id=1096229232 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(0, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0.21544236, -0.0067283553)
 top_level = true
-mesh = SubResource("CapsuleMesh_wwjn6")
+mesh = SubResource("CapsuleMesh_5ufbc")
 surface_material_override/0 = SubResource("StandardMaterial3D_q77p2")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../..")
@@ -393,7 +393,7 @@ metadata/_custom_type_script = "uid://p3tqyfbo7s3x"
 [node name="Stretcher" type="MeshInstance3D" parent="Pelvis/ThighPose/ShinPose/FootPose/FootVelocityTangent" unique_id=955475494 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, 0, 0, 0, -0.6040985, -0.79690963, 0, 0.79690963, -0.6040985, -6.7576913e-09, -0.09063658, -0.124720655)
 top_level = true
-mesh = SubResource("CapsuleMesh_16p6a")
+mesh = SubResource("CapsuleMesh_imthv")
 surface_material_override/0 = SubResource("StandardMaterial3D_j5lu3")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../..")
@@ -415,7 +415,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_wwjn6")
 [node name="ThighStretcher" type="MeshInstance3D" parent="Pelvis/ThighPose" unique_id=925815456 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, 0, 0, 0, -0.99982035, 0.018953113, 0, -0.018953113, -0.99982035, 0, 0.39291048, -0.0033641777)
 top_level = true
-mesh = SubResource("CapsuleMesh_hmbkd")
+mesh = SubResource("CapsuleMesh_q77p2")
 surface_material_override/0 = SubResource("StandardMaterial3D_uglq4")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("..")
@@ -425,7 +425,7 @@ metadata/_custom_type_script = "uid://dotx4kxu4bpob"
 [node name="ShinStetcher" type="MeshInstance3D" parent="Pelvis/ThighPose" unique_id=881187306 node_paths=PackedStringArray("start_stretch", "end_stretch")]
 transform = Transform3D(1, -2.0600563e-08, 7.941442e-09, -2.2078265e-08, -0.9330699, 0.35969502, 0, -0.359695, -0.93306994, -3.3788456e-09, 0.06240289, -0.06572451)
 top_level = true
-mesh = SubResource("CapsuleMesh_5ufbc")
+mesh = SubResource("CapsuleMesh_j5lu3")
 surface_material_override/0 = SubResource("StandardMaterial3D_16p6a")
 script = ExtResource("3_ddgo6")
 start_stretch = NodePath("../ShinPose")
@@ -651,7 +651,6 @@ script = ExtResource("15_uglq4")
 h_slider = NodePath("../ShinHSlider")
 v_slider_1 = NodePath("../ShinVSlider")
 v_slider_2 = NodePath("../ShinVSlider2")
-my_ease_in_out_curve = SubResource("Resource_wwjn6")
 metadata/_custom_type_script = "uid://burp1regbq6js"
 
 [node name="ShinHSlider" type="HSlider" parent="RightControl" unique_id=1946968567]
@@ -716,10 +715,9 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0.20784314, 0.03137255, 1)
 script = ExtResource("15_uglq4")
-h_slider = NodePath("../ShinHSlider")
-v_slider_1 = NodePath("../ShinVSlider")
-v_slider_2 = NodePath("../ShinVSlider2")
-my_ease_in_out_curve = SubResource("Resource_16p6a")
+h_slider = NodePath("../FootHSlider")
+v_slider_1 = NodePath("../FootVSlider")
+v_slider_2 = NodePath("../FootVSlider2")
 metadata/_custom_type_script = "uid://burp1regbq6js"
 
 [node name="FootHSlider" type="HSlider" parent="RightControl" unique_id=802392893]
@@ -787,7 +785,6 @@ script = ExtResource("15_uglq4")
 h_slider = NodePath("../ThighHSlider")
 v_slider_1 = NodePath("../ThighVSlider")
 v_slider_2 = NodePath("../ThighVSlider2")
-my_ease_in_out_curve = SubResource("Resource_uglq4")
 metadata/_custom_type_script = "uid://burp1regbq6js"
 
 [node name="ThighHSlider" type="HSlider" parent="RightControl" unique_id=441740972]
