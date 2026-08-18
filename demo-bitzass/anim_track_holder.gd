@@ -229,7 +229,9 @@ func _gui_input(event: InputEvent) -> void:
 				
 
 func paste_flipped(kf : Keyframe):
-	var all := kf.animator.find_children("*", "Node3D")
+	var stored := gizmo.controllable
+	gizmo.controllable = null
+	var all := kf.animator.find_children("*", "Node3D", true, false)
 	print("all size: ", all.size())
 	for c in all:
 		if c is Node3D:
@@ -237,6 +239,7 @@ func paste_flipped(kf : Keyframe):
 			c.rotation = QuaternionExtender.mirror(Quaternion.from_euler(c.rotation)).get_euler()
 	
 	paste_keyframe(kf)
+	gizmo.controllable = stored
 	
 
 func paste_keyframe(kf : Keyframe):
@@ -270,9 +273,9 @@ func paste_keyframe(kf : Keyframe):
 
 func add_keyframe(mouse_pos : Vector2):
 	var new_key := Keyframe.new()
-	new_key.owner = owner
-	new_key.name = "Keyframe"
 	add_child(new_key)
+	new_key.name = "Keyframe"
+	new_key.owner = owner
 	keyframes.append(new_key)
 	var tmp := animator.instantiate()
 	var new := Animator.duplicate_without_instantiation(tmp)

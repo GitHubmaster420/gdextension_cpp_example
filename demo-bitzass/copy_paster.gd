@@ -14,7 +14,14 @@ var time_when_copied : float
 
 func paste():
 	for kf in copied_keyframe_holders:
-		var new : Keyframe = kf.duplicate()
+		var new: Keyframe = kf.duplicate(
+		7
+		)
+		
+		for c in new.get_children():
+			if c is Animator:
+				new.animator = c
+		
 		var all_children := new.animator.find_children("*", "MeshInstance3D")
 		for m : MeshInstance3D in all_children:
 			m.set_surface_override_material(0, m.get_active_material(0).duplicate(true))
@@ -36,6 +43,12 @@ func paste_flipped():
 	print("pasting flipped")
 	for kf in copied_keyframe_holders:
 		var new : Keyframe = kf.duplicate()
+		
+		for c in new.get_children():
+			if c is Animator:
+				new.animator = c
+		
+		
 		var all_children := new.animator.find_children("*", "MeshInstance3D")
 		for m : MeshInstance3D in all_children:
 			m.set_surface_override_material(0, m.get_active_material(0).duplicate(true))

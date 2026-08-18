@@ -35,6 +35,9 @@ func _validate_property(property: Dictionary) -> void:
 			property.hint_string = skeleton.get_concatenated_bone_names()
 
 func on_keyframe_added(key : Keyframe):
+	var pasted : bool = key.get_meta("was_pasted", false)
+	if pasted:
+		return
 	await get_skeleton().skeleton_updated
 	var prev_key : Keyframe
 	var next_key : Keyframe

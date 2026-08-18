@@ -46,6 +46,9 @@ func interpolate_keyframes():
 	get_skeleton().set_bone_pose(0, trns)
 
 func on_keyframe_added(key : Keyframe):
+	var pasted : bool = key.get_meta("was_pasted", false)
+	if pasted:
+		return
 	var time := key.time
 	var animator := key.animator as RootAnimator
 	

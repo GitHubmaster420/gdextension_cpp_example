@@ -1,8 +1,17 @@
 extends Node3D
+class_name AnimationEditor
 
 @export var save_button: Button
 @export var file_name_editor: LineEdit
 var folder_name := "res://saved_scenes/"
+
+@export var right_foot_holder : AnimTrackHolder
+@export var left_foot_holder : AnimTrackHolder
+@export var spine_holder : AnimTrackHolder
+@export var head_holder : AnimTrackHolder
+@export var root_holder : AnimTrackHolder
+@export var right_hand_holder : AnimTrackHolder
+@export var left_hand_holder : AnimTrackHolder
 
 func _ready() -> void:
 	save_button.pressed.connect(func():

@@ -207,6 +207,7 @@ func _ready() -> void:
 	chest_velocity_tangent.velocity_set.connect(func(v : float):
 		chest_r_vel = v
 		)
+	current_controllable = current_controllable
 	
 
 func on_tangent_influence_changed(value : float):
@@ -391,6 +392,8 @@ func get_rest_transforms():
 
 var current_controllable : GizmoControllable:
 	set(v):
+		if not is_node_ready():
+			return
 		if current_controllable:
 			current_controllable.gizmo = null
 			gizmo.controllable = null
