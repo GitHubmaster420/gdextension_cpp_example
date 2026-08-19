@@ -5,6 +5,8 @@ class_name AnimationEditor
 @export var file_name_editor: LineEdit
 var folder_name := "res://saved_scenes/"
 
+@export var ball_key_frames : BallKeyFrames
+
 @export var right_foot_holder : AnimTrackHolder
 @export var left_foot_holder : AnimTrackHolder
 @export var spine_holder : AnimTrackHolder

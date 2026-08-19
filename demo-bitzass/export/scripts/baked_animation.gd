@@ -12,3 +12,7 @@ class_name BakedAnimation
 @export var head_track_holder : BakedTrackHolder
 
 @export var root_track_holder : BakedTrackHolder
+
+@export var ball_pos : Vector3
+@export var ball_launch_time : float
+@export var ball_launch_vel : Vector3

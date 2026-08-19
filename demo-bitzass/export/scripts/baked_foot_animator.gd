@@ -10,6 +10,14 @@ enum InterpMode{
 
 @export var interp_mode : InterpMode
 
+enum Parent{
+	ROOT,
+	SPINE,
+	PREV_ANIMATOR
+}
+
+@export var parent := Parent.SPINE
+
 @export var ik_roll : float
 @export var ik_foot_transform : Transform3D
 

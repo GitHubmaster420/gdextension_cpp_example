@@ -6,6 +6,7 @@ extends Node3D
 
 @export var world_environment: WorldEnvironment
 
+@export var ball_kf_idx := 0
 
 var animation_editor : AnimationEditor:
 	get:
@@ -19,6 +20,28 @@ var folder_path := "res://export/baked_animations/"
 
 func bake():
 	baked_animation = BakedAnimation.new()
+	
+	var ball_key_frames := animation_editor.ball_key_frames
+	
+	var b_kf := ball_key_frames.ball_ks[ball_kf_idx]
+	
+	var ball_pos := b_kf.pos.position
+	var launch_time := b_kf.time
+	var ball_launch_vel : Vector3
+	
+	if ball_kf_idx >= ball_key_frames.ball_ks.size() - 1:
+		ball_launch_vel = Vector3.ZERO
+	else:
+		var next_time := ball_key_frames.ball_ks[ball_kf_idx + 1].time
+		var dur := next_time - launch_time
+		if dur > 0:
+			ball_launch_vel = b_kf.out_tangent.position / dur
+		else:
+			ball_launch_vel = Vector3.ZERO
+	
+	baked_animation.ball_pos = ball_pos
+	baked_animation.ball_launch_time = launch_time
+	baked_animation.ball_launch_vel = ball_launch_vel
 	
 	baked_animation.right_foot_track_holder = BakedTrackHolder.new()
 	baked_animation.left_foot_track_holder = BakedTrackHolder.new()

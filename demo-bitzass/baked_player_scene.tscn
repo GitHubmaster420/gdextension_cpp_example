@@ -1,7 +1,10 @@
 [gd_scene format=4 uid="uid://dyl8c157xk52l"]
 
 [ext_resource type="Script" uid="uid://cs2hfiko4o62i" path="res://export/scripts/baked_animation_player.gd" id="1_uuqck"]
-[ext_resource type="Resource" uid="uid://q7bkb165ulbk" path="res://export/baked_animations/dribble_out.res" id="2_mafhx"]
+[ext_resource type="Resource" uid="uid://jslw15qqynd5" path="res://export/baked_animations/dribble_out.res" id="2_mafhx"]
+[ext_resource type="Texture2D" uid="uid://dcjxj5q5mnrm4" path="res://img/FootballColor.png" id="3_jub30"]
+[ext_resource type="Texture2D" uid="uid://ckdequr40m8mf" path="res://img/FootballNormals.png" id="4_wrtlj"]
+[ext_resource type="Script" uid="uid://re8hh6ya3t35" path="res://anim_simulator_ball.gd" id="5_wrtlj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_mnutf"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -881,6 +884,15 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
+[sub_resource type="SphereMesh" id="SphereMesh_wrtlj"]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4l8nc"]
+albedo_texture = ExtResource("3_jub30")
+normal_enabled = true
+normal_texture = ExtResource("4_wrtlj")
+
 [node name="BakedPlayerScene" type="Node3D" unique_id=2014863574]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=403118664]
@@ -890,12 +902,11 @@ environment = SubResource("Environment_uuqck")
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="FootballCityCharacter3" type="Node3D" parent="." unique_id=2110815334]
+[node name="FootballCityCharacter4" type="Node3D" parent="." unique_id=1591406241]
 
-[node name="metarig" type="Node3D" parent="FootballCityCharacter3" unique_id=168175253]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+[node name="metarig" type="Node3D" parent="FootballCityCharacter4" unique_id=168175253]
 
-[node name="Skeleton3D" type="Skeleton3D" parent="FootballCityCharacter3/metarig" unique_id=1955628591]
+[node name="Skeleton3D" type="Skeleton3D" parent="FootballCityCharacter4/metarig" unique_id=1955628591]
 bones/0/name = "root"
 bones/0/parent = -1
 bones/0/rest = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)
@@ -2122,59 +2133,7 @@ bones/174/position = Vector3(0.03799996, 0.019970214, 0.08799049)
 bones/174/rotation = Quaternion(0.6797058, -0.6797058, 0.19493611, 0.1949358)
 bones/174/scale = Vector3(1.0000001, 1, 1.0000001)
 
-[node name="Brow" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=1028342118]
-mesh = SubResource("ArrayMesh_f2xp8")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-
-[node name="Cube" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=740675703]
-mesh = SubResource("ArrayMesh_g6oca")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-
-[node name="Hair" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=47329289]
-mesh = SubResource("ArrayMesh_x6lem")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-
-[node name="Head_Retopology" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=883161015]
-mesh = SubResource("ArrayMesh_vscr1")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-
-[node name="LeftFoot" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=527212648]
-mesh = SubResource("ArrayMesh_3mniq")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-
-[node name="Leg_001" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=712969687]
-mesh = SubResource("ArrayMesh_pbjod")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-
-[node name="RightFoot" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=152780780]
-mesh = SubResource("ArrayMesh_6nuij")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-
-[node name="Eyes" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=1318337696]
-mesh = SubResource("ArrayMesh_odeq7")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-
-[node name="UpperBody_001" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=1526301312]
-mesh = SubResource("ArrayMesh_cghly")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-"blend_shapes/Key 1" = 0.0
-"blend_shapes/Key 2" = 0.0
-
-[node name="UpperBody_002" type="MeshInstance3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=379770033]
-mesh = SubResource("ArrayMesh_0qyqh")
-skin = SubResource("Skin_05hv3")
-skeleton = NodePath("..")
-
-[node name="BakedAnimationPlayer" type="SkeletonModifier3D" parent="FootballCityCharacter3/metarig/Skeleton3D" unique_id=126754173]
+[node name="BakedAnimationPlayer" type="SkeletonModifier3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=126754173 node_paths=PackedStringArray("ball_mesh", "ball")]
 unique_name_in_owner = false
 process_mode = 0
 process_priority = 0
@@ -2183,7 +2142,7 @@ process_thread_group = 0
 physics_interpolation_mode = 0
 auto_translate_mode = 0
 editor_description = ""
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 rotation_edit_mode = 0
 rotation_order = 2
 top_level = false
@@ -2192,6 +2151,12 @@ visibility_parent = NodePath("")
 active = true
 influence = 1.0
 script = ExtResource("1_uuqck")
+ball_hit_keyframe_idx = 1
+ball_hit_keyframe_time = 0.3
+ball_contact_point = "foot"
+ball_mesh = NodePath("../../../../BallMesh")
+ball = NodePath("../../../../AnimSimulatorBall")
+time = 0.516590333333334
 baked_animation = ExtResource("2_mafhx")
 right_thigh_idx = 170
 right_shin_idx = 171
@@ -2227,4 +2192,74 @@ hip_start_idx = 3
 hip_start_name = "spine.002"
 chest_start_idx = 4
 chest_start_name = "spine.003"
+neck_start_idx = 5
+neck_start_name = "spine.004"
+head_start_idx = 7
+head_start_name = "spine.006"
+ball_positions = Array[Vector3]([Vector3(-0.606984, 0.097049356, 0.12590665), Vector3(-0.606984, 0.097049356, 0.12590665), Vector3(-0.606984, 0.097049356, 0.12590665), Vector3(-0.606984, 0.097049356, 0.12590665), Vector3(-0.606984, 0.097049356, 0.12590665), Vector3(-0.606984, 0.097049356, 0.12590665), Vector3(-0.606984, 0.097049356, 0.12590665), Vector3(-0.606984, 0.097049356, 0.12590665), Vector3(-0.606984, 0.097049356, 0.12590665), Vector3(-0.69650644, 0.1, 0.17906775), Vector3(-0.78379077, 0.1, 0.23089983), Vector3(-0.868893, 0.1, 0.2814361), Vector3(-0.9518677, 0.1, 0.33070895), Vector3(-1.032768, 0.1, 0.37875), Vector3(-1.1116458, 0.1, 0.42559), Vector3(-1.1885517, 0.1, 0.47125903), Vector3(-1.2635349, 0.1, 0.51578635), Vector3(-1.3366436, 0.1, 0.55920047), Vector3(-1.4079245, 0.1, 0.60152924), Vector3(-1.4774234, 0.1, 0.6427998), Vector3(-1.5451849, 0.1, 0.6830386), Vector3(-1.6112522, 0.1, 0.7222714)])
 metadata/_custom_type_script = "uid://cs2hfiko4o62i"
+
+[node name="Brow" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=1028342118]
+mesh = SubResource("ArrayMesh_f2xp8")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+
+[node name="Cube" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=740675703]
+mesh = SubResource("ArrayMesh_g6oca")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+
+[node name="Hair" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=47329289]
+mesh = SubResource("ArrayMesh_x6lem")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+
+[node name="Head_Retopology" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=883161015]
+mesh = SubResource("ArrayMesh_vscr1")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+
+[node name="LeftFoot" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=527212648]
+mesh = SubResource("ArrayMesh_3mniq")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+
+[node name="Leg_001" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=712969687]
+mesh = SubResource("ArrayMesh_pbjod")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+
+[node name="RightFoot" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=152780780]
+mesh = SubResource("ArrayMesh_6nuij")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+
+[node name="Eyes" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=1318337696]
+mesh = SubResource("ArrayMesh_odeq7")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+
+[node name="UpperBody_001" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=1526301312]
+mesh = SubResource("ArrayMesh_cghly")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+"blend_shapes/Key 1" = 0.0
+"blend_shapes/Key 2" = 0.0
+
+[node name="UpperBody_002" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=379770033]
+mesh = SubResource("ArrayMesh_0qyqh")
+skin = SubResource("Skin_05hv3")
+skeleton = NodePath("..")
+
+[node name="AnimSimulatorBall" type="Marker3D" parent="." unique_id=1988009684 node_paths=PackedStringArray("launch_vel_tangent_object")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.606984, 0.097049356, 0.12590665)
+script = ExtResource("5_wrtlj")
+launch_vel_tangent_object = NodePath("LaunchVelTangentObject")
+
+[node name="LaunchVelTangentObject" type="Marker3D" parent="AnimSimulatorBall" unique_id=2085884308]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6856718, 4.61936e-07, 1.5948329)
+
+[node name="BallMesh" type="MeshInstance3D" parent="." unique_id=2004322915]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1885517, 0.1, 0.47125903)
+mesh = SubResource("SphereMesh_wrtlj")
+surface_material_override/0 = SubResource("StandardMaterial3D_4l8nc")

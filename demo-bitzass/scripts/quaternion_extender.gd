@@ -41,8 +41,9 @@ static func my_quat_interpolate(q1 : Quaternion, ax1 : Vector3, v1 : float, q2 :
 	
 	var quat_2 := q2 * Quaternion(ax2, -angle_2) if ax2 else q2
 	
-	var idx := mini(
+	var idx := clampi(
 		int(t * (ease_points.size() - 1)),
+		0,
 		ease_points.size() - 1
 	)
 	
