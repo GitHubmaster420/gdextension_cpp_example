@@ -55,7 +55,7 @@ static func get_ik_interpolation(origin : Vector3, target : Vector3, thigh_lengt
 	var right := thigh_dir.cross(dir).normalized()
 	#TODO: edge case when straight
 	
-	if not right:
+	if right.length_squared() == 0:
 		right = Vector3.RIGHT
 	
 	var b1 : Basis

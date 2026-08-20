@@ -256,6 +256,7 @@ func _validate_property(property: Dictionary) -> void:
 
 func snap_ball():
 	ball.global_position = baked_animation.ball_pos
+	ball.global_rotation = Vector3.ZERO
 	ball.launch_vel_tangent_object.position = baked_animation.ball_launch_vel
 
 @export var ball_positions : Array[Vector3]
@@ -265,7 +266,7 @@ func bake_ball_movement():
 	
 	var _time := 0.0
 	
-	var vel := ball.launch_vel_tangent_object.position
+	var vel := ball.launch_vel_tangent_object.global_position - ball.global_position
 	
 	var gravity := 0.0
 	
@@ -331,6 +332,8 @@ func interpolate_foot(is_right_foot : bool, time : float):
 	
 	var foot_offset := get_skeleton().get_bone_global_rest(foot_idx).basis.get_rotation_quaternion()
 	
+	var ball_vel := ball.launch_vel_tangent_object.global_position - ball.global_position
+	
 	match interp_mode:
 		BakedFootAnimator.InterpMode.FK_HERMITE:
 			
@@ -343,6 +346,13 @@ func interpolate_foot(is_right_foot : bool, time : float):
 			var prev_foot_quat : Quaternion
 			var next_foot_quat : Quaternion
 			
+			var prev_thigh_vel_mag : float = prev_foot_animator.thigh_tangent_magnitude
+			var next_thigh_vel_mag : float = next_foot_animator.thigh_tangent_magnitude
+			var prev_shin_vel_mag : float = prev_foot_animator.shin_tangent_magnitude
+			var next_shin_vel_mag : float = next_foot_animator.shin_tangent_magnitude
+			var prev_foot_vel_mag : float = prev_foot_animator.foot_tangent_magnitude
+			var next_foot_vel_mag : float = next_foot_animator.foot_tangent_magnitude
+			
 			if prev_foot_animator.hits_ball:
 				var pelvis_t := interpolate_pelvis_in_time(arr[idxs[0]])
 				var hip_pos := get_hip_pos(pelvis_t, is_right_foot, arr[idxs[0]])
@@ -351,26 +361,72 @@ func interpolate_foot(is_right_foot : bool, time : float):
 				
 				var ball_default_pos := baked_animation.ball_pos
 				
-				var delta := ball_pos - ball_default_pos
+				var original_basis : Basis
+				original_basis.z = baked_animation.ball_launch_vel.normalized()
+				original_basis.x = Vector3.UP.cross(original_basis.z).normalized()
+				original_basis.y = original_basis.z.cross(original_basis.x).normalized()
 				
-				var ik_target_pos := prev_foot_animator.ik_foot_transform.origin + delta
+				var new_basis : Basis
+				new_basis.z = (ball.launch_vel_tangent_object.global_position - ball.global_position).normalized()
+				new_basis.x = Vector3.UP.cross(new_basis.z).normalized()
+				new_basis.y = new_basis.z.cross(new_basis.x).normalized()
+				
+				
+				var ball_default_transform := Transform3D(original_basis, ball_default_pos)
+				
+				var new_default_transfrom := Transform3D(new_basis, ball_pos)
+				
+				var ik_relative := ball_default_transform.affine_inverse() * prev_foot_animator.ik_foot_transform
+				
+				var ik_new := new_default_transfrom * ik_relative
+				
+				var ik_target_pos := ik_new.origin
 				
 				var thigh_length := get_skeleton().get_bone_rest(shin_idx).origin.length()
 				
 				var shin_length :=  get_skeleton().get_bone_rest(foot_idx).origin.length()
 				
-				var quats := IkInterpstatic.get_ik_interpolation(hip_pos, ik_target_pos, thigh_length, shin_length, prev_foot_animator.ik_roll)
+				var roll_add := original_basis.z.signed_angle_to(new_basis.z, Vector3.UP)
+				
+				var quats := IkInterpstatic.get_ik_interpolation(hip_pos, ik_target_pos, thigh_length, shin_length, prev_foot_animator.ik_roll + roll_add)
 				prev_thigh_quat = pelvis_t.basis.get_rotation_quaternion().inverse() * quats[0]
 				prev_shin_quat = quats[1]
-				prev_foot_quat = quats[1].inverse() * quats[0].inverse() * prev_foot_animator.ik_foot_transform.basis.get_rotation_quaternion()
+				prev_foot_quat = quats[1].inverse() * quats[0].inverse() * ik_new.basis.get_rotation_quaternion()
+				var v_diff := ball_vel.length() / baked_animation.ball_launch_vel.length()
+
+				prev_foot_vel_mag = prev_foot_animator.foot_tangent_magnitude * v_diff
+				prev_shin_vel_mag = prev_foot_animator.shin_tangent_magnitude * v_diff
+				prev_thigh_vel_mag = prev_foot_animator.thigh_tangent_magnitude * v_diff
 				if next_foot_animator.parent == BakedFootAnimator.Parent.PREV_ANIMATOR:
+					var new_flat : Basis
+					new_flat.z = new_basis.z
+					new_flat.z.y = 0
+					new_flat.z = new_flat.z.normalized()
+					new_flat.y = Vector3.UP
+					new_flat.x = new_flat.y.cross(new_flat.z)
+					
+					var original_flat : Basis
+					original_flat.z = original_basis.z
+					original_flat.z.y = 0
+					original_flat.z = original_flat.z.normalized()
+					original_flat.y = Vector3.UP
+					original_flat.x = original_flat.y.cross(original_flat.z)
+					
+					var ball_default_flat_tr := Transform3D(original_flat, ball_default_pos)
+					var ball_new_flat_tr := Transform3D(new_flat, ball_pos)
+					
+					var next_ik_relative := ball_default_flat_tr.affine_inverse() * next_foot_animator.ik_foot_transform
+					
+					var next_ik_new := ball_new_flat_tr * next_ik_relative
+					
 					var next_pelvis_t := interpolate_pelvis_in_time(arr[idxs[1]])
-					var next_hip_pos := get_hip_pos(next_pelvis_t, is_right_foot, arr[idxs[0]])
-					var next_ik_target_pos := next_foot_animator.ik_foot_transform.origin + delta
-					var next_quats := IkInterpstatic.get_ik_interpolation(next_hip_pos, next_ik_target_pos, thigh_length, shin_length, next_foot_animator.ik_roll)
+					var next_hip_pos := get_hip_pos(next_pelvis_t, is_right_foot, arr[idxs[1]])
+					var next_ik_target_pos := next_ik_new.origin
+					var next_quats := IkInterpstatic.get_ik_interpolation(next_hip_pos, next_ik_target_pos, thigh_length, shin_length, next_foot_animator.ik_roll + roll_add)
 					next_thigh_quat = next_pelvis_t.basis.get_rotation_quaternion().inverse() * next_quats[0]
 					next_shin_quat = next_quats[1]
-					next_foot_quat = next_quats[1].inverse() * next_quats[0].inverse() * next_foot_animator.ik_foot_transform.basis.get_rotation_quaternion()
+					next_foot_quat = next_quats[1].inverse() * next_quats[0].inverse() * next_ik_new.basis.get_rotation_quaternion()
+					
 				else:
 					next_thigh_quat = next_foot_animator.thigh_quat
 					next_shin_quat = next_foot_animator.shin_quat
@@ -389,30 +445,56 @@ func interpolate_foot(is_right_foot : bool, time : float):
 				
 				var ball_default_pos := baked_animation.ball_pos
 				
-				var delta := ball_pos - ball_default_pos
+				var original_basis : Basis
+				original_basis.z = baked_animation.ball_launch_vel.normalized()
+				original_basis.x = Vector3.UP.cross(original_basis.z).normalized()
+				original_basis.y = original_basis.z.cross(original_basis.x).normalized()
 				
-				var ik_target_pos := next_foot_animator.ik_foot_transform.origin + delta
+				var new_basis : Basis
+				new_basis.z = (ball.launch_vel_tangent_object.global_position - ball.global_position).normalized()
+				new_basis.x = Vector3.UP.cross(new_basis.z).normalized()
+				new_basis.y = new_basis.z.cross(new_basis.x).normalized()
+				
+				
+				var ball_default_transform := Transform3D(original_basis, ball_default_pos)
+				
+				var new_default_transfrom := Transform3D(new_basis, ball_pos)
+				
+				var ik_relative := ball_default_transform.affine_inverse() * next_foot_animator.ik_foot_transform
+				
+				var ik_new := new_default_transfrom * ik_relative
+				
+				
+				var ik_target_pos := ik_new.origin
 				
 				var thigh_length := get_skeleton().get_bone_rest(shin_idx).origin.length()
 				
 				var shin_length :=  get_skeleton().get_bone_rest(foot_idx).origin.length()
 				
-				var quats := IkInterpstatic.get_ik_interpolation(hip_pos, ik_target_pos, thigh_length, shin_length, next_foot_animator.ik_roll)
+				var roll_add := original_basis.z.signed_angle_to(new_basis.z, Vector3.UP)
+				
+				var quats := IkInterpstatic.get_ik_interpolation(hip_pos, ik_target_pos, thigh_length, shin_length, next_foot_animator.ik_roll + roll_add)
 				next_thigh_quat = pelvis_t.basis.get_rotation_quaternion().inverse() * quats[0]
 				next_shin_quat = quats[1]
-				next_foot_quat = quats[1].inverse() * quats[0].inverse() * next_foot_animator.ik_foot_transform.basis.get_rotation_quaternion()
-			else:
+				next_foot_quat = quats[1].inverse() * quats[0].inverse() * ik_new.basis.get_rotation_quaternion()
+				
+				var v_diff = ball_vel.length() / baked_animation.ball_launch_vel.length()
+				next_foot_vel_mag = next_foot_animator.foot_tangent_magnitude * v_diff
+				next_shin_vel_mag = next_foot_animator.shin_tangent_magnitude * v_diff
+				next_thigh_vel_mag = next_foot_animator.thigh_tangent_magnitude * v_diff
+				
+			elif not prev_foot_animator.hits_ball:
 				next_thigh_quat = next_foot_animator.thigh_quat
 				next_shin_quat = next_foot_animator.shin_quat
 				next_foot_quat = next_foot_animator.foot_quat
 
 			var prev_thigh_rot := prev_thigh_quat
 			var prev_thigh_tangent := prev_foot_animator.thigh_tangent_vector
-			var prev_thigh_mag := prev_foot_animator.thigh_tangent_magnitude
+			var prev_thigh_mag := prev_thigh_vel_mag
 			
 			var next_thigh_rot := next_thigh_quat
 			var next_thigh_tangent := next_foot_animator.thigh_tangent_vector
-			var next_thigh_mag := next_foot_animator.thigh_tangent_magnitude
+			var next_thigh_mag := next_thigh_vel_mag
 			
 			var thigh_ease_curve := next_foot_animator.thigh_ease_curve
 			
@@ -420,11 +502,11 @@ func interpolate_foot(is_right_foot : bool, time : float):
 			
 			var prev_shin_rot := prev_shin_quat
 			var prev_shin_tangent := prev_foot_animator.shin_tangent_vector
-			var prev_shin_mag := prev_foot_animator.shin_tangent_magnitude
+			var prev_shin_mag := prev_shin_vel_mag
 			
 			var next_shin_rot := next_shin_quat
 			var next_shin_tangent := next_foot_animator.shin_tangent_vector
-			var next_shin_mag := next_foot_animator.shin_tangent_magnitude
+			var next_shin_mag := next_shin_vel_mag
 			
 			var shin_ease_curve := next_foot_animator.shin_ease_curve
 			
@@ -432,11 +514,11 @@ func interpolate_foot(is_right_foot : bool, time : float):
 			
 			var prev_foot_rot := prev_foot_quat
 			var prev_foot_tangent := prev_foot_animator.foot_tangent_vector
-			var prev_foot_mag := prev_foot_animator.foot_tangent_magnitude
+			var prev_foot_mag := prev_foot_vel_mag
 			
 			var next_foot_rot := next_foot_quat
 			var next_foot_tangent := next_foot_animator.foot_tangent_vector
-			var next_foot_mag := next_foot_animator.foot_tangent_magnitude
+			var next_foot_mag := next_foot_vel_mag
 			
 			var foot_ease_curve := next_foot_animator.foot_ease_curve
 			
@@ -448,7 +530,59 @@ func interpolate_foot(is_right_foot : bool, time : float):
 			
 			var roll := lerp_angle(prev_foot_animator.ik_roll, next_foot_animator.ik_roll, t)
 			
-			var trsf := prev_foot_animator.ik_foot_transform.interpolate_with(next_foot_animator.ik_foot_transform, t)
+			var ball_pos := ball.position
+		
+			var ball_default_pos := baked_animation.ball_pos
+			
+			var original_basis : Basis
+			original_basis.z = baked_animation.ball_launch_vel.normalized()
+			original_basis.x = Vector3.UP.cross(original_basis.z).normalized()
+			original_basis.y = original_basis.z.cross(original_basis.x).normalized()
+			
+			var original_flat := original_basis
+			original_flat.z.y = 0
+			original_flat.z = original_flat.z.normalized()
+			original_flat.y = Vector3.UP
+			original_flat.x = original_flat.y.cross(original_flat.z).normalized()
+			
+			var new_basis : Basis
+			new_basis.z = (ball.launch_vel_tangent_object.global_position - ball.global_position).normalized()
+			new_basis.x = Vector3.UP.cross(new_basis.z).normalized()
+			new_basis.y = new_basis.z.cross(new_basis.x).normalized()
+			
+			var new_flat := new_basis
+			new_flat.z.y = 0
+			new_flat.z = new_flat.z.normalized()
+			
+			
+			
+			new_flat.y = Vector3.UP
+			
+			new_flat.x = new_flat.y.cross(new_flat.z)
+			
+			var ball_default_flat_tr := Transform3D(original_flat, ball_default_pos)
+			var ball_new_flat_tr := Transform3D(new_flat, ball_pos)
+			
+			var start_transform : Transform3D
+			
+			if prev_foot_animator.after_ball_contact:
+				var prev_ik_relative := ball_default_flat_tr.affine_inverse() * prev_foot_animator.ik_foot_transform
+					
+				var prev_ik_new := ball_new_flat_tr * prev_ik_relative
+				start_transform = prev_ik_new
+			else:
+				start_transform = prev_foot_animator.ik_foot_transform
+			
+			var end_transform : Transform3D
+			
+			if next_foot_animator.after_ball_contact:
+				var next_ik_relative := ball_default_flat_tr.affine_inverse() * next_foot_animator.ik_foot_transform
+				var next_ik_new := ball_new_flat_tr * next_ik_relative
+				end_transform = next_ik_new
+			else:
+				end_transform = next_foot_animator.ik_foot_transform
+			
+			var trsf := start_transform.interpolate_with(end_transform, t)
 			
 			var quats := IkInterpstatic.get_ik_interpolation(thigh_pos, trsf.origin, get_skeleton().get_bone_rest(shin_idx).origin.length(), get_skeleton().get_bone_rest(foot_idx).origin.length(), roll)
 			
@@ -558,7 +692,7 @@ func get_t_from_keyframes(time : float, arr : Array[float], prev_idx : int, next
 func _process_modification_with_delta(delta: float) -> void:
 	
 	var new_ball_pos := ball.position
-	var new_ball_tangent := ball.launch_vel_tangent_object.position
+	var new_ball_tangent := ball.launch_vel_tangent_object.global_position - ball.position
 	
 	if new_ball_pos != prev_ball_pos or new_ball_tangent != prev_ball_tangent:
 		bake_ball_movement()
@@ -624,13 +758,11 @@ func interpolate_pelvis_basis(animator_1 : BakedSpineAnimator, animator_2 : Bake
 
 	return super_t
 
-func interpolate_pelvis_loc(animator_1 : BakedSpineAnimator, animator_2 : BakedSpineAnimator, t : float, dur : float) -> Vector3:
+func interpolate_pelvis_loc(animator_1 : BakedSpineAnimator, animator_2 : BakedSpineAnimator, t : float, dur : float, root_1_b : Basis, root_2_b : Basis) -> Vector3:
 	
 	var loc_1 := animator_1.pelvis_transform.origin
 	var loc_2 := animator_2.pelvis_transform.origin
 	
-	var root_1_b := Basis()
-	var root_2_b := Basis()
 	
 	var g_vector_1 := animator_1.pelvis_loc_tangent_vector
 	var g_vector_2 := animator_2.pelvis_loc_tangent_vector
@@ -712,7 +844,10 @@ func get_spine_transforms(time : float, root_transform : Transform3D) -> Array[T
 	var hip_b := interpolate_hip_basis(animator_1, animator_2, t, dur)
 	var chest_b := interpolate_chest_basis(animator_1, animator_2, t, dur)
 	
-	var super_t_location := interpolate_pelvis_loc(animator_1, animator_2, t, dur)
+	var root_b_1 := get_root_transform(arr[idxs[0]]).basis
+	var root_b_2 := get_root_transform(arr[idxs[1]]).basis
+	
+	var super_t_location := interpolate_pelvis_loc(animator_1, animator_2, t, dur, root_b_1, root_b_2)
 	var super_t_transform := Transform3D(super_t, super_t_location)
 		
 	var transforms := get_transforms_from_drivers(root_transform, super_t_transform, hip_b, chest_b)

@@ -35,7 +35,7 @@ func bake():
 		var next_time := ball_key_frames.ball_ks[ball_kf_idx + 1].time
 		var dur := next_time - launch_time
 		if dur > 0:
-			ball_launch_vel = b_kf.out_tangent.position / dur
+			ball_launch_vel = b_kf.out_tangent.position / dur * 3.0
 		else:
 			ball_launch_vel = Vector3.ZERO
 	

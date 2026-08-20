@@ -2,6 +2,9 @@ class_name BakedFootAnimator extends BakedAnimator
 
 @export var is_on_ground : bool
 
+@export var supports_ball_contact := false
+@export var after_ball_contact := false
+
 enum InterpMode{
 	CONSTANT,
 	FK_HERMITE,

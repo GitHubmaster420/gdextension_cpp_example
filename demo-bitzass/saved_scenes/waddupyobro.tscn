@@ -3304,10 +3304,11 @@ albedo_color = Color(0, 1, 0, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_2v14p"]
 radius = 0.05
 
-[node name="AnimationEditor" type="Node3D" unique_id=1079719040 node_paths=PackedStringArray("save_button", "file_name_editor", "right_foot_holder", "left_foot_holder", "spine_holder", "head_holder", "root_holder", "right_hand_holder", "left_hand_holder")]
+[node name="AnimationEditor" type="Node3D" unique_id=1079719040 node_paths=PackedStringArray("save_button", "file_name_editor", "ball_key_frames", "right_foot_holder", "left_foot_holder", "spine_holder", "head_holder", "root_holder", "right_hand_holder", "left_hand_holder")]
 script = ExtResource("1_sdvty")
 save_button = NodePath("SaveButton")
 file_name_editor = NodePath("SaveButton/FileNameEditor")
+ball_key_frames = NodePath("BallKeyFrames")
 right_foot_holder = NodePath("FootballCityCharacter/metarig/Skeleton3D/RightFootInterpolator/AnimTackHolder")
 left_foot_holder = NodePath("FootballCityCharacter/metarig/Skeleton3D/LeftFootInterpolator/AnimTackHolder")
 spine_holder = NodePath("FootballCityCharacter/metarig/Skeleton3D/SpineBoneModifier/AnimTackHolder")
