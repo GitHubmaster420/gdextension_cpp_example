@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bcasteuksn5sx"]
 
 [ext_resource type="Script" uid="uid://ca3reom48s6a3" path="res://animation_baker.gd" id="1_4dt3k"]
-[ext_resource type="PackedScene" uid="uid://bangl8btjsjyo" path="res://saved_scenes/waddupyobro.tscn" id="2_e7rtv"]
+[ext_resource type="PackedScene" uid="uid://dcf3ypd8qii5l" path="res://saved_scenes/cruyff_turb.tscn" id="2_e7rtv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e7rtv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -17,7 +17,7 @@ tonemap_mode = 2
 
 [node name="AnimationBaker" type="Node3D" unique_id=347908020 node_paths=PackedStringArray("world_environment")]
 script = ExtResource("1_4dt3k")
-anim_name = "dribble_forward"
+anim_name = "cruyff_turn"
 scene_to_bake = ExtResource("2_e7rtv")
 world_environment = NodePath("WorldEnvironment")
 

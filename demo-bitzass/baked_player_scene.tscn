@@ -1,7 +1,7 @@
 [gd_scene format=4 uid="uid://dyl8c157xk52l"]
 
 [ext_resource type="Script" uid="uid://cs2hfiko4o62i" path="res://export/scripts/baked_animation_player.gd" id="1_uuqck"]
-[ext_resource type="Resource" uid="uid://xvxi1tqcwp0i" path="res://export/baked_animations/dribble_in.res" id="2_wrtlj"]
+[ext_resource type="Resource" uid="uid://tny8jan767ik" path="res://export/baked_animations/cruyff_turn.res" id="2_wrtlj"]
 [ext_resource type="Texture2D" uid="uid://dcjxj5q5mnrm4" path="res://img/FootballColor.png" id="3_jub30"]
 [ext_resource type="Texture2D" uid="uid://ckdequr40m8mf" path="res://img/FootballNormals.png" id="4_wrtlj"]
 [ext_resource type="Script" uid="uid://re8hh6ya3t35" path="res://anim_simulator_ball.gd" id="5_wrtlj"]
@@ -2142,7 +2142,7 @@ process_thread_group = 0
 physics_interpolation_mode = 0
 auto_translate_mode = 0
 editor_description = ""
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10986912, 0, 0.020692468)
+transform = Transform3D(0.9955816, 0, -0.0938998, 0, 1, 0, 0.0938998, 0, 0.9955816, 0.10986912, 0, 0.020692468)
 rotation_edit_mode = 0
 rotation_order = 2
 top_level = false
@@ -2156,7 +2156,9 @@ ball_hit_keyframe_time = 0.3
 ball_contact_point = "foot"
 ball_mesh = NodePath("../../../../BallMesh")
 ball = NodePath("../../../../AnimSimulatorBall")
-time = 0.48339200000000065
+ball_is_on_ground = false
+playing = true
+time = 0.36063033333333344
 baked_animation = ExtResource("2_wrtlj")
 right_thigh_idx = 170
 right_shin_idx = 171
@@ -2196,7 +2198,7 @@ neck_start_idx = 5
 neck_start_name = "spine.004"
 head_start_idx = 7
 head_start_name = "spine.006"
-ball_positions = Array[Vector3]([Vector3(0, 0.09515154, 0.44919842), Vector3(0, 0.09515154, 0.44919842), Vector3(0, 0.09515154, 0.44919842), Vector3(0, 0.09515154, 0.44919842), Vector3(0, 0.09515154, 0.44919842), Vector3(0, 0.09515154, 0.44919842), Vector3(0, 0.09515154, 0.44919842), Vector3(0, 0.09515154, 0.44919842), Vector3(0, 0.09515154, 0.44919842), Vector3(0, 0.09515154, 0.44919842), Vector3(0.06585017, 0.1, 0.44919842), Vector3(0.13005409, 0.1, 0.44919842), Vector3(0.19265291, 0.1, 0.44919842), Vector3(0.25368676, 0.1, 0.44919842), Vector3(0.31319475, 0.1, 0.44919842), Vector3(0.37121505, 0.1, 0.44919842), Vector3(0.42778483, 0.1, 0.44919842), Vector3(0.48294038, 0.1, 0.44919842), Vector3(0.53671706, 0.1, 0.44919842), Vector3(0.5891493, 0.1, 0.44919842), Vector3(0.64027077, 0.1, 0.44919842), Vector3(0.6901142, 0.1, 0.44919842)])
+ball_positions = Array[Vector3]([Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, -0.022504777), Vector3(-0.37834823, 0.37194055, -0.18500477), Vector3(-0.37834823, 0.34045658, -0.34344226), Vector3(-0.37834823, 0.29381844, -0.49791884), Vector3(-0.37834823, 0.23240502, -0.6485335), Vector3(-0.37834823, 0.1565857, -0.79538286), Vector3(-0.37834823, 0.1, -0.93856096), Vector3(-0.37834823, 0.19320376, -1.0781596), Vector3(-0.37834823, 0.26813617, -1.2142682), Vector3(-0.37834823, 0.32525402, -1.3469741), Vector3(-0.37834823, 0.3650027, -1.4763625), Vector3(-0.37834823, 0.3878164, -1.602516), Vector3(-0.37834823, 0.39411852, -1.7255158)])
 metadata/_custom_type_script = "uid://cs2hfiko4o62i"
 
 [node name="Brow" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=1028342118]
@@ -2252,14 +2254,14 @@ skin = SubResource("Skin_05hv3")
 skeleton = NodePath("..")
 
 [node name="AnimSimulatorBall" type="Marker3D" parent="." unique_id=1988009684 node_paths=PackedStringArray("launch_vel_tangent_object")]
-transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 0.99999964, 0, 0.09515154, 0.44919842)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -0.37834823, 0.38788182, 0.14416188)
 script = ExtResource("5_wrtlj")
 launch_vel_tangent_object = NodePath("LaunchVelTangentObject")
 
 [node name="LaunchVelTangentObject" type="Marker3D" parent="AnimSimulatorBall" unique_id=2085884308]
-transform = Transform3D(1, 1.4551915e-10, 0, 4.1836756e-11, 1, 0, -2.3283064e-10, 0, 1, 1.9755049, -9.395275e-11, 5.228674e-10)
+transform = Transform3D(1, 1.4551915e-10, 0, 4.1836756e-11, 1, 0, -2.3283064e-10, 0, 1, 0, 0, -5)
 
 [node name="BallMesh" type="MeshInstance3D" parent="." unique_id=2004322915]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.31319475, 0.1, 0.44919842)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.37834823, 0.37194055, -0.18500477)
 mesh = SubResource("SphereMesh_wrtlj")
 surface_material_override/0 = SubResource("StandardMaterial3D_4l8nc")

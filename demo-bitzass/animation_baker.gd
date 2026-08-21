@@ -68,6 +68,8 @@ func bake():
 			
 			var non_baked_animator := k.animator as FootAnimator
 			
+			new_animator.hip_pos = non_baked_animator.foot_ik_pose_roll.position
+			
 			new_animator.thigh_ease_curve = non_baked_animator.thigh_rot_curve.duplicate(true)
 			new_animator.shin_ease_curve = non_baked_animator.shin_rot_curve.duplicate(true)
 			new_animator.foot_ease_curve = non_baked_animator.foot_rot_curve.duplicate(true)
@@ -150,6 +152,8 @@ func bake():
 		
 		var non_baked_animator := k.animator as SpineAnimator
 		
+		spine_animator.root_transform = non_baked_animator.root.transform
+		
 		spine_animator.pelvis_transform = non_baked_animator.pelvis_root.transform
 		
 		spine_animator.pelvis_loc_tangent_vector = non_baked_animator.pelvis_g_tangent_vector
@@ -159,19 +163,19 @@ func bake():
 		
 		spine_animator.pelvis_rot_tangent_vector = non_baked_animator.pelvis_r_tangent_vector
 		spine_animator.pelvis_rot_tangent_magnitude = non_baked_animator.pelvis_r_vel
-		spine_animator.pelvis_rot_curve = non_baked_animator.pelvis_rot_ease_curve
+		spine_animator.pelvis_rot_curve = non_baked_animator.pelvis_rot_ease_curve.duplicate(true)
 		
 		spine_animator.hip_quat = non_baked_animator.hip_pose.basis.get_rotation_quaternion()
 		
 		spine_animator.hip_rot_tangent_vector = non_baked_animator.hips_r_tangent_vector
 		spine_animator.hip_rot_tangent_magnitude = non_baked_animator.hip_r_vel
-		spine_animator.hip_rot_curve = non_baked_animator.hip_rot_ease_curve
+		spine_animator.hip_rot_curve = non_baked_animator.hip_rot_ease_curve.duplicate(true)
 		
 		spine_animator.chest_quat = non_baked_animator.chest_pose.basis.get_rotation_quaternion()
 		
 		spine_animator.chest_rot_tangent_vector = non_baked_animator.chest_r_tangent_vector
 		spine_animator.chest_rot_tangent_magnitude = non_baked_animator.chest_r_vel
-		spine_animator.chest_rot_curve = non_baked_animator.chest_rot_ease_curve
+		spine_animator.chest_rot_curve = non_baked_animator.chest_rot_ease_curve.duplicate(true)
 		
 		baked_animation.spine_track_holder.baked_animators.append(spine_animator)
 		baked_animation.spine_track_holder.keyframe_times.append(k.time)
