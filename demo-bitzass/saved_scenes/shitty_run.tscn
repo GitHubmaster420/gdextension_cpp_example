@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://bl0a5blvvrul0" path="res://root_animator.tscn" id="17_u64is"]
 [ext_resource type="Script" uid="uid://cir1cyrmxq5x" path="res://key_fame.gd" id="18_ogl0x"]
 [ext_resource type="Script" uid="uid://tnoscwk2jhx5" path="res://root_animator.gd" id="19_xmoye"]
-[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://resources/my_ease_in_out.gd" id="20_iqnab"]
+[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://export/scripts/helpers/my_ease_in_out.gd" id="20_iqnab"]
 [ext_resource type="Script" uid="uid://8pmv47se1oo1" path="res://velocity_tangent.gd" id="21_tm7tl"]
 [ext_resource type="Script" uid="uid://dotx4kxu4bpob" path="res://stretcher.gd" id="22_y5qin"]
 [ext_resource type="Script" uid="uid://burp1regbq6js" path="res://cubic_curve_drawer.gd" id="23_frlra"]
@@ -3984,10 +3984,11 @@ albedo_color = Color(0, 1, 0, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_0gr07"]
 radius = 0.05
 
-[node name="AnimationEditor" type="Node3D" unique_id=1079719040 node_paths=PackedStringArray("save_button", "file_name_editor", "right_foot_holder", "left_foot_holder", "spine_holder", "head_holder", "root_holder", "right_hand_holder", "left_hand_holder")]
+[node name="AnimationEditor" type="Node3D" unique_id=1079719040 node_paths=PackedStringArray("save_button", "file_name_editor", "ball_key_frames", "right_foot_holder", "left_foot_holder", "spine_holder", "head_holder", "root_holder", "right_hand_holder", "left_hand_holder")]
 script = ExtResource("1_dnwdq")
 save_button = NodePath("SaveButton")
 file_name_editor = NodePath("SaveButton/FileNameEditor")
+ball_key_frames = NodePath("BallKeyFrames")
 right_foot_holder = NodePath("FootballCityCharacter/metarig/Skeleton3D/RightFootInterpolator/AnimTackHolder")
 left_foot_holder = NodePath("FootballCityCharacter/metarig/Skeleton3D/LeftFootInterpolator/AnimTackHolder")
 spine_holder = NodePath("FootballCityCharacter/metarig/Skeleton3D/SpineBoneModifier/AnimTackHolder")

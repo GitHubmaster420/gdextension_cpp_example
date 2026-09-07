@@ -14,7 +14,7 @@
 [ext_resource type="Script" uid="uid://xp6xr1wt03i1" path="res://ik_hermite_selector.gd" id="12_fielv"]
 [ext_resource type="Script" uid="uid://373h65y0mns7" path="res://fk_hermite_selector.gd" id="14_fielv"]
 [ext_resource type="Script" uid="uid://burp1regbq6js" path="res://cubic_curve_drawer.gd" id="15_uglq4"]
-[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://resources/my_ease_in_out.gd" id="16_wwjn6"]
+[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://export/scripts/helpers/my_ease_in_out.gd" id="16_wwjn6"]
 
 [sub_resource type="Resource" id="Resource_uglq4"]
 resource_local_to_scene = true

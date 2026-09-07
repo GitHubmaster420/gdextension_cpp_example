@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://dotx4kxu4bpob" path="res://stretcher.gd" id="3_0enev"]
 [ext_resource type="Script" uid="uid://8pmv47se1oo1" path="res://velocity_tangent.gd" id="4_t8bxo"]
 [ext_resource type="Script" uid="uid://burp1regbq6js" path="res://cubic_curve_drawer.gd" id="6_nfi45"]
-[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://resources/my_ease_in_out.gd" id="7_a86np"]
+[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://export/scripts/helpers/my_ease_in_out.gd" id="7_a86np"]
 
 [sub_resource type="Resource" id="Resource_nfi45"]
 script = ExtResource("7_a86np")

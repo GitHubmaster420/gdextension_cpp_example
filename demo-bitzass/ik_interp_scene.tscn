@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bdycqd26e0wa5"]
 
-[ext_resource type="Script" uid="uid://b53587p7i5d8h" path="res://ik_interp_static.gd" id="1_b550i"]
+[ext_resource type="Script" uid="uid://b53587p7i5d8h" path="res://export/scripts/helpers/ik_interp_static.gd" id="1_b550i"]
 [ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="3_jni65"]
 [ext_resource type="PackedScene" uid="uid://cgwnew2a2dmj" path="res://gizmo.tscn" id="4_svtro"]
 

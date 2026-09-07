@@ -16,8 +16,16 @@ func set_expression_to_flat_ball():
 	expression_strings.append("{'org_t' : info_dic.ball_default_flat}")
 	expression_strings.append("{'new_t' : info_dic.ball_new_flat}")
 
-var org_t : Transform3D
-var new_t : Transform3D
+
+@export_tool_button("set expression to chase ball") var cb := set_expression_to_final_ball
+
+func set_expression_to_final_ball():
+	expression_strings = []
+	expression_strings.append("{'org_t' : Transform3D(info_dic['org_transforms']['final_ball_direction_basis'], info_dic['org_transforms']['final_ball_pos'])}")
+	expression_strings.append("{'new_t' : Transform3D(info_dic['final_ball_direction_basis'], info_dic['final_ball_pos'])}")
+
+@export var org_t : Transform3D
+@export var new_t : Transform3D
 
 func modify_vector(org_v : Vector3) -> Vector3:
 	var org_v_rel := org_t.affine_inverse() * org_v

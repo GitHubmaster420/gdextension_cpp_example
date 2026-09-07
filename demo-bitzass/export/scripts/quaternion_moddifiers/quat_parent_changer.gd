@@ -18,6 +18,13 @@ func set_expression_to_flat_ball():
 	expression_strings.append("{'original_quat' : info_dic.ball_default_flat.basis.get_rotation_quaternion()}")
 	expression_strings.append("{'new_quat' : info_dic.ball_new_flat.basis.get_rotation_quaternion()}")
 
+@export_tool_button("set expression to chase ball") var cb := set_expression_to_final_ball
+
+func set_expression_to_final_ball():
+	expression_strings = []
+	expression_strings.append("{'original_quat' : info_dic['org_transforms']['final_ball_direction_basis'].get_rotation_quaternion()}")
+	expression_strings.append("{'new_quat' : info_dic['final_ball_direction_basis'].get_rotation_quaternion()}")
+
 func modify_quaternion(q_org : Quaternion) -> Quaternion:
 	
 	var q_rel := original_quat.inverse() * q_org

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bl0a5blvvrul0"]
 
 [ext_resource type="Script" uid="uid://tnoscwk2jhx5" path="res://root_animator.gd" id="1_aihef"]
-[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://resources/my_ease_in_out.gd" id="2_13nmh"]
+[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://export/scripts/helpers/my_ease_in_out.gd" id="2_13nmh"]
 [ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="2_o81b5"]
 [ext_resource type="Script" uid="uid://8pmv47se1oo1" path="res://velocity_tangent.gd" id="3_gyryg"]
 [ext_resource type="Script" uid="uid://dotx4kxu4bpob" path="res://stretcher.gd" id="4_13nmh"]

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cqyg1phak56o2"]
 
 [ext_resource type="Script" uid="uid://burp1regbq6js" path="res://cubic_curve_drawer.gd" id="1_ior24"]
-[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://resources/my_ease_in_out.gd" id="2_ffhgg"]
+[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://export/scripts/helpers/my_ease_in_out.gd" id="2_ffhgg"]
 
 [sub_resource type="Resource" id="Resource_ffhgg"]
 script = ExtResource("2_ffhgg")

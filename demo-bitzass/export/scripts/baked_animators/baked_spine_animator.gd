@@ -46,6 +46,7 @@ class_name BakedSpineAnimator
 @export var pelvis_loc_tangent_vector_modifiers : Array[VectorModifier]
 @export var pelvis_loc_tangent_magnitude_modifiers : Array[FloatModifier]
 
+@export var pelvis_corrector_modifier : PelvisLocCorrector
 
 var pelvis_override_pos : Vector3
 var pelvis_override_quat : Quaternion
@@ -174,3 +175,7 @@ func modify_overrides(info_dic : Dictionary) -> void:
 			pelvis_override_loc_tangent_magnitude,
 			info_dic
 		)
+
+func modify_corrector(old_ts : Dictionary, new_ts : Dictionary):
+	if pelvis_corrector_modifier:
+		pelvis_corrector_modifier.modify_variables_after_overrides(old_ts, new_ts)

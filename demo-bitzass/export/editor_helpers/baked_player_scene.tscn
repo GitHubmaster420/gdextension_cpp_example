@@ -1,10 +1,10 @@
 [gd_scene format=4 uid="uid://dyl8c157xk52l"]
 
-[ext_resource type="Script" uid="uid://cs2hfiko4o62i" path="res://export/scripts/baked_animation_player.gd" id="1_uuqck"]
-[ext_resource type="Resource" uid="uid://tny8jan767ik" path="res://export/baked_animations/cruyff_turn.res" id="2_wrtlj"]
-[ext_resource type="Texture2D" uid="uid://dcjxj5q5mnrm4" path="res://img/FootballColor.png" id="3_jub30"]
-[ext_resource type="Texture2D" uid="uid://ckdequr40m8mf" path="res://img/FootballNormals.png" id="4_wrtlj"]
-[ext_resource type="Script" uid="uid://re8hh6ya3t35" path="res://anim_simulator_ball.gd" id="5_wrtlj"]
+[ext_resource type="Script" uid="uid://cs2hfiko4o62i" path="res://export/scripts/animation_modifiers/baked_animation_player.gd" id="1_2p1jk"]
+[ext_resource type="Resource" uid="uid://dfkcltq1luhc5" path="res://export/baked_animations/run.res" id="2_1ogp8"]
+[ext_resource type="Script" uid="uid://re8hh6ya3t35" path="res://export/editor_helpers/anim_simulator_ball.gd" id="3_ie5kj"]
+[ext_resource type="Texture2D" uid="uid://dcjxj5q5mnrm4" path="res://img/FootballColor.png" id="4_pq8ie"]
+[ext_resource type="Texture2D" uid="uid://ckdequr40m8mf" path="res://img/FootballNormals.png" id="5_8uawu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_mnutf"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -889,9 +889,9 @@ radius = 0.1
 height = 0.2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4l8nc"]
-albedo_texture = ExtResource("3_jub30")
+albedo_texture = ExtResource("4_pq8ie")
 normal_enabled = true
-normal_texture = ExtResource("4_wrtlj")
+normal_texture = ExtResource("5_8uawu")
 
 [node name="BakedPlayerScene" type="Node3D" unique_id=2014863574]
 
@@ -2142,7 +2142,7 @@ process_thread_group = 0
 physics_interpolation_mode = 0
 auto_translate_mode = 0
 editor_description = ""
-transform = Transform3D(0.9955816, 0, -0.0938998, 0, 1, 0, 0.0938998, 0, 0.9955816, 0.10986912, 0, 0.020692468)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 rotation_edit_mode = 0
 rotation_order = 2
 top_level = false
@@ -2150,16 +2150,16 @@ visible = true
 visibility_parent = NodePath("")
 active = true
 influence = 1.0
-script = ExtResource("1_uuqck")
-ball_hit_keyframe_idx = 1
-ball_hit_keyframe_time = 0.3
+script = ExtResource("1_2p1jk")
+ball_hit_keyframe_idx = 2
+ball_hit_keyframe_time = 0.5333333333333333
 ball_contact_point = "foot"
 ball_mesh = NodePath("../../../../BallMesh")
 ball = NodePath("../../../../AnimSimulatorBall")
 ball_is_on_ground = false
-playing = true
-time = 0.36063033333333344
-baked_animation = ExtResource("2_wrtlj")
+max_time = 0.8
+momentum = 2.0
+baked_animation = ExtResource("2_1ogp8")
 right_thigh_idx = 170
 right_shin_idx = 171
 right_foot_idx = 172
@@ -2198,7 +2198,7 @@ neck_start_idx = 5
 neck_start_name = "spine.004"
 head_start_idx = 7
 head_start_name = "spine.006"
-ball_positions = Array[Vector3]([Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, 0.14416188), Vector3(-0.37834823, 0.38788182, -0.022504777), Vector3(-0.37834823, 0.37194055, -0.18500477), Vector3(-0.37834823, 0.34045658, -0.34344226), Vector3(-0.37834823, 0.29381844, -0.49791884), Vector3(-0.37834823, 0.23240502, -0.6485335), Vector3(-0.37834823, 0.1565857, -0.79538286), Vector3(-0.37834823, 0.1, -0.93856096), Vector3(-0.37834823, 0.19320376, -1.0781596), Vector3(-0.37834823, 0.26813617, -1.2142682), Vector3(-0.37834823, 0.32525402, -1.3469741), Vector3(-0.37834823, 0.3650027, -1.4763625), Vector3(-0.37834823, 0.3878164, -1.602516), Vector3(-0.37834823, 0.39411852, -1.7255158)])
+ball_positions = Array[Vector3]([Vector3(0, 2.2395856, 2.6600583), Vector3(0, 2.2236445, 2.6925583), Vector3(0, 2.1921606, 2.7242458), Vector3(0, 2.1455226, 2.755141), Vector3(0, 2.084109, 2.785264), Vector3(0, 2.0082898, 2.8146338), Vector3(0, 1.9184247, 2.8432693), Vector3(0, 1.814865, 2.871189), Vector3(0, 1.697953, 2.8984108), Vector3(0, 1.5680225, 2.924952), Vector3(0, 1.4253991, 2.9508297), Vector3(0, 1.2703999, 2.9760604), Vector3(0, 1.1033345, 3.0006604), Vector3(0, 0.9245045, 3.0246453), Vector3(0, 0.734204, 3.0480306), Vector3(0, 0.53271973, 3.0708313), Vector3(0, 0.32033134, 3.093062), Vector3(0, 0.1, 3.1147368), Vector3(0, 0.31004715, 3.1358697), Vector3(0, 0.49890187, 3.1564744), Vector3(0, 0.667094, 3.176564), Vector3(0, 0.81514007, 3.1961513), Vector3(0, 0.94354373, 3.2152488), Vector3(0, 1.052796, 3.233869), Vector3(0, 1.1433758, 3.2520237)])
 metadata/_custom_type_script = "uid://cs2hfiko4o62i"
 
 [node name="Brow" type="MeshInstance3D" parent="FootballCityCharacter4/metarig/Skeleton3D" unique_id=1028342118]
@@ -2254,14 +2254,17 @@ skin = SubResource("Skin_05hv3")
 skeleton = NodePath("..")
 
 [node name="AnimSimulatorBall" type="Marker3D" parent="." unique_id=1988009684 node_paths=PackedStringArray("launch_vel_tangent_object")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.99999994, -0.37834823, 0.38788182, 0.14416188)
-script = ExtResource("5_wrtlj")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2395856, 2.626725)
+script = ExtResource("3_ie5kj")
 launch_vel_tangent_object = NodePath("LaunchVelTangentObject")
 
 [node name="LaunchVelTangentObject" type="Marker3D" parent="AnimSimulatorBall" unique_id=2085884308]
-transform = Transform3D(1, 1.4551915e-10, 0, 4.1836756e-11, 1, 0, -2.3283064e-10, 0, 1, 0, 0, -5)
+transform = Transform3D(1, 1.4551915e-10, 0, 4.1836756e-11, 1, 0, 0, 0, 1, 0, 0, 1)
 
 [node name="BallMesh" type="MeshInstance3D" parent="." unique_id=2004322915]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.37834823, 0.37194055, -0.18500477)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2395856, 2.6600583)
 mesh = SubResource("SphereMesh_wrtlj")
 surface_material_override/0 = SubResource("StandardMaterial3D_4l8nc")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1310616290]
+transform = Transform3D(1, 0, 0, 0, 0.9978153, 0.06606492, 0, -0.06606492, 0.9978153, 0.13880396, 1.4001694, 1.7528417)

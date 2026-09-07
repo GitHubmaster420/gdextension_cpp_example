@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://bl0a5blvvrul0" path="res://root_animator.tscn" id="17_xv437"]
 [ext_resource type="Script" uid="uid://cir1cyrmxq5x" path="res://key_fame.gd" id="18_fbt1v"]
 [ext_resource type="Script" uid="uid://tnoscwk2jhx5" path="res://root_animator.gd" id="19_4wuwd"]
-[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://resources/my_ease_in_out.gd" id="20_qhdhf"]
+[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://export/scripts/helpers/my_ease_in_out.gd" id="20_qhdhf"]
 [ext_resource type="Script" uid="uid://8pmv47se1oo1" path="res://velocity_tangent.gd" id="21_4a666"]
 [ext_resource type="Script" uid="uid://dotx4kxu4bpob" path="res://stretcher.gd" id="22_ywxs3"]
 [ext_resource type="Script" uid="uid://burp1regbq6js" path="res://cubic_curve_drawer.gd" id="23_odtuq"]

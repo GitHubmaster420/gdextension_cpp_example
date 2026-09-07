@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://tdntr2t67q7i"]
 
 [ext_resource type="Script" uid="uid://k6q4pmil5kdb" path="res://r_animator.gd" id="1_3iju0"]
-[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://resources/my_ease_in_out.gd" id="2_0by38"]
+[ext_resource type="Script" uid="uid://bsa4fukt7asth" path="res://export/scripts/helpers/my_ease_in_out.gd" id="2_0by38"]
 [ext_resource type="Script" uid="uid://clx114bwoqnoe" path="res://pelvis_root.gd" id="2_4by0n"]
 [ext_resource type="Script" uid="uid://p3tqyfbo7s3x" path="res://gizmo_controllable.gd" id="2_7a6cg"]
 [ext_resource type="PackedScene" uid="uid://cgwnew2a2dmj" path="res://gizmo.tscn" id="5_0by38"]
@@ -222,8 +222,7 @@ mesh = SubResource("SphereMesh_0by38")
 buffer = PackedFloat32Array(1, 5.7049397e-07, 1.4965647e-06, -1.7791379e-07, -1.7882803e-07, 0.9683386, -0.24964064, 0.9283672, -1.5915994e-06, 0.24964061, 0.9683387, -0.055200264, 1, 1.7652195e-07, 9.06205e-07, -4.6013447e-08, -9.8926435e-08, 0.9963877, -0.08492324, 1.0757672, -9.17922e-07, 0.08492321, 0.9963877, -0.01720008, 1, 1.19172334e-07, -1.9521546e-07, 6.2180765e-15, -1.14368106e-07, 0.9997016, 0.024427708, 1.2728796, 1.980683e-07, -0.024427708, 0.9997016, -0.00039996207, 1, 2.3834458e-07, -8.672682e-07, 2.9208994e-08, -2.1425085e-07, 0.999617, 0.027675904, 1.4979653, 8.735323e-07, -0.027675902, 0.99961704, -0.0058999336)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_45gas"]
-radius = 0.0
-height = 0.0
+radius = 0.05
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6848o"]
 no_depth_test = true

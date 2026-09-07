@@ -2,7 +2,14 @@
 extends SkeletonModifier3D
 class_name BakedAnimationPlayer
 
+const THIGH_LOCAL_POS := Vector3(-0.098, 0.071, 0.026)
+
 var info_dic : Dictionary
+
+@export var spine_leave_ground_override_animator : BakedSpineAnimator
+@export var spine_land_override_animator : BakedSpineAnimator
+
+const GRAVITY := 1.5 * 9.81
 
 enum BallHitPart{
 	RIGHT_FOOT,
@@ -37,6 +44,8 @@ func create_ball_contact_keyframe():
 @export var ball_hit_keyframe_idx : int:
 	set(v):
 		ball_hit_keyframe_idx = v
+		if not is_node_ready():
+			return
 		var h : BakedTrackHolder
 		match ball_hit_part:
 			BallHitPart.RIGHT_FOOT:
@@ -64,6 +73,8 @@ var prev_ball_tangent : Vector3
 @export var ball_is_on_ground := true:
 	set(v):
 		ball_is_on_ground = v
+		if not is_node_ready():
+			return
 		bake_ball_movement()
 
 @export_tool_button("snap ball") var sp := snap_ball
@@ -73,6 +84,8 @@ var prev_ball_tangent : Vector3
 @export var time := 0.0
 
 @export_range(0.0, 2.0, 0.01) var max_time := 0.7
+
+@export_range(0.0, 3.0, 0.01) var momentum := 1.0
 
 @export var baked_animation : BakedAnimation
 
@@ -184,8 +197,6 @@ var prev_ball_tangent : Vector3
 			return
 		left_hand_idx = get_skeleton().find_bone(v)
 
-
-
 @export var spine_start_idx : int
 @export var spine_start_name : String:
 	set(v):
@@ -263,8 +274,14 @@ func _validate_property(property: Dictionary) -> void:
 
 func snap_ball():
 	ball.global_position = baked_animation.ball_pos
-	ball.global_rotation = Vector3.ZERO
-	ball.launch_vel_tangent_object.position = baked_animation.ball_launch_vel
+	ball.global_basis.z = baked_animation.ball_launch_vel.normalized()
+	var tmp := Vector3.UP
+	ball.global_basis.x = tmp.cross(ball.global_basis.z).normalized()
+	ball.global_basis.y = ball.global_basis.z.cross(ball.global_basis.x).normalized()
+	ball.launch_vel_tangent_object.position = Vector3(0, 0, baked_animation.ball_launch_vel.length())
+	bake_ball_movement()
+	baked_animation.org_transforms_dic["final_ball_pos"] = ball_positions[-1]
+	baked_animation.org_transforms_dic["final_ball_direction_basis"] = ball.global_basis
 
 @export var ball_positions : Array[Vector3]
 func bake_ball_movement():
@@ -360,7 +377,7 @@ func interpolate_foot(is_right_foot : bool, time : float):
 			var prev_foot_vel_mag : float = prev_foot_animator.foot_tangent_magnitude
 			var next_foot_vel_mag : float = next_foot_animator.foot_tangent_magnitude
 			
-			if prev_foot_animator.hits_ball:
+			if prev_foot_animator.hits_ball or prev_foot_animator.is_on_ground: #TODO: generic ik
 				var pelvis_t := interpolate_pelvis_in_time(arr[idxs[0]])
 				var hip_pos := get_hip_pos(pelvis_t, is_right_foot, arr[idxs[0]])
 				
@@ -408,14 +425,14 @@ func interpolate_foot(is_right_foot : bool, time : float):
 					next_foot_quat = next_quats[1].inverse() * next_quats[0].inverse() * next_ik_new.basis.get_rotation_quaternion()
 					
 				else:
-					next_thigh_quat = next_foot_animator.thigh_quat
-					next_shin_quat = next_foot_animator.shin_quat
-					next_foot_quat = next_foot_animator.foot_quat
+					next_thigh_quat = next_foot_animator.thigh_quat_override
+					next_shin_quat = next_foot_animator.shin_quat_override
+					next_foot_quat = next_foot_animator.foot_quat_override
 					
 			else:
-				prev_thigh_quat = prev_foot_animator.thigh_quat
-				prev_shin_quat = prev_foot_animator.shin_quat
-				prev_foot_quat = prev_foot_animator.foot_quat
+				prev_thigh_quat = prev_foot_animator.thigh_quat_override
+				prev_shin_quat = prev_foot_animator.shin_quat_override
+				prev_foot_quat = prev_foot_animator.foot_quat_override
 
 			if next_foot_animator.hits_ball:
 				var pelvis_t := interpolate_pelvis_in_time(arr[idxs[1]])
@@ -531,49 +548,51 @@ func interpolate_hands(is_right_hand : bool, time : float):
 	prev_hand_animator = nother[idxs[0]]
 	next_hand_animator = nother[idxs[1]]
 	
-	var prev_shoulder_rot := prev_hand_animator.shoulder_quat
-	var prev_shoulder_tangent := prev_hand_animator.shoulder_tangent_vector
-	var prev_shoulder_mag := prev_hand_animator.shoulder_tangent_magnitude
+	var prev_shoulder_rot := prev_hand_animator.shoulder_quat_override
+	var prev_shoulder_tangent := prev_hand_animator.shoulder_tangent_vector_override
+	var prev_shoulder_mag := prev_hand_animator.shoulder_tangent_magnitude_override
 	
-	var next_shoulder_rot := next_hand_animator.shoulder_quat
-	var next_shoulder_tangent := next_hand_animator.shoulder_tangent_vector
-	var next_shoulder_mag := next_hand_animator.shoulder_tangent_magnitude
+	var next_shoulder_rot := next_hand_animator.shoulder_quat_override
+	var next_shoulder_tangent := next_hand_animator.shoulder_tangent_vector_override
+	var next_shoulder_mag := next_hand_animator.shoulder_tangent_magnitude_override
 	
 	var shoulder_ease_curve := next_hand_animator.shoulder_ease_curve
 	
 	get_skeleton().set_bone_pose_rotation(shoulder_idx, QuaternionExtender.my_quat_interpolate(prev_shoulder_rot, prev_shoulder_tangent, prev_shoulder_mag, next_shoulder_rot, next_shoulder_tangent, next_shoulder_mag, t, dur, shoulder_ease_curve.baked_points))
 	
-	var prev_up_arm_rot := prev_hand_animator.up_arm_quat
-	var prev_up_arm_tangent := prev_hand_animator.up_arm_tangent_vector
-	var prev_up_arm_mag := prev_hand_animator.up_arm_tangent_magnitude
+	var prev_up_arm_rot := prev_hand_animator.up_arm_quat_override
+	var prev_up_arm_tangent := prev_hand_animator.up_arm_tangent_vector_override
+	var prev_up_arm_mag := prev_hand_animator.up_arm_tangent_magnitude_override
 	
-	var next_up_arm_rot := next_hand_animator.up_arm_quat
-	var next_up_arm_tangent := next_hand_animator.up_arm_tangent_vector
-	var next_up_arm_mag := next_hand_animator.up_arm_tangent_magnitude
+	var next_up_arm_rot := next_hand_animator.up_arm_quat_override
+	var next_up_arm_tangent := next_hand_animator.up_arm_tangent_vector_override
+	var next_up_arm_mag := next_hand_animator.up_arm_tangent_magnitude_override
 	
 	var up_arm_ease_curve := next_hand_animator.up_arm_ease_curve
 	
 	get_skeleton().set_bone_pose_rotation(up_arm_idx, QuaternionExtender.my_quat_interpolate(prev_up_arm_rot, prev_up_arm_tangent, prev_up_arm_mag, next_up_arm_rot, next_up_arm_tangent, next_up_arm_mag, t, dur, up_arm_ease_curve.baked_points))
 	
-	var prev_fore_arm_rot := prev_hand_animator.fore_arm_quat
-	var prev_fore_arm_tangent := prev_hand_animator.fore_arm_tangent_vector
-	var prev_fore_arm_mag := prev_hand_animator.fore_arm_tangent_magnitude
+	var prev_fore_arm_rot := prev_hand_animator.fore_arm_quat_override
+	var prev_fore_arm_tangent := prev_hand_animator.fore_arm_tangent_vector_override
+	var prev_fore_arm_mag := prev_hand_animator.fore_arm_tangent_magnitude_override
 	
-	var next_fore_arm_rot := next_hand_animator.fore_arm_quat
-	var next_fore_arm_tangent := next_hand_animator.fore_arm_tangent_vector
-	var next_fore_arm_mag := next_hand_animator.fore_arm_tangent_magnitude
+	var next_fore_arm_rot := next_hand_animator.fore_arm_quat_override
+	
+	
+	var next_fore_arm_tangent := next_hand_animator.fore_arm_tangent_vector_override
+	var next_fore_arm_mag := next_hand_animator.fore_arm_tangent_magnitude_override
 	
 	var fore_arm_ease_curve := next_hand_animator.fore_arm_ease_curve
 	
 	get_skeleton().set_bone_pose_rotation(fore_arm_idx, QuaternionExtender.my_quat_interpolate(prev_fore_arm_rot, prev_fore_arm_tangent, prev_fore_arm_mag, next_fore_arm_rot, next_fore_arm_tangent, next_fore_arm_mag, t, dur, fore_arm_ease_curve.baked_points))
 	
-	var prev_hand_rot := prev_hand_animator.hand_quat
-	var prev_hand_tangent := prev_hand_animator.hand_tangent_vector
-	var prev_hand_mag := prev_hand_animator.hand_tangent_magnitude
+	var prev_hand_rot := prev_hand_animator.hand_quat_override
+	var prev_hand_tangent := prev_hand_animator.hand_tangent_vector_override
+	var prev_hand_mag := prev_hand_animator.hand_tangent_magnitude_override
 	
-	var next_hand_rot := next_hand_animator.hand_quat
-	var next_hand_tangent := next_hand_animator.hand_tangent_vector
-	var next_hand_mag := next_hand_animator.hand_tangent_magnitude
+	var next_hand_rot := next_hand_animator.hand_quat_override
+	var next_hand_tangent := next_hand_animator.hand_tangent_vector_override
+	var next_hand_mag := next_hand_animator.hand_tangent_magnitude_override
 	
 	var hand_ease_curve := next_hand_animator.hand_ease_curve
 	
@@ -602,6 +621,30 @@ func get_t_from_keyframes(time : float, arr : Array[float], prev_idx : int, next
 func update_info_dic():
 	var d : Dictionary
 	
+	
+	
+	d["final_ball_pos"] = ball_positions[-1]
+	
+	d["final_ball_pos"].y = 0
+	
+	var ball_dir := ball.launch_vel_tangent_object.global_position - ball.global_position
+	
+	
+	
+	ball_dir.y = 0
+	
+	d["flat_vel"] = ball_dir.length()
+	
+	ball_dir = ball_dir.normalized()
+	
+	var b : Basis
+	
+	b.z = ball_dir
+	b.y = Vector3.UP
+	b.x = b.y.cross(b.z)
+	
+	d["final_ball_direction_basis"] = b
+	
 	var ball_pos := ball.global_position
 	d["ball_pos"] = ball_pos
 	
@@ -613,7 +656,9 @@ func update_info_dic():
 	ball_delta_flat.y = 0
 	
 	d["ball_delta_flat"] = ball_delta_flat
-
+	
+	d["momentum"] = momentum
+	
 	var ball_default_pos := baked_animation.ball_pos
 	
 	var original_basis : Basis
@@ -681,13 +726,7 @@ func update_info_dic():
 	
 	d["old_hip_ball_hit_position"] = baked_foot_animator.hip_pos
 	
-	"""	var new : Vector3 = (info_dic["new_foot_ball_hit_t"] as Transform3D).origin
-	new_ankle_pos = new
-	var old : Vector3 = (info_dic["old_foot_ball_hit_t"] as Transform3D).origin
-	old_ankle_pos = old
-	
-	org_hip_pos = (info_dic["old_hip_ball_hit_position"])"""
-	
+	d["org_transforms"] = baked_animation.org_transforms_dic
 	info_dic = d
 
 
@@ -703,9 +742,54 @@ func _process_modification_with_delta(delta: float) -> void:
 		animator.modify_overrides(info_dic)
 	for animator : BakedFootAnimator in baked_animation.left_foot_track_holder.baked_animators:
 		animator.modify_overrides(info_dic)
+	for animator : BakedHandAnimator in baked_animation.right_hand_track_holder.baked_animators:
+		animator.modify_overrides(info_dic)
+	for animator : BakedHandAnimator in baked_animation.left_hand_track_holder.baked_animators:
+		animator.modify_overrides(info_dic)
+	
 	
 	var new_ball_pos := ball.position
 	var new_ball_tangent := ball.launch_vel_tangent_object.global_position - ball.position
+	
+	"""
+	func modify_variables_after_overrides(org_transforms : Dictionary, new_transfroms : Dictionary) -> void:
+	var new : Vector3 = (new_transfroms["foot_ball_hit_t"] as Transform3D).origin
+	new_ankle_pos = new
+	var old : Vector3 = (org_transforms["foot_ball_hit_t"] as Transform3D).origin
+	old_ankle_pos = old
+	
+	org_hip_pos = (org_transforms["hip_ball_hit_pos"])
+	
+	new_hip_pos = new_transfroms["hip_ball_hit_pos"]
+	
+	org_root_t = org_transforms["spine_root_ts"][idx]
+	"""
+	
+	var new_transfroms := {}
+	
+	
+	
+	var contact_time := baked_animation.right_foot_track_holder.keyframe_times[1]
+	
+	var pelvis_t := get_spine_transforms(contact_time, get_root_transform(contact_time))[0]
+	
+	var hip_p := get_hip_pos(pelvis_t, true, contact_time)
+	
+	new_transfroms["hip_ball_hit_pos"] = hip_p
+	new_transfroms["foot_ball_hit_t"] = (baked_animation.right_foot_track_holder.baked_animators[1] as BakedFootAnimator).ik_foot_transform_override
+	new_transfroms["spine_root_ts"] = []
+	new_transfroms["pelvis_locs"] = []
+	for spine_animator_idx : int in baked_animation.spine_track_holder.baked_animators.size():
+		var time := baked_animation.spine_track_holder.keyframe_times[spine_animator_idx]
+		(new_transfroms["spine_root_ts"] as Array).append(get_root_transform(time))
+		(new_transfroms["pelvis_locs"] as Array).append((baked_animation.spine_track_holder.baked_animators[spine_animator_idx] as BakedSpineAnimator).pelvis_override_pos)
+		
+	
+	for sa : BakedSpineAnimator in baked_animation.spine_track_holder.baked_animators:
+		if not sa.pelvis_corrector_modifier:
+			continue
+		sa.modify_corrector(baked_animation.org_transforms_dic, new_transfroms)
+		sa.pelvis_override_pos = sa.pelvis_corrector_modifier.modify_vector(sa.pelvis_override_pos)
 	
 	if new_ball_pos != prev_ball_pos or new_ball_tangent != prev_ball_tangent:
 		bake_ball_movement()
@@ -752,16 +836,16 @@ func get_root_transform(time : float) -> Transform3D:
 	var q1 := animator_1.get_rotation_quaternion()
 	var q2 := animator_2.get_rotation_quaternion()
 	
-	var rot := QuaternionExtender.my_quat_interpolate(q1, animator_1.root_rot_vector, animator_1.root_rot_magnitude,
-	q2, animator_2.root_rot_vector, animator_2.root_rot_magnitude, t, dur, animator_2.root_rot_ease_curve.baked_points)
+	var rot := QuaternionExtender.my_quat_interpolate(q1, animator_1.root_override_rot_vector, animator_1.root_override_rot_magnitude,
+	q2, animator_2.root_override_rot_vector, animator_2.root_override_rot_magnitude, t, dur, animator_2.root_rot_ease_curve.baked_points)
 	#
-	var loc := MyCurve3D.interpolate(animator_1.root_transform.origin, animator_1.root_loc_vector * animator_1.root_loc_magnitude, animator_2.root_transform.origin, animator_2.root_loc_vector * animator_2.root_loc_magnitude, t, dur, animator_2.root_loc_ease_curve.baked_points)
+	var loc := MyCurve3D.interpolate(animator_1.root_override_pos, animator_1.root_override_loc_vector * animator_1.root_override_loc_magnitude, animator_2.root_override_pos, animator_2.root_override_loc_vector * animator_2.root_override_loc_magnitude, t, dur, animator_2.root_loc_ease_curve.baked_points)
 	#
 	return Transform3D(rot, loc) * get_skeleton().get_bone_global_rest(0)
 
 func interpolate_pelvis_basis(animator_1 : BakedSpineAnimator, animator_2 : BakedSpineAnimator, t : float, dur : float) -> Quaternion:
-	var b_1 := animator_1.pelvis_transform.basis.get_rotation_quaternion()
-	var b_2 := animator_2.pelvis_transform.basis.get_rotation_quaternion()
+	var b_1 := animator_1.pelvis_override_quat
+	var b_2 := animator_2.pelvis_override_quat
 	
 	var pelvis_r_velocity_vector_1 := animator_1.pelvis_rot_tangent_vector
 	var pelvis_r_velocity_mag_1 := animator_1.pelvis_rot_tangent_magnitude
@@ -780,11 +864,11 @@ func interpolate_pelvis_loc(animator_1 : BakedSpineAnimator, animator_2 : BakedS
 	var loc_2 := animator_2.pelvis_override_pos
 	
 	
-	var g_vector_1 := animator_1.pelvis_loc_tangent_vector
-	var g_vector_2 := animator_2.pelvis_loc_tangent_vector
+	var g_vector_1 := animator_1.pelvis_override_loc_tangent_vector
+	var g_vector_2 := animator_2.pelvis_override_loc_tangent_vector
 	
-	var g_mag_1 := animator_1.pelvis_loc_tangent_magnitude
-	var g_mag_2 := animator_2.pelvis_loc_tangent_magnitude
+	var g_mag_1 := animator_1.pelvis_override_loc_tangent_magnitude
+	var g_mag_2 := animator_2.pelvis_override_loc_tangent_magnitude
 	
 	var velocity_vector_1 := root_1_b.inverse() * (g_vector_1 * g_mag_1)
 	var velocity_vector_2 := root_2_b.inverse() * (g_vector_2 * g_mag_2)
